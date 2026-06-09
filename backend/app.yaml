@@ -1,0 +1,15 @@
+# Google App Engine Standard Deployment Configuration
+# Deploy using: gcloud app deploy backend/app.yaml
+
+runtime: python312
+instance_class: F1
+
+# Use Gunicorn as the production WSGI server
+entrypoint: gunicorn -b :$PORT app:app
+
+env_variables:
+  FLASK_ENV: "production"
+  
+  # NOTE: Replace 'archit-de-portfolio' with your actual Firebase Hosting project ID
+  # to restrict cross-origin API calls exclusively to your frontend domain.
+  ALLOWED_ORIGIN: "https://archit-de-portfolio.web.app"
