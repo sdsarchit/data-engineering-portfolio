@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archit Somayajula | Senior Data Engineer Portfolio</title>
+    
+    <!-- Modern Typography & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styling Sheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Premium Ambient Glow Vectors -->
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+    <div class="glow-sphere sphere-3"></div>
+
+    <!-- Sticky Modern Navigation Header -->
+        <header class="main-header">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-bracket">&lt;</span>
+                <span class="logo-text">Archit.DE</span>
+                <span class="logo-bracket">/&gt;</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html#about" class="nav-link active">About</a>
+                <a href="index.html#skills" class="nav-link ">Skills</a>
+                <a href="index.html#projects" class="nav-link ">Projects</a>
+                <a href="pipeline.html" class="nav-link "><i class="fa-solid fa-terminal"></i> ETL Console</a>
+                <a href="dashboard.html" class="nav-link "><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
+                <a href="architecture.html" class="nav-link "><i class="fa-solid fa-network-wired"></i> Architecture Map</a>
+                <a href="xai.html" class="nav-link "><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="mailto:sdsarchit2000@gmail.com" class="nav-btn" aria-label="Contact"><i class="fa-regular fa-envelope"></i> <span class="contact-text">Contact</span></a>
+                <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Toggle Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const toggleBtn = document.getElementById("menu-toggle-btn");
+                const navLinks = document.querySelector(".nav-links");
+                if (toggleBtn && navLinks) {
+                    toggleBtn.addEventListener("click", () => {
+                        navLinks.classList.toggle("active");
+                        const icon = toggleBtn.querySelector("i");
+                        if (icon) {
+                            if (icon.classList.contains("fa-bars")) {
+                                icon.className = "fa-solid fa-xmark";
+                            } else {
+                                icon.className = "fa-solid fa-bars";
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    </header>
+
+    <main class="content-wrapper">
+        <!-- Hero Presentation Section -->
+        <section id="about" class="section hero-section">
+            <div class="hero-content">
+                <div class="cert-badge-row">
+                    <span class="badge badge-databricks"><i class="fa-solid fa-cube"></i> Databricks Certified Associate</span>
+                    <span class="badge badge-aws"><i class="fa-brands fa-aws"></i> AWS Academy Certified</span>
+                </div>
+                <h1 class="hero-title">
+                    Building Scalable <span class="text-gradient">Data Pipelines</span> &amp; Real-time Pipelines
+                </h1>
+                <p class="hero-subtitle">
+                    Senior Data Engineer with 4+ years of experience developing high-throughput ETL engines, custom Data Quality frameworks, and API microservices at organizations like <strong>Discover Financial</strong> and <strong>Cisco Systems</strong>.
+                </p>
+                <div class="hero-action-buttons">
+                    <a href="pipeline.html" class="btn btn-primary"><i class="fa-solid fa-terminal"></i> Go to ETL Console</a>
+                    <a href="dashboard.html" class="btn btn-secondary"><i class="fa-solid fa-chart-line"></i> View Live Dashboard</a>
+                </div>
+            </div>
+            
+            <!-- Quick Stats Terminal Widget -->
+            <div class="hero-widget glass-card">
+                <div class="widget-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                    <span class="widget-title">spark_session.py</span>
+                </div>
+                <div class="widget-body">
+                    <div class="terminal-line"><span class="t-keyword">from</span> pyspark.sql <span class="t-keyword">import</span> SparkSession</div>
+                    <div class="terminal-line">spark = SparkSession.builder.appName(<span class="t-string">"Archit.DE"</span>).getOrCreate()</div>
+                    <div class="terminal-line"><span class="t-keyword">print</span>(spark.version)  <span class="t-comment"># 3.5.0 (Data Lakehouse Engine)</span></div>
+                    <br>
+                    <div class="terminal-line prompt"><span class="t-prompt">&gt;&gt;&gt;</span> df = spark.read.json(<span class="t-string">"s3a://dw-prod/profile.json"</span>)</div>
+                    <div class="terminal-line prompt"><span class="t-prompt">&gt;&gt;&gt;</span> df.select(<span class="t-string">"role"</span>, <span class="t-string">"specialty"</span>, <span class="t-string">"impact"</span>).show(vertical=<span class="t-keyword">True</span>)</div>
+                    <div class="terminal-line output"><i class="fa-solid fa-database text-cyan"></i> -RECORD 0------------------------------------</div>
+                    <div class="terminal-line output"><i class="fa-solid fa-database text-cyan"></i>  role      | Senior Data Engineer &amp; Architect</div>
+                    <div class="terminal-line output"><i class="fa-solid fa-database text-cyan"></i>  specialty | PySpark, Snowflake, Docker, REST</div>
+                    <div class="terminal-line output"><i class="fa-solid fa-database text-cyan"></i>  impact    | Ingestion latency cut to ~200ms</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Showcase Navigation Section -->
+        <section class="section showcase-navigator-section">
+            <h2 class="section-heading text-center">Interactive <span class="text-gradient">Data Ingestion Showcase</span></h2>
+            <p class="section-lead text-center">Run the functional local data pipeline and explore the real-time analytics dashboard.</p>
+            
+            <div class="showcase-nav-grid">
+                <!-- Card 1: ETL Ingestion Console -->
+                <a href="pipeline.html" class="showcase-nav-card glass-card">
+                    <div class="showcase-icon"><i class="fa-solid fa-terminal text-cyan"></i></div>
+                    <h3>1. ETL Ingestion Console</h3>
+                    <p>Trigger the live python ETL pipeline. Watch data extraction, data validation via the custom Data Quality engine, and SQLite storage logs stream line-by-line.</p>
+                    <span class="showcase-btn text-cyan">Launch Ingestion Console <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Card 2: Analytics Dashboard -->
+                <a href="dashboard.html" class="showcase-nav-card glass-card">
+                    <div class="showcase-icon"><i class="fa-solid fa-chart-pie text-purple"></i></div>
+                    <h3>2. Live Analytics Dashboard</h3>
+                    <p>Explore the ingested hourly air quality levels, rolling averages, success ratios, and audit isolated anomaly rows captured in the quarantine table.</p>
+                    <span class="showcase-btn text-purple">Open Analytics Dashboard <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Technical Skills Showcase -->
+        <section id="skills" class="section skills-section">
+            <h2 class="section-heading text-center">Engineered <span class="text-gradient">Skill Matrix</span></h2>
+            <p class="section-lead text-center">Comprehensive tools and technologies verified by years of production-grade implementations.</p>
+            
+            <div class="skills-grid">
+                <!-- Data Engineering -->
+                <div class="skill-card glass-card">
+                    <div class="skill-icon-header">
+                        <i class="fa-solid fa-gears text-cyan"></i>
+                        <h3>Data Engineering</h3>
+                    </div>
+                    <ul class="skill-list">
+                        <li><span>PySpark / Apache Spark</span> <div class="progress-bar"><div class="fill" style="width: 95%;"></div></div></li>
+                        <li><span>Snowflake Data Pipelines</span> <div class="progress-bar"><div class="fill" style="width: 92%;"></div></div></li>
+                        <li><span>Azure Databricks &amp; ADF</span> <div class="progress-bar"><div class="fill" style="width: 90%;"></div></div></li>
+                        <li><span>AWS Glue &amp; S3 Storage</span> <div class="progress-bar"><div class="fill" style="width: 85%;"></div></div></li>
+                        <li><span>Apache Airflow (DAGs)</span> <div class="progress-bar"><div class="fill" style="width: 80%;"></div></div></li>
+                        <li><span>ETL/ELT Data Modeling</span> <div class="progress-bar"><div class="fill" style="width: 92%;"></div></div></li>
+                    </ul>
+                </div>
+
+                <!-- Languages & Databases -->
+                <div class="skill-card glass-card">
+                    <div class="skill-icon-header">
+                        <i class="fa-solid fa-database text-purple"></i>
+                        <h3>Languages &amp; Databases</h3>
+                    </div>
+                    <ul class="skill-list">
+                        <li><span>Python (Pandas, Numpy)</span> <div class="progress-bar"><div class="fill" style="width: 96%;"></div></div></li>
+                        <li><span>SQL (Complex Window Funcs)</span> <div class="progress-bar"><div class="fill" style="width: 95%;"></div></div></li>
+                        <li><span>Scala / R / Java</span> <div class="progress-bar"><div class="fill" style="width: 75%;"></div></div></li>
+                        <li><span>MySQL / PostgreSQL</span> <div class="progress-bar"><div class="fill" style="width: 88%;"></div></div></li>
+                        <li><span>Oracle / Teradata / OCI</span> <div class="progress-bar"><div class="fill" style="width: 85%;"></div></div></li>
+                        <li><span>SQLite (Local Engine)</span> <div class="progress-bar"><div class="fill" style="width: 90%;"></div></div></li>
+                    </ul>
+                </div>
+
+                <!-- DevOps & Web Backends -->
+                <div class="skill-card glass-card">
+                    <div class="skill-icon-header">
+                        <i class="fa-solid fa-server text-green"></i>
+                        <h3>Backend &amp; DevOps</h3>
+                    </div>
+                    <ul class="skill-list">
+                        <li><span>Docker Containerization</span> <div class="progress-bar"><div class="fill" style="width: 90%;"></div></div></li>
+                        <li><span>CI/CD Pipelines (GitHub Actions)</span> <div class="progress-bar"><div class="fill" style="width: 85%;"></div></div></li>
+                        <li><span>Django REST Framework</span> <div class="progress-bar"><div class="fill" style="width: 92%;"></div></div></li>
+                        <li><span>Celery &amp; Redis (Async Queues)</span> <div class="progress-bar"><div class="fill" style="width: 88%;"></div></div></li>
+                        <li><span>Spring Boot (Java REST)</span> <div class="progress-bar"><div class="fill" style="width: 70%;"></div></div></li>
+                        <li><span>Git / Jira / Agile Workflows</span> <div class="progress-bar"><div class="fill" style="width: 92%;"></div></div></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Professional Work Timeline -->
+        <section id="experience" class="section experience-section">
+            <h2 class="section-heading text-center">Professional <span class="text-gradient">Timeline</span></h2>
+            <p class="section-lead text-center">Production milestones and structural architectures designed at corporate enterprises.</p>
+            
+            <div class="timeline">
+                <!-- Discover Financial Services -->
+                <div class="timeline-item left">
+                    <div class="timeline-content glass-card">
+                        <span class="timeline-date">July 2025 – March 2026</span>
+                        <h3>Data Engineer (Intern Analyst)</h3>
+                        <h4 class="timeline-company"><i class="fa-solid fa-briefcase"></i> Dizer Corp | Client: Discover Financial Services</h4>
+                        <span class="timeline-location"><i class="fa-solid fa-location-dot"></i> Painesville, OH</span>
+                        <ul class="timeline-bullets">
+                            <li>Designed and deployed <strong>PySpark ETL pipelines</strong> on Azure Databricks, cutting financial records parsing latency by 45%.</li>
+                            <li>Engineered structural Azure Data Factory (ADF) workflows, consolidating ingestion pipelines from Teradata and Oracle into unified Azure Data Lakes.</li>
+                            <li>Architected the **SQL &amp; JSON Data Quality (DQ) Rule Engine** with dedicated SQLite quarantine tables to filter schema discrepancies and null outliers.</li>
+                            <li>Containerized ETL execution workflows with Docker and set up complete Git CI/CD deployment release steps.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Project Elevate -->
+                <div class="timeline-item right">
+                    <div class="timeline-content glass-card">
+                        <span class="timeline-date">January 2025 – May 2025</span>
+                        <h3>Data Engineer (Capstone Intern)</h3>
+                        <h4 class="timeline-company"><i class="fa-solid fa-briefcase"></i> Project Elevate</h4>
+                        <span class="timeline-location"><i class="fa-solid fa-location-dot"></i> Newark, NJ</span>
+                        <ul class="timeline-bullets">
+                            <li>Re-architected legacy nightly batch processors into high-speed real-time ingestion endpoints using <strong>Django REST Framework, Celery, and Redis</strong>.</li>
+                            <li>Optimized MySQL storage schemas and APIs, reducing dashboard analytical retrieval queries down to <strong>~200ms at p95</strong>.</li>
+                            <li>Configured scalable and secure production docker packages running on Oracle Cloud Infrastructure (OCI).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Cisco Systems -->
+                <div class="timeline-item left">
+                    <div class="timeline-content glass-card">
+                        <span class="timeline-date">September 2021 – August 2023</span>
+                        <h3>Digital Specialist Engineer — Data Engineer</h3>
+                        <h4 class="timeline-company"><i class="fa-solid fa-briefcase"></i> Infosys Limited | Client: Cisco Systems</h4>
+                        <span class="timeline-location"><i class="fa-solid fa-location-dot"></i> Hyderabad, India</span>
+                        <ul class="timeline-bullets">
+                            <li>Engineered and managed 5 enterprise-scale data pipelines in <strong>Snowflake</strong> using custom Python and SQL transformations.</li>
+                            <li>Increased raw case ingestion accuracy by 20% by implementing comprehensive SQL schema validators and mathematical outlier checkers.</li>
+                            <li>Collaborated inside Agile/Scrum structures, resolving structural Snowflake warehouses sizing and optimization hurdles.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Accolite India -->
+                <div class="timeline-item right">
+                    <div class="timeline-content glass-card">
+                        <span class="timeline-date">January 2021 – May 2021</span>
+                        <h3>Software Engineer Intern — Data Engineering</h3>
+                        <h4 class="timeline-company"><i class="fa-solid fa-briefcase"></i> Accolite India</h4>
+                        <span class="timeline-location"><i class="fa-solid fa-location-dot"></i> Hyderabad, India</span>
+                        <ul class="timeline-bullets">
+                            <li>Automated regional operational ETL pipelines using Python and raw SQL commands, achieving 20% manual preparation time-savings.</li>
+                            <li>Built fast Java <strong>Spring Boot REST APIs</strong> to deliver automated pipelines data extracts straight into internal BI notebooks.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Professional Projects -->
+        <section id="projects" class="section projects-section">
+            <h2 class="section-heading text-center">Featured <span class="text-gradient">Projects &amp; Research</span></h2>
+            <p class="section-lead text-center">Industrial data engineering solutions, space weather research, and interactive simulator engines.</p>
+            
+            <div class="projects-grid">
+                <!-- Project 1: Case Management System -->
+                <div class="project-card glass-card">
+                    <div class="project-img-wrapper">
+                        <div class="project-placeholder-icon"><i class="fa-solid fa-database text-cyan"></i></div>
+                    </div>
+                    <div class="project-body">
+                        <span class="timeline-date">Nov 2021 – Aug 2023 | Associated with Infosys</span>
+                        <h3>Case Management System</h3>
+                        <p>Ensured precise assignment of business units to address customer-specific issues. Engineered internal database schemas, built Snowflake data ingestion pipelines, and implemented robust SQL data validation rules for analytical reporting.</p>
+                        <div class="project-tags">
+                            <span class="tag">Snowflake Cloud</span>
+                            <span class="tag">REST APIs</span>
+                            <span class="tag">SQL ETL</span>
+                            <span class="tag">Data Validation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: Network Intrusion Detection -->
+                <div class="project-card glass-card">
+                    <div class="project-img-wrapper">
+                        <div class="project-placeholder-icon"><i class="fa-solid fa-shield-halved text-purple"></i></div>
+                    </div>
+                    <div class="project-body">
+                        <span class="timeline-date">Feb 2021 – May 2021 | BVRIT</span>
+                        <h3>Network Intrusion Detection Ensemble</h3>
+                        <p>Developed an efficient, real-time cybersecurity defense model using machine learning ensembles (Random Forest and XGBoost) to classify network packet abnormalities, improving detection stability over traditional SVMs.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Machine Learning</span>
+                            <span class="tag">Random Forest</span>
+                            <span class="tag">XGBoost</span>
+                            <span class="tag">Statistics</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: Digits Recognition using SVHN -->
+                <div class="project-card glass-card">
+                    <div class="project-img-wrapper">
+                        <div class="project-placeholder-icon"><i class="fa-solid fa-brain text-green"></i></div>
+                    </div>
+                    <div class="project-body">
+                        <span class="timeline-date">Jan 2020 – Jan 2021 | BVRIT</span>
+                        <h3>Digits Recognition (SVHN)</h3>
+                        <p>Harnessed deep learning models to identify handwritten digits on the Street View House Numbers (SVHN) dataset. Built prediction frameworks automating check processing, postal mail sorting, and document reading.</p>
+                        <div class="project-tags">
+                            <span class="tag">Deep Learning</span>
+                            <span class="tag">Computer Vision</span>
+                            <span class="tag">Python</span>
+                            <span class="tag">SVHN Dataset</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: NASA Solar Wind forecasting (XAI) -->
+                <div class="project-card glass-card">
+                    <div class="project-img-wrapper">
+                        <div class="project-placeholder-icon"><i class="fa-solid fa-sun text-yellow"></i></div>
+                    </div>
+                    <div class="project-body">
+                        <span class="timeline-date">Published Research | NJIT</span>
+                        <h3>NASA Solar Wind Storm Forecasting</h3>
+                        <p>Applied SHAP (SHapley Additive exPlanations), LIME, and attention weight score matrices over 1,098 solar wind samples to explain the DST index neural transformer model, proving Scalar B as the dominant predictive trigger.</p>
+                        <div class="project-tags">
+                            <span class="tag">Explainable AI (XAI)</span>
+                            <span class="tag">SHAP &amp; LIME</span>
+                            <span class="tag">Transformers</span>
+                            <span class="tag">Space Weather</span>
+                        </div>
+                        <a href="xai.html" class="showcase-btn text-yellow" style="margin-top: 1rem;">Open XAI Research Lab <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Project 5: Enterprise Data Platform Architecture & Skills Showcase -->
+                <div class="project-card glass-card project-card-featured">
+                    <div class="project-img-wrapper project-img-wrapper-featured">
+                        <div class="project-placeholder-icon"><i class="fa-solid fa-network-wired text-cyan"></i></div>
+                    </div>
+                    <div class="project-body project-body-featured">
+                        <div style="flex: 1;">
+                            <h3>Enterprise Data Platform Architecture &amp; Skills Showcase</h3>
+                            <p>A unified cloud-native pipeline system mapping out source streaming, Airflow/ADF orchestrations, optimized PySpark broadcast configurations, Discover DQ rules validation engines, auto-scaling Snowflake warehouses, and Django/Celery cache frameworks.</p>
+                            <div class="project-tags" style="margin-top: 0.5rem;">
+                                <span class="tag">Apache Airflow &amp; ADF</span>
+                                <span class="tag">PySpark Databricks</span>
+                                <span class="tag">Snowflake ELT</span>
+                                <span class="tag">Django / Redis Caching</span>
+                            </div>
+                        </div>
+                        <a href="architecture.html" class="btn btn-primary" style="white-space: nowrap;"><i class="fa-solid fa-network-wired"></i> Launch System Map</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Visual Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Archit Somayajula. Portfolio engineered with Vanilla HTML5, CSS3, &amp; SQLite REST API.</p>
+            <div class="footer-socials">
+                <a href="https://linkedin.com/in/archit-somayajula" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="mailto:sdsarchit2000@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+    <!-- Entry Introduction Modal -->
+    <div id="intro-modal" class="modal-overlay">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="close-modal-btn">&times;</button>
+            <div class="modal-avatar-wrapper">
+                <i class="fa-solid fa-network-wired"></i>
+            </div>
+            <h2 class="modal-title">Welcome to my Portfolio</h2>
+            <div class="modal-subtitle">Archit Somayajula</div>
+            <p class="modal-desc">
+                I am a <strong>Data Engineer</strong> with 4+ years of experience building scalable data platforms, real-time pipelines, and custom data quality frameworks. Most recently, I built financial pipelines and DQ systems at <strong>Discover Financial Services</strong>, and engineered case-management flows at <strong>Cisco Systems</strong>.
+            </p>
+            <div class="modal-highlight-box">
+                <div class="modal-highlight-item">
+                    <span class="modal-h-val">4+ Years</span>
+                    <span class="modal-h-label">Experience</span>
+                </div>
+                <div class="modal-highlight-item">
+                    <span class="modal-h-val">NJIT MS</span>
+                    <span class="modal-h-label">Data Science</span>
+                </div>
+                <div class="modal-highlight-item">
+                    <span class="modal-h-val">Databricks</span>
+                    <span class="modal-h-label">Certified</span>
+                </div>
+            </div>
+            <div class="modal-action">
+                <button class="btn btn-primary" id="explore-btn"><i class="fa-solid fa-rocket"></i> Explore Portfolio</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const modal = document.getElementById("intro-modal");
+            const closeBtn = document.getElementById("close-modal-btn");
+            const exploreBtn = document.getElementById("explore-btn");
+
+            // Check if user already saw the intro during this browser session
+            if (!sessionStorage.getItem("portfolio_intro_shown")) {
+                setTimeout(() => {
+                    modal.classList.add("active");
+                }, 400);
+            }
+
+            function dismissModal() {
+                modal.classList.remove("active");
+                sessionStorage.setItem("portfolio_intro_shown", "true");
+            }
+
+            closeBtn.addEventListener("click", dismissModal);
+            exploreBtn.addEventListener("click", dismissModal);
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) {
+                    dismissModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

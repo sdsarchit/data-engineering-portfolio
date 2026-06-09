@@ -1,0 +1,21 @@
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+conda-env/
+
+# Python cache
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Local database & logs
+backend_server.log
+frontend_server.log
+backend/data.db-journal
+
+# OS files
+.DS_Store
+Thumbs.db

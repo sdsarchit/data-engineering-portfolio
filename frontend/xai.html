@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XAI Solar Storm Research Lab | Archit Somayajula Portfolio</title>
+    
+    <!-- Modern Typography & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styling Sheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Premium Ambient Glow Vectors -->
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+    <div class="glow-sphere sphere-3"></div>
+
+    <!-- Sticky Navigation Header -->
+        <header class="main-header">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-bracket">&lt;</span>
+                <span class="logo-text">Archit.DE</span>
+                <span class="logo-bracket">/&gt;</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html#about" class="nav-link ">About</a>
+                <a href="index.html#skills" class="nav-link ">Skills</a>
+                <a href="index.html#projects" class="nav-link ">Projects</a>
+                <a href="pipeline.html" class="nav-link "><i class="fa-solid fa-terminal"></i> ETL Console</a>
+                <a href="dashboard.html" class="nav-link "><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
+                <a href="architecture.html" class="nav-link "><i class="fa-solid fa-network-wired"></i> Architecture Map</a>
+                <a href="xai.html" class="nav-link active"><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="mailto:sdsarchit2000@gmail.com" class="nav-btn" aria-label="Contact"><i class="fa-regular fa-envelope"></i> <span class="contact-text">Contact</span></a>
+                <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Toggle Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const toggleBtn = document.getElementById("menu-toggle-btn");
+                const navLinks = document.querySelector(".nav-links");
+                if (toggleBtn && navLinks) {
+                    toggleBtn.addEventListener("click", () => {
+                        navLinks.classList.toggle("active");
+                        const icon = toggleBtn.querySelector("i");
+                        if (icon) {
+                            if (icon.classList.contains("fa-bars")) {
+                                icon.className = "fa-solid fa-xmark";
+                            } else {
+                                icon.className = "fa-solid fa-bars";
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    </header>
+
+    <main class="content-wrapper">
+        <!-- Section Header -->
+        <section class="section xai-header-section">
+            <div class="section-title-wrap text-center">
+                <span class="section-subtitle">EXPLAINABLE AI (XAI) RESEARCH LAB</span>
+                <h1 class="section-heading">NASA Solar Wind Storm Forecasting</h1>
+                <p class="section-lead">Feature Analysis of Bayesian Transformer Model for Disturbance Storm Time (DST) Index Prediction using SHAP, LIME, and Multi-Head Attention Maps.</p>
+            </div>
+
+            <!-- Paper Metadata Card -->
+            <div class="paper-meta-card glass-card">
+                <div class="paper-icon"><i class="fa-regular fa-file-pdf text-purple"></i></div>
+                <div class="paper-details">
+                    <span class="paper-tag">Published Research Paper</span>
+                    <h3>Feature Analysis of Transformer Model for The Disturbance Storm Time Index</h3>
+                    <p class="paper-authors"><strong>Archit D. S. Somayajula</strong>, Jason T. L. Wang</p>
+                    <p class="paper-affiliations">Department of Computer Science &amp; Institute for Space Weather Sciences, New Jersey Institute of Technology (NJIT)</p>
+                    <span class="paper-citation"><i class="fa-solid fa-book-bookmark"></i> FLAIRS / Space Weather Archive | NJIT Graduate Fellowship Research Project</span>
+                </div>
+                <div class="paper-download-action">
+                    <a href="Dst_XAI_2024.pdf" download class="btn btn-primary btn-download">
+                        <i class="fa-solid fa-file-arrow-down"></i> Download PDF
+                    </a>
+                    <span class="file-size-tag">PDF (1.2 MB)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Research Sandbox -->
+        <section class="section xai-sandbox-section">
+            <h2 class="section-heading text-center">Interactive <span class="text-gradient">XAI Explanation Engine</span></h2>
+            <p class="section-lead text-center">Adjust solar wind parameters observed by NASA satellites. Run the explainer to calculate predicted geomagnetic storm indexes and inspect SHAP feature weight contribution graphs in real-time.</p>
+
+            <div class="xai-sandbox-grid">
+                <!-- Parameters Controls (Left) -->
+                <div class="xai-controls-card glass-card">
+                    <h3><i class="fa-solid fa-sliders text-cyan"></i> NASA Solar Wind Ingest</h3>
+                    <p class="control-desc">Set real-time solar wind plasma metrics to feed the deep learning model:</p>
+                    
+                    <div class="xai-controls-layout-wrapper">
+                        <!-- Left Sliders Column -->
+                        <div class="sliders-column">
+                            <div class="param-slider-group">
+                                <div class="slider-header">
+                                    <span class="param-name">Scalar B <small>(Total IMF magnitude)</small></span>
+                                    <span class="param-val" id="val-scalar-b">15 nT</span>
+                                </div>
+                                <input type="range" class="param-input" id="input-scalar-b" min="0" max="50" value="15" step="0.5">
+                            </div>
+
+                            <div class="param-slider-group">
+                                <div class="slider-header">
+                                    <span class="param-name">BZ GSE <small>(Z-component Magnetic Field)</small></span>
+                                    <span class="param-val text-cyan" id="val-bz-gse">-5 nT</span>
+                                </div>
+                                <input type="range" class="param-input" id="input-bz-gse" min="-30" max="30" value="-5" step="0.5">
+                            </div>
+
+                            <div class="param-slider-group">
+                                <div class="slider-header">
+                                    <span class="param-name">SW Plasma Temp <small>(Ion Temperature)</small></span>
+                                    <span class="param-val" id="val-plasma-temp">150,000 K</span>
+                                </div>
+                                <input type="range" class="param-input" id="input-plasma-temp" min="10000" max="1000000" value="150000" step="10000">
+                            </div>
+
+                            <div class="param-slider-group">
+                                <div class="slider-header">
+                                    <span class="param-name">SW Plasma Speed <small>(Wind Velocity)</small></span>
+                                    <span class="param-val" id="val-plasma-speed">450 km/s</span>
+                                </div>
+                                <input type="range" class="param-input" id="input-plasma-speed" min="200" max="1000" value="450" step="10">
+                            </div>
+
+                            <div class="param-slider-group">
+                                <div class="slider-header">
+                                    <span class="param-name">SW Proton Density <small>(Concentration)</small></span>
+                                    <span class="param-val" id="val-proton-density">8.0 n/cc</span>
+                                </div>
+                                <input type="range" class="param-input" id="input-proton-density" min="0.5" max="50" value="8.0" step="0.5">
+                            </div>
+                        </div>
+
+                        <!-- Right HUD Column -->
+                        <div class="hud-column">
+                            <!-- Visual HUD Magnetosphere Diagram -->
+                            <div class="hud-wrapper" style="background: #04060a; border: 1px solid var(--border-color); border-radius: 12px; padding: 0.75rem; text-align: center;">
+                                <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; display: block; margin-bottom: 0.4rem;">Magnetosphere Solar Storm HUD</span>
+                                <svg id="solar-storm-hud" width="100%" height="120" viewBox="0 0 300 120" style="background: transparent;">
+                                    <!-- Sun (Left) -->
+                                    <circle cx="20" cy="60" r="18" fill="url(#sun-gradient)" id="hud-sun" style="filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.4));"></circle>
+                                    <!-- Sun flares -->
+                                    <g id="hud-flares" stroke="orange" stroke-width="1" opacity="0.3"></g>
+                                    
+                                    <!-- Solar particles path -->
+                                    <g id="hud-particles">
+                                        <!-- Populated dynamically -->
+                                    </g>
+
+                                    <!-- Earth magnetosphere lines -->
+                                    <path id="shield-outer" d="M 250 60 C 180 -10, 180 130, 250 60" fill="none" stroke="rgba(14, 165, 233, 0.2)" stroke-width="1.5"></path>
+                                    <path id="shield-inner" d="M 250 60 C 210 15, 210 105, 250 60" fill="none" stroke="rgba(14, 165, 233, 0.4)" stroke-width="2"></path>
+                                    <path id="shield-compression" d="M 250 60 C 235 35, 235 85, 250 60" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"></path>
+                                    
+                                    <!-- Earth (Right) -->
+                                    <circle cx="250" cy="60" r="6" fill="#3b82f6" id="hud-earth"></circle>
+                                    <circle cx="250" cy="60" r="10" fill="none" id="hud-aurora" style="stroke: rgba(16,185,129,0); stroke-width: 2; transition: all 0.3s ease;"></circle>
+
+                                    <defs>
+                                        <radialGradient id="sun-gradient" cx="50%" cy="50%" r="50%">
+                                            <stop offset="0%" stop-color="#fff"></stop>
+                                            <stop offset="70%" stop-color="#f97316"></stop>
+                                            <stop offset="100%" stop-color="#ea580c"></stop>
+                                        </radialGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Visualizer (Right) -->
+                <div class="xai-results-card glass-card">
+                    <div class="xai-results-layout-wrapper">
+                        <!-- Left Gauge Column -->
+                        <div class="gauge-column">
+                            <!-- Gauge Output -->
+                            <div class="xai-gauge-panel">
+                                <div style="text-align: center;">
+                                    <svg width="100%" height="100%" viewBox="0 0 150 100" style="max-width: 150px;">
+                                        <!-- Background Arc -->
+                                        <path d="M 25 80 A 50 50 0 0 1 125 80" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12" stroke-linecap="round"></path>
+                                        <!-- Color scales -->
+                                        <path d="M 25 80 A 50 50 0 0 1 55 40" fill="none" stroke="#10b981" stroke-width="12"></path> <!-- Green -->
+                                        <path d="M 55 40 A 50 50 0 0 1 95 40" fill="none" stroke="#eab308" stroke-width="12"></path> <!-- Yellow -->
+                                        <path d="M 95 40 A 50 50 0 0 1 125 80" fill="none" stroke="#ef4444" stroke-width="12"></path> <!-- Red -->
+                                        <!-- Needle -->
+                                        <line id="gauge-needle" x1="75" y1="80" x2="75" y2="35" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" style="transform-origin: 75px 80px; transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); transform: rotate(-90deg);"></line>
+                                        <circle cx="75" cy="80" r="6" fill="#f8fafc"></circle>
+                                    </svg>
+                                </div>
+                                <div class="gauge-card" style="text-align: left; align-items: flex-start;">
+                                    <span class="gauge-label">Forecasted DST Index</span>
+                                    <h2 class="gauge-value" id="gauge-dst-val" style="margin: 0.2rem 0;">-24 nT</h2>
+                                    <span class="gauge-status text-green" id="gauge-status"><i class="fa-solid fa-circle-check"></i> Quiet Field</span>
+                                </div>
+                            </div>
+                            <div class="gauge-storm-desc" id="gauge-storm-desc" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.5rem;">
+                                The DST (Disturbance Storm Time) index is negative during geomagnetic storms due to the expansion of Earth's ring current. Adjust BZ GSE to negative ranges to trigger storm alerts.
+                            </div>
+                        </div>
+
+                        <!-- Right SHAP Column -->
+                        <div class="shap-column">
+                            <!-- Horizontal SHAP Force plots -->
+                            <div class="xai-chart-panel">
+                                <h3><i class="fa-solid fa-chart-bar text-purple"></i> SHAP Force Plot Explanation</h3>
+                                <p class="chart-desc" style="margin-bottom: 1rem;">Balances positive forces (pink) against negative forces (cyan), meeting at the final forecast:</p>
+                                
+                                <!-- Horizontal Force Plot Canvas -->
+                                <div class="shap-force-plot-wrapper" style="margin-bottom: 1.5rem;">
+                                    <div class="force-plot-scale" style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 0.4rem;">
+                                        <span>+50 nT (Quiet)</span>
+                                        <span>Baseline: +10 nT</span>
+                                        <span>-400 nT (Storm)</span>
+                                    </div>
+                                    <div class="force-plot-bar-container" style="height: 28px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; display: flex; position: relative;">
+                                        <!-- Colored segments populated dynamically -->
+                                        <div id="force-bar-neg" style="height: 100%; background: linear-gradient(90deg, #0ea5e9, #06b6d4); width: 20%; transition: width 0.5s ease; margin-left: auto;"></div>
+                                        <div id="force-bar-pos" style="height: 100%; background: linear-gradient(90deg, #ec4899, #f43f5e); width: 10%; transition: width 0.5s ease;"></div>
+                                        <div id="force-marker-divider" style="position: absolute; top: 0; bottom: 0; width: 3px; background: #fff; box-shadow: 0 0 10px #fff; transition: left 0.5s ease;"></div>
+                                    </div>
+                                    <div class="force-plot-labels" style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 0.5rem; color: var(--text-secondary);">
+                                        <span class="text-cyan font-bold" id="force-label-neg">Negative pull: -38.2</span>
+                                        <span class="text-pink font-bold" id="force-label-pos">Positive pull: +14.2</span>
+                                    </div>
+                                </div>
+
+                                <!-- Feature detail breakdowns -->
+                                <div class="shap-bars-container" id="shap-bars">
+                                    <!-- Populated dynamically via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Attention Maps Playground -->
+            <div class="attention-map-container glass-card">
+                <div class="attention-header">
+                    <h3><i class="fa-solid fa-network-wired text-cyan"></i> Neural Attention Connection Graph</h3>
+                    <div class="head-selector-tabs">
+                        <button class="head-tab active" data-head="1">Attention Head 1</button>
+                        <button class="head-tab" data-head="2">Attention Head 2</button>
+                        <button class="head-tab" data-head="3">Attention Head 3</button>
+                        <button class="head-tab" data-head="4">Attention Head 4</button>
+                    </div>
+                </div>
+                <p class="explorer-desc">The Multi-Head Attention layer captures non-linear hourly correlation. The connection graph below visualizes the Query-Key attention matrices. Hover over nodes to inspect focus pathways:</p>
+                
+                <div class="heatmap-wrapper-grid">
+                    <!-- Interactive Node Graph SVG -->
+                    <div class="graph-svg-container" style="background: #04060a; border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; display: flex; align-items: center; justify-content: center; height: 320px; position: relative;">
+                        <svg id="attention-node-graph" width="100%" height="280" viewBox="0 0 450 280" style="background: transparent;">
+                            <g id="graph-connections">
+                                <!-- Dynamically rendered connection path links -->
+                            </g>
+                            <g id="graph-query-nodes">
+                                <!-- Query nodes (left) -->
+                            </g>
+                            <g id="graph-key-nodes">
+                                <!-- Key nodes (right) -->
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="heatmap-legend-info" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                        <h4>Attention Weights Blueprint</h4>
+                        <div class="legend-scale">
+                            <span>Weak Link</span>
+                            <div class="scale-bar"></div>
+                            <span>Strong Focus</span>
+                        </div>
+                        <p id="head-desc-text" class="text-secondary" style="font-size: 0.88rem; line-height: 1.6;">Head 1 focus: Scalar B displays high attention weights universally when queried with all parameters. BZ GSE displays contextual attention, indicating high correlation during peak vector variations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Paper Analysis Document Summary -->
+        <section class="section xai-document-section">
+            <h2 class="section-heading text-center">Research Paper <span class="text-gradient">Key Summary</span></h2>
+            <p class="section-lead text-center">Key findings, mathematical methodologies, and model structures from the published NJIT paper.</p>
+
+            <div class="paper-summary-grid">
+                <!-- Summary Card 1 -->
+                <div class="summary-doc-card glass-card">
+                    <h3><i class="fa-solid fa-magnifying-glass-chart text-cyan"></i> Abstract &amp; Problem Goal</h3>
+                    <p>
+                        Geomagnetic storms are primary space weather events that can cause severe damage to Earth's power grids, networking setups, and satellites. Measuring the **Disturbance Storm Time (DST)** index is crucial for quantifying geomagnetic storm size and intensity.
+                    </p>
+                    <p>
+                        This research performs a rigorous **Feature Importance Analysis** of the *DST Transformer model*—a state-of-the-art neural architecture combining Multi-Head Attention and Bayesian Deep learning (Monte Carlo Dropout layers) to estimate prediction uncertainty.
+                    </p>
+                </div>
+
+                <!-- Summary Card 2 -->
+                <div class="summary-doc-card glass-card">
+                    <h3><i class="fa-solid fa-compass-drafting text-purple"></i> XAI Methodology</h3>
+                    <ul>
+                        <li><strong>Kernel SHAP</strong>: Generates Shapley values based on cooperative game theory to measure the average margin contribution of each solar feature across 1,098 NASA wind samples.</li>
+                        <li><strong>LIME Tabular Explainer</strong>: Approximates the black-box DST Transformer model locally around specific instances to explain why the model made a positive or negative forecast.</li>
+                        <li><strong>Attention Score Maps</strong>: Extracts raw weight vectors from the Multi-Head Attention layer to visualize step-by-step correlation grids.</li>
+                    </ul>
+                </div>
+
+                <!-- Summary Card 3 -->
+                <div class="summary-doc-card glass-card">
+                    <h3><i class="fa-solid fa-square-poll-vertical text-green"></i> Key Analytical Insights</h3>
+                    <p>
+                        - <strong>Scalar B (IMF Magnitude)</strong> is mathematically proven as the single most critical feature driving DST index forecasting.
+                    </p>
+                    <p>
+                        - <strong>BZ GSE (Z-component Magnetic Field)</strong> exhibits a massive negative correlation coefficient of <strong>-0.9556</strong> with Scalar B. When BZ GSE tilts negative (southward), it allows solar wind energy to transfer into Earth's magnetosphere, triggering geomagnetic storms.
+                    </p>
+                    <p>
+                        - **SW Plasma Temperature** and **Plasma Speed** act as strong supporting indicators.
+                    </p>
+                    <p>
+                        - **SW Proton Density**, **Flow pressure**, and **E electric field** contain near-zero SHAP impact scores, confirming they can be safely pruned to reduce model training complexity.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Visual Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Archit Somayajula. Engineered with Explainable AI &amp; JS Canvas.</p>
+            <div class="footer-socials">
+                <a href="https://linkedin.com/in/archit-somayajula" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="mailto:sdsarchit2000@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dedicated XAI Javascript -->
+    <script src="xai.js"></script>
+</body>
+</html>

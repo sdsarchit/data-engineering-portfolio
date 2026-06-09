@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETL Ingestion Console | Archit Somayajula Portfolio</title>
+    
+    <!-- Modern Typography & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styling Sheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Premium Ambient Glow Vectors -->
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+
+    <!-- Sticky Navigation Header -->
+        <header class="main-header">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-bracket">&lt;</span>
+                <span class="logo-text">Archit.DE</span>
+                <span class="logo-bracket">/&gt;</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html#about" class="nav-link ">About</a>
+                <a href="index.html#skills" class="nav-link ">Skills</a>
+                <a href="index.html#projects" class="nav-link ">Projects</a>
+                <a href="pipeline.html" class="nav-link active"><i class="fa-solid fa-terminal"></i> ETL Console</a>
+                <a href="dashboard.html" class="nav-link "><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
+                <a href="architecture.html" class="nav-link "><i class="fa-solid fa-network-wired"></i> Architecture Map</a>
+                <a href="xai.html" class="nav-link "><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="mailto:sdsarchit2000@gmail.com" class="nav-btn" aria-label="Contact"><i class="fa-regular fa-envelope"></i> <span class="contact-text">Contact</span></a>
+                <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Toggle Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const toggleBtn = document.getElementById("menu-toggle-btn");
+                const navLinks = document.querySelector(".nav-links");
+                if (toggleBtn && navLinks) {
+                    toggleBtn.addEventListener("click", () => {
+                        navLinks.classList.toggle("active");
+                        const icon = toggleBtn.querySelector("i");
+                        if (icon) {
+                            if (icon.classList.contains("fa-bars")) {
+                                icon.className = "fa-solid fa-xmark";
+                            } else {
+                                icon.className = "fa-solid fa-bars";
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    </header>
+
+    <main class="content-wrapper">
+        <section class="section pipeline-section">
+            <div class="section-title-wrap text-center">
+                <span class="section-subtitle">DATA ENGINEERING ENVIRONMENT</span>
+                <h2 class="section-heading">Local <span class="text-gradient">ETL Ingestion Engine</span></h2>
+                <p class="section-lead">Trigger the functional local ETL pipeline to extract, validate, clean, and store air quality indices from different regional coordinates.</p>
+            </div>
+
+            <!-- Pipeline Flow Diagram -->
+            <div class="pipeline-flow-container glass-card">
+                <h3 class="flow-title"><i class="fa-solid fa-network-wired text-cyan"></i> Data Ingestion &amp; Quality Flow Diagram</h3>
+                <div class="flow-steps">
+                    <div class="flow-step" id="flow-extract">
+                        <div class="flow-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+                        <span class="flow-label">1. API Extraction</span>
+                        <span class="flow-desc">Requests Open-Meteo JSON</span>
+                    </div>
+                    <div class="flow-connector"><i class="fa-solid fa-angles-right"></i></div>
+                    
+                    <div class="flow-step" id="flow-dq">
+                        <div class="flow-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <span class="flow-label">2. Discover DQ Engine</span>
+                        <span class="flow-desc">Null/Bound Check &amp; Quarantine</span>
+                    </div>
+                    <div class="flow-connector"><i class="fa-solid fa-angles-right"></i></div>
+                    
+                    <div class="flow-step" id="flow-transform">
+                        <div class="flow-icon"><i class="fa-solid fa-calculator"></i></div>
+                        <span class="flow-label">3. Pandas Transformations</span>
+                        <span class="flow-desc">Rolling 3-Hr Avg &amp; EPA AQI</span>
+                    </div>
+                    <div class="flow-connector"><i class="fa-solid fa-angles-right"></i></div>
+                    
+                    <div class="flow-step" id="flow-load">
+                        <div class="flow-icon"><i class="fa-solid fa-database"></i></div>
+                        <span class="flow-label">4. SQLite Storing</span>
+                        <span class="flow-desc">Processed &amp; Quarantine DB Tables</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pipeline-interactive-grid single-console-layout">
+                <!-- Trigger Panel -->
+                <div class="console-panel glass-card">
+                    <div class="widget-header">
+                        <span class="console-status-dot idle" id="console-status-dot"></span>
+                        <span class="widget-title" id="console-title">ETL Console: IDLE</span>
+                        <span class="console-timer" id="console-timer">0.0s</span>
+                    </div>
+                    
+                    <!-- Live Console Output -->
+                    <div class="console-body" id="console-logs">
+                        <div class="log-line system">[Ready] Click "Trigger ETL Ingestion" below to begin execution of the live pipeline.</div>
+                        <div class="log-line system">Standard configuration: Ingests 3 regional coordinates + simulated anomalies.</div>
+                    </div>
+                    
+                    <div class="console-actions">
+                        <button class="btn btn-primary btn-block" id="btn-run-pipeline">
+                            <i class="fa-solid fa-bolt"></i> Trigger ETL Ingestion
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dedicated Completion Prompt Redirect to Dashboard -->
+            <div id="completion-prompt-card" class="completion-prompt-card glass-card" style="display: none;">
+                <div class="prompt-icon-wrapper"><i class="fa-solid fa-circle-check text-green"></i></div>
+                <div class="prompt-body">
+                    <h3>ETL Data Pipeline Completed Successfully!</h3>
+                    <p>Processed clean rows committed to <strong>processed_metrics</strong> table, and blocked data spikes isolated in <strong>quarantine_records</strong> table inside SQLite database.</p>
+                </div>
+                <a href="dashboard.html" class="btn btn-primary"><i class="fa-solid fa-chart-line"></i> View Ingested Dashboard Analytics <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Visual Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Archit Somayajula. Engineered with SQLite REST API.</p>
+            <div class="footer-socials">
+                <a href="https://linkedin.com/in/archit-somayajula" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="mailto:sdsarchit2000@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dedicated Console Javascript -->
+    <script src="pipeline.js"></script>
+</body>
+</html>

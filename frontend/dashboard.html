@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analytics Dashboard | Archit Somayajula Portfolio</title>
+    
+    <!-- Modern Typography & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styling Sheet -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Chart.js for Data Visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Premium Ambient Glow Vectors -->
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+    <div class="glow-sphere sphere-3"></div>
+
+    <!-- Sticky Navigation Header -->
+        <header class="main-header">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-bracket">&lt;</span>
+                <span class="logo-text">Archit.DE</span>
+                <span class="logo-bracket">/&gt;</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html#about" class="nav-link ">About</a>
+                <a href="index.html#skills" class="nav-link ">Skills</a>
+                <a href="index.html#projects" class="nav-link ">Projects</a>
+                <a href="pipeline.html" class="nav-link "><i class="fa-solid fa-terminal"></i> ETL Console</a>
+                <a href="dashboard.html" class="nav-link active"><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
+                <a href="architecture.html" class="nav-link "><i class="fa-solid fa-network-wired"></i> Architecture Map</a>
+                <a href="xai.html" class="nav-link "><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="mailto:sdsarchit2000@gmail.com" class="nav-btn" aria-label="Contact"><i class="fa-regular fa-envelope"></i> <span class="contact-text">Contact</span></a>
+                <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Toggle Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const toggleBtn = document.getElementById("menu-toggle-btn");
+                const navLinks = document.querySelector(".nav-links");
+                if (toggleBtn && navLinks) {
+                    toggleBtn.addEventListener("click", () => {
+                        navLinks.classList.toggle("active");
+                        const icon = toggleBtn.querySelector("i");
+                        if (icon) {
+                            if (icon.classList.contains("fa-bars")) {
+                                icon.className = "fa-solid fa-xmark";
+                            } else {
+                                icon.className = "fa-solid fa-bars";
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    </header>
+
+    <main class="content-wrapper">
+        <section class="section dashboard-section">
+            <div class="section-title-wrap text-center">
+                <span class="section-subtitle">SQLITE REAL-TIME INSIGHTS</span>
+                <h2 class="section-heading">Data Engineering <span class="text-gradient">Analytics Dashboard</span></h2>
+                <p class="section-lead">Explore cleansed analytical databases and audit isolated anomaly rows captured in the quarantine table.</p>
+            </div>
+
+            <!-- Dashboard Empty State (shown if DB not seeded) -->
+            <div id="dashboard-empty-state" class="dashboard-empty-card glass-card" style="display: none;">
+                <div class="empty-icon-wrapper"><i class="fa-solid fa-database text-cyan"></i></div>
+                <h3>Analytics Database is Empty</h3>
+                <p>The local SQLite database has not been seeded yet. Please run the ingestion job from the ETL console to pull weather and air indices.</p>
+                <a href="pipeline.html" class="btn btn-primary"><i class="fa-solid fa-terminal"></i> Go to Ingestion Console</a>
+            </div>
+
+            <!-- Core Dashboard Content -->
+            <div id="dashboard-core-content">
+                <!-- Live Metrics KPI Cards -->
+                <div class="metrics-dashboard-grid dashboard-page-metrics">
+                    <div class="metric-card glass-card">
+                        <span class="metric-label"><i class="fa-solid fa-chart-simple text-cyan"></i> Cleansed Records</span>
+                        <h3 class="metric-value text-cyan" id="metric-processed">0</h3>
+                        <span class="metric-trend text-green"><i class="fa-solid fa-circle-check"></i> Analytical Ready</span>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <span class="metric-label"><i class="fa-solid fa-triangle-exclamation text-yellow"></i> Quarantined Entries</span>
+                        <h3 class="metric-value text-yellow" id="metric-quarantined">0</h3>
+                        <span class="metric-trend text-yellow" id="metric-quarantine-status"><i class="fa-solid fa-shield"></i> DQ Engine Guard</span>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <span class="metric-label"><i class="fa-solid fa-heartpulse text-green"></i> Pipeline Health</span>
+                        <h3 class="metric-value text-green" id="metric-health">100%</h3>
+                        <span class="metric-trend text-green"><i class="fa-solid fa-circle-check"></i> Zero Aborts</span>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <span class="metric-label"><i class="fa-solid fa-file-invoice text-purple"></i> Local SQLite Size</span>
+                        <h3 class="metric-value text-purple" id="metric-dbsize">0 KB</h3>
+                        <span class="metric-trend text-purple"><i class="fa-solid fa-hard-drive"></i> data.db Storage</span>
+                    </div>
+                </div>
+
+                <!-- Visualization Dashboard & Quarantine Table -->
+                <div class="dashboard-visualization-grid">
+                    <!-- Chart 1: PM2.5 Ingestion History -->
+                    <div class="chart-container-card glass-card">
+                        <h3 class="chart-title"><i class="fa-solid fa-chart-line text-cyan"></i> Ingested Hourly PM2.5 &amp; 3-Hour Rolling Average</h3>
+                        <div class="city-selector-tabs" id="city-selector-tabs">
+                            <!-- Rendered via JS -->
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="timeSeriesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: AQI Index Distribution -->
+                    <div class="chart-container-card glass-card">
+                        <h3 class="chart-title"><i class="fa-solid fa-chart-pie text-purple"></i> EPA Air Quality Categories Distribution</h3>
+                        <div class="chart-wrapper pie-chart-wrapper">
+                            <canvas id="aqiBreakdownChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Quarantine Explorer (Discover Financial Skill demonstration) -->
+                    <div class="quarantine-explorer-card glass-card">
+                        <div class="explorer-header">
+                            <h3><i class="fa-solid fa-biohazard text-yellow"></i> DQ Quarantine Records Viewer (Discover Financial Framework)</h3>
+                            <span class="quarantine-badge" id="quarantine-badge-count">0 Anomalies Blocked</span>
+                        </div>
+                        <p class="explorer-desc">The Data Quality Rule Engine actively inspects schema types, non-negativity parameters, and outlier constraints. Flagged rows are partitioned into isolation storage for audit review.</p>
+                        <div class="table-wrapper">
+                            <table class="quarantine-table">
+                                <thead>
+                                    <tr>
+                                        <th>Region / City</th>
+                                        <th>Data Timestamp</th>
+                                        <th>DQ Failure Reason</th>
+                                        <th>Raw Payload Violation Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quarantine-table-rows">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Refresh Prompt link -->
+                <div class="refresh-prompt-wrap text-center">
+                    <p class="text-secondary">Need to ingest fresh real-time weather metrics? <a href="pipeline.html" class="text-cyan font-bold">Go to Ingestion Console <i class="fa-solid fa-arrow-right"></i></a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Visual Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 Archit Somayajula. Engineered with SQLite REST API.</p>
+            <div class="footer-socials">
+                <a href="https://linkedin.com/in/archit-somayajula" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="mailto:sdsarchit2000@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dedicated Dashboard Javascript -->
+    <script src="dashboard.js"></script>
+</body>
+</html>

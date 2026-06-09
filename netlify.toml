@@ -1,0 +1,5 @@
+# Netlify Configuration File
+# Publishes the frontend directory directly when deploying from a Git Repository
+
+[build]
+  publish = "frontend"
