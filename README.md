@@ -1,5 +1,7 @@
 # Enterprise Data Engineering Portfolio & Interactive ETL Sandbox
 
+### 🌐 Live Portfolio URL: [https://archit-de-portfolio-8902.web.app](https://archit-de-portfolio-8902.web.app)
+
 A modern, full-stack multi-page portfolio application showcasing production-grade Data Engineering capabilities, live interactive pipelines, analytics dashboards, system maps, and academic research.
 
 This project is built using a secure frontend design (HTML, CSS, JavaScript) backed by a Python Flask REST API server processing automated data quality rule validations and SQLite data warehousing.
