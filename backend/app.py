@@ -7,8 +7,9 @@ from flask_cors import CORS
 from pipeline import ETLPipeline
 
 app = Flask(__name__)
-# Enable CORS for frontend accessibility (localhost:8000 or similar)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# Enable CORS with restricted origins in production (fallback to * in dev)
+allowed_origins = os.environ.get("ALLOWED_ORIGIN", "*")
+CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
 @app.after_request
 def add_header(response):
@@ -180,5 +181,12 @@ def get_quarantine_records():
     return jsonify(records)
 
 if __name__ == "__main__":
-    print(f"Starting Local API Server on http://127.0.0.1:5000 (Database: {DB_PATH})")
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    # Hardened environment and debug configurations
+    flask_env = os.environ.get("FLASK_ENV", "production")
+    debug_mode = (flask_env == "development")
+    
+    # Restrict to localhost during local development for network security
+    host_ip = "127.0.0.1" if debug_mode else "0.0.0.0"
+    
+    print(f"Starting API Server - Mode: {flask_env.upper()} (Host: {host_ip}, Debug: {debug_mode}, Database: {DB_PATH})")
+    app.run(host=host_ip, port=5000, debug=debug_mode)

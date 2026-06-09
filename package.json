@@ -1,0 +1,14 @@
+{
+  "name": "data-engineering-portfolio",
+  "version": "1.0.0",
+  "description": "Protected production deployment for Archit Somayajula Portfolio",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "clean-css": "^5.3.3",
+    "html-minifier-terser": "^7.2.0",
+    "javascript-obfuscator": "^4.1.1"
+  }
+}

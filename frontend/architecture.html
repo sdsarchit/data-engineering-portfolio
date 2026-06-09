@@ -17,6 +17,10 @@
     <!-- Chart.js for API Latency Sandbox -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- Security & Obfuscated JS modules -->
+    <script src="security.js"></script>
+    <script src="menu.js"></script>
+
     <style>
         /* Interactive Architecture Visual Flow Diagram */
         .arch-map-wrapper {
@@ -464,25 +468,6 @@
                 </button>
             </div>
         </div>
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                const toggleBtn = document.getElementById("menu-toggle-btn");
-                const navLinks = document.querySelector(".nav-links");
-                if (toggleBtn && navLinks) {
-                    toggleBtn.addEventListener("click", () => {
-                        navLinks.classList.toggle("active");
-                        const icon = toggleBtn.querySelector("i");
-                        if (icon) {
-                            if (icon.classList.contains("fa-bars")) {
-                                icon.className = "fa-solid fa-xmark";
-                            } else {
-                                icon.className = "fa-solid fa-bars";
-                            }
-                        }
-                    });
-                }
-            });
-        </script>
     </header>
 
     <main class="content-wrapper">

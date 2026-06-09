@@ -19,3 +19,8 @@ backend/data.db-journal
 # OS files
 .DS_Store
 Thumbs.db
+
+# Node dependencies & distribution folders
+node_modules/
+dist/
+

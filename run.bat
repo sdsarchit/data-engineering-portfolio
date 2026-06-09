@@ -132,6 +132,7 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":5000" ^| findstr "LISTENING
 for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8000" ^| findstr "LISTENING"') do taskkill /f /pid %%a >nul 2>nul
 
 echo Starting Flask Backend API on http://localhost:5000...
+set "FLASK_ENV=development"
 start "Flask-Backend-API" "%PYTHON_EXEC%" backend\app.py
 
 echo Starting Frontend Web Portal Server on http://localhost:8000...
