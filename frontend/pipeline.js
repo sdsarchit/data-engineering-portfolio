@@ -6,7 +6,7 @@
 // Dynamic backend API URL: auto-detects local testing, otherwise fallback to custom cloud deployment
 const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
     ? "http://127.0.0.1:5000/api"
-    : "https://your-data-pipeline-backend.onrender.com/api"; // Replace with your hosted backend URL when ready
+    : "https://archit-de-portfolio-8902.uc.r.appspot.com/api"; // Replace with your hosted backend URL when ready
 
 let logPollingInterval = null;
 let elapsedTimerInterval = null;

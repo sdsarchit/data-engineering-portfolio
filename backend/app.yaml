@@ -10,6 +10,6 @@ entrypoint: gunicorn -b :$PORT app:app
 env_variables:
   FLASK_ENV: "production"
   
-  # NOTE: Replace 'archit-de-portfolio' with your actual Firebase Hosting project ID
+  # NOTE: Replace with your actual Firebase Hosting project ID
   # to restrict cross-origin API calls exclusively to your frontend domain.
-  ALLOWED_ORIGIN: "https://archit-de-portfolio.web.app"
+  ALLOWED_ORIGIN: "https://archit-de-portfolio-8902.web.app"
