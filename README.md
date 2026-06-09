@@ -170,26 +170,3 @@ For public deployment, GCP hosts the secure frontend (`dist/` folder) and backen
 
 ---
 
-## 🐙 How to Upload to GitHub
-
-Follow these steps to store your portfolio source code on GitHub:
-
-1. Log in to [GitHub](https://github.com/) and create a new, empty repository named `data-engineering-portfolio` (do **not** initialize it with a README, license, or `.gitignore` since they are already preconfigured in this directory).
-2. Copy your repository URL (e.g., `https://github.com/username/data-engineering-portfolio.git`).
-3. Open your terminal in this workspace folder and run:
-   ```bash
-   # Add your GitHub repository as the remote origin
-   git remote add origin https://github.com/username/data-engineering-portfolio.git
-
-   # Rename the default branch to main
-   git branch -M main
-
-   # Push your code to GitHub
-   git push -u origin main
-   ```
-4. On future edits, you can push changes to GitHub by running:
-   ```bash
-   git add .
-   git commit -m "Update portfolio assets"
-   git push
-   ```
