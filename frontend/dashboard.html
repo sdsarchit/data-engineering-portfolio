@@ -69,78 +69,174 @@
                 <a href="pipeline.html" class="btn btn-primary"><i class="fa-solid fa-terminal"></i> Go to Ingestion Console</a>
             </div>
 
+            <!-- Dashboard Mode Navigation Tabs -->
+            <div class="dashboard-tabs-wrap" style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2.5rem;">
+                <button class="btn btn-primary" id="tab-weather">
+                    <i class="fa-solid fa-cloud-sun"></i> Weather Analytics
+                </button>
+                <button class="btn btn-secondary" id="tab-custom">
+                    <i class="fa-solid fa-file-invoice"></i> Custom File Profiler
+                </button>
+            </div>
+
             <!-- Core Dashboard Content -->
             <div id="dashboard-core-content">
-                <!-- Live Metrics KPI Cards -->
-                <div class="metrics-dashboard-grid dashboard-page-metrics">
-                    <div class="metric-card glass-card">
-                        <span class="metric-label"><i class="fa-solid fa-chart-simple text-cyan"></i> Cleansed Records</span>
-                        <h3 class="metric-value text-cyan" id="metric-processed">0</h3>
-                        <span class="metric-trend text-green"><i class="fa-solid fa-circle-check"></i> Analytical Ready</span>
-                    </div>
-                    <div class="metric-card glass-card">
-                        <span class="metric-label"><i class="fa-solid fa-triangle-exclamation text-yellow"></i> Quarantined Entries</span>
-                        <h3 class="metric-value text-yellow" id="metric-quarantined">0</h3>
-                        <span class="metric-trend text-yellow" id="metric-quarantine-status"><i class="fa-solid fa-shield"></i> DQ Engine Guard</span>
-                    </div>
-                    <div class="metric-card glass-card">
-                        <span class="metric-label"><i class="fa-solid fa-heartpulse text-green"></i> Pipeline Health</span>
-                        <h3 class="metric-value text-green" id="metric-health">100%</h3>
-                        <span class="metric-trend text-green"><i class="fa-solid fa-circle-check"></i> Zero Aborts</span>
-                    </div>
-                    <div class="metric-card glass-card">
-                        <span class="metric-label"><i class="fa-solid fa-file-invoice text-purple"></i> Local SQLite Size</span>
-                        <h3 class="metric-value text-purple" id="metric-dbsize">0 KB</h3>
-                        <span class="metric-trend text-purple"><i class="fa-solid fa-hard-drive"></i> data.db Storage</span>
-                    </div>
-                </div>
-
-                <!-- Visualization Dashboard & Quarantine Table -->
-                <div class="dashboard-visualization-grid">
-                    <!-- Chart 1: PM2.5 Ingestion History -->
-                    <div class="chart-container-card glass-card">
-                        <h3 class="chart-title"><i class="fa-solid fa-chart-line text-cyan"></i> Ingested Hourly PM2.5 &amp; 3-Hour Rolling Average</h3>
-                        <div class="city-selector-tabs" id="city-selector-tabs">
-                            <!-- Rendered via JS -->
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="timeSeriesChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Chart 2: AQI Index Distribution -->
-                    <div class="chart-container-card glass-card">
-                        <h3 class="chart-title"><i class="fa-solid fa-chart-pie text-purple"></i> EPA Air Quality Categories Distribution</h3>
-                        <div class="chart-wrapper pie-chart-wrapper">
-                            <canvas id="aqiBreakdownChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Detailed Quarantine Explorer (Discover Financial Skill demonstration) -->
-                    <div class="quarantine-explorer-card glass-card">
-                        <div class="explorer-header">
-                            <h3><i class="fa-solid fa-biohazard text-yellow"></i> DQ Quarantine Records Viewer (Discover Financial Framework)</h3>
-                            <span class="quarantine-badge" id="quarantine-badge-count">0 Anomalies Blocked</span>
-                        </div>
-                        <p class="explorer-desc">The Data Quality Rule Engine actively inspects schema types, non-negativity parameters, and outlier constraints. Flagged rows are partitioned into isolation storage for audit review.</p>
-                        <div class="table-wrapper">
-                            <table class="quarantine-table">
-                                <thead>
-                                    <tr>
-                                        <th>Region / City</th>
-                                        <th>Data Timestamp</th>
-                                        <th>DQ Failure Reason</th>
-                                        <th>Raw Payload Violation Details</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="quarantine-table-rows">
-                                    <!-- Populated dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
                 
+                <!-- Wrapper for Weather Ingestion Dashboard -->
+                <div id="weather-dashboard-wrapper">
+                    <!-- Live Metrics KPI Cards -->
+                    <div class="metrics-dashboard-grid dashboard-page-metrics">
+                        <div class="metric-card glass-card">
+                            <span class="metric-label"><i class="fa-solid fa-chart-simple text-cyan"></i> Cleansed Records</span>
+                            <h3 class="metric-value text-cyan" id="metric-processed">0</h3>
+                            <span class="metric-trend text-green"><i class="fa-solid fa-circle-check"></i> Analytical Ready</span>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <span class="metric-label"><i class="fa-solid fa-triangle-exclamation text-yellow"></i> Quarantined Entries</span>
+                            <h3 class="metric-value text-yellow" id="metric-quarantined">0</h3>
+                            <span class="metric-trend text-yellow" id="metric-quarantine-status"><i class="fa-solid fa-shield"></i> DQ Engine Guard</span>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <span class="metric-label"><i class="fa-solid fa-heartpulse text-green"></i> Pipeline Health</span>
+                            <h3 class="metric-value text-green" id="metric-health">100%</h3>
+                            <span class="metric-trend text-green"><i class="fa-solid fa-circle-check"></i> Zero Aborts</span>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <span class="metric-label"><i class="fa-solid fa-file-invoice text-purple"></i> Local SQLite Size</span>
+                            <h3 class="metric-value text-purple" id="metric-dbsize">0 KB</h3>
+                            <span class="metric-trend text-purple"><i class="fa-solid fa-hard-drive"></i> data.db Storage</span>
+                        </div>
+                    </div>
+
+                    <!-- Visualization Dashboard & Quarantine Table -->
+                    <div class="dashboard-visualization-grid">
+                        <!-- Chart 1: PM2.5 Ingestion History -->
+                        <div class="chart-container-card glass-card">
+                            <h3 class="chart-title"><i class="fa-solid fa-chart-line text-cyan"></i> Ingested Hourly PM2.5 &amp; 3-Hour Rolling Average</h3>
+                            <div class="city-selector-tabs" id="city-selector-tabs">
+                                <!-- Rendered via JS -->
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="timeSeriesChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 2: AQI Index Distribution -->
+                        <div class="chart-container-card glass-card">
+                            <h3 class="chart-title"><i class="fa-solid fa-chart-pie text-purple"></i> EPA Air Quality Categories Distribution</h3>
+                            <div class="chart-wrapper pie-chart-wrapper">
+                                <canvas id="aqiBreakdownChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Quarantine Explorer -->
+                        <div class="quarantine-explorer-card glass-card">
+                            <div class="explorer-header">
+                                <h3><i class="fa-solid fa-biohazard text-yellow"></i> DQ Quarantine Records Viewer (Discover Financial Framework)</h3>
+                                <span class="quarantine-badge" id="quarantine-badge-count">0 Anomalies Blocked</span>
+                            </div>
+                            <p class="explorer-desc">The Data Quality Rule Engine actively inspects schema types, non-negativity parameters, and outlier constraints. Flagged rows are partitioned into isolation storage for audit review.</p>
+                            <div class="table-wrapper">
+                                <table class="quarantine-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Region / City</th>
+                                            <th>Data Timestamp</th>
+                                            <th>DQ Failure Reason</th>
+                                            <th>Raw Payload Violation Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="quarantine-table-rows">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wrapper for Custom File Profiler Dashboard -->
+                <div id="custom-dashboard-wrapper" style="display: none;">
+                    <!-- Custom Metrics KPI Cards -->
+                    <div class="metrics-dashboard-grid dashboard-page-metrics">
+                        <div class="metric-card glass-card">
+                            <span class="metric-label"><i class="fa-solid fa-database text-cyan"></i> Row Count</span>
+                            <h3 class="metric-value text-cyan" id="custom-metric-rows">0</h3>
+                            <span class="metric-trend text-green"><i class="fa-solid fa-circle-check"></i> Cleaned &amp; Loaded</span>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <span class="metric-label"><i class="fa-solid fa-table-columns text-yellow"></i> Columns Profiler</span>
+                            <h3 class="metric-value text-yellow" id="custom-metric-cols">0</h3>
+                            <span class="metric-trend text-yellow"><i class="fa-solid fa-list"></i> SQL Standardized Schema</span>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <span class="metric-label"><i class="fa-solid fa-circle-minus text-green"></i> Anomalies Repaired</span>
+                            <h3 class="metric-value text-green" id="custom-metric-nulls">0</h3>
+                            <span class="metric-trend text-green"><i class="fa-solid fa-wand-magic-sparkles"></i> Nulls Imputed</span>
+                        </div>
+                        <div class="metric-card glass-card">
+                            <span class="metric-label"><i class="fa-solid fa-file text-purple"></i> Ingested Source</span>
+                            <h3 class="metric-value text-purple" id="custom-metric-filename" style="font-size: 1.3rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px;">None</h3>
+                            <span class="metric-trend text-purple" id="custom-metric-date"><i class="fa-solid fa-clock"></i> Ingest Date</span>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Chart & Query Assistant -->
+                    <div class="dashboard-visualization-grid">
+                        <!-- Dynamic Chart Builder -->
+                        <div class="chart-container-card glass-card">
+                            <h3 class="chart-title"><i class="fa-solid fa-chart-line text-cyan"></i> Dynamic Chart Builder</h3>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div class="dropdown-control-group" style="flex: 1;">
+                                    <label for="chart-x-col" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 0.4rem; display: block;">X-Axis (Label Column)</label>
+                                    <select id="chart-x-col" class="select-input"></select>
+                                </div>
+                                <div class="dropdown-control-group" style="flex: 1;">
+                                    <label for="chart-y-col" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 0.4rem; display: block;">Y-Axis (Value Column)</label>
+                                    <select id="chart-y-col" class="select-input"></select>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="customDynamicChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Natural Language Query Assistant / Agentic AI UI -->
+                        <div class="chart-container-card glass-card" style="display: flex; flex-direction: column;">
+                            <h3 class="chart-title"><i class="fa-solid fa-robot text-purple"></i> AI Data Assistant Agent</h3>
+                            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4;">Ask questions about your uploaded dataset in plain English. The agent translates your prompt into SQLite queries instantly.</p>
+                            
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                <input type="text" id="agent-query-input" class="select-input" placeholder="e.g. show average value..." style="flex: 1; padding: 0.6rem 0.8rem; font-size: 0.85rem;">
+                                <button class="btn btn-primary" id="btn-submit-query" style="padding: 0.6rem 1.2rem;"><i class="fa-solid fa-paper-plane"></i></button>
+                            </div>
+
+                            <div id="agent-response-box" style="flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.8rem; min-height: 160px; max-height: 180px;">
+                                <div style="color: var(--text-muted); font-style: italic;">Agent idle. Ask a question above to trigger analytical query.</div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Data Explorer Table -->
+                        <div class="quarantine-explorer-card glass-card">
+                            <div class="explorer-header">
+                                <h3><i class="fa-solid fa-table-list text-cyan"></i> Cleansed Analytical Data Explorer</h3>
+                                <span class="quarantine-badge" id="custom-rows-count-badge" style="background-color: rgba(14, 165, 233, 0.1); border-color: rgba(14, 165, 233, 0.2); color: var(--accent-cyan);">0 Rows</span>
+                            </div>
+                            <p class="explorer-desc">Explore the clean database table directly. Shows the first 50 rows from the analytical storage layer.</p>
+                            <div class="table-wrapper">
+                                <table class="quarantine-table">
+                                    <thead id="custom-table-head">
+                                        <!-- Populated dynamically -->
+                                    </thead>
+                                    <tbody id="custom-table-rows">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Refresh Prompt link -->
                 <div class="refresh-prompt-wrap text-center">
                     <p class="text-secondary">Need to ingest fresh real-time weather metrics? <a href="pipeline.html" class="text-cyan font-bold">Go to Ingestion Console <i class="fa-solid fa-arrow-right"></i></a></p>

@@ -12,13 +12,114 @@ let logPollingInterval = null;
 let elapsedTimerInterval = null;
 let executionStartTime = null;
 
+let selectedFile = null;
+
 document.addEventListener("DOMContentLoaded", () => {
-    // Wire up Ingestion Trigger button
-    const runBtn = document.getElementById("btn-run-pipeline");
-    if (runBtn) {
-        runBtn.addEventListener("click", handleRunPipeline);
+    // Mode toggles
+    const btnModePreset = document.getElementById("btn-mode-preset");
+    const btnModeUpload = document.getElementById("btn-mode-upload");
+    const uploadContainer = document.getElementById("upload-pipeline-container");
+    const btnRunPreset = document.getElementById("btn-run-pipeline");
+    const btnRunUpload = document.getElementById("btn-upload-run");
+    const consoleLogs = document.getElementById("console-logs");
+    
+    if (btnModePreset && btnModeUpload) {
+        btnModePreset.addEventListener("click", () => {
+            btnModePreset.className = "btn btn-primary";
+            btnModeUpload.className = "btn btn-secondary";
+            if (uploadContainer) uploadContainer.style.display = "none";
+            if (btnRunPreset) btnRunPreset.style.display = "block";
+            if (btnRunUpload) btnRunUpload.style.display = "none";
+            
+            consoleLogs.innerHTML = `
+                <div class="log-line system">[Ready] Click "Trigger ETL Ingestion" below to begin execution of the live pipeline.</div>
+                <div class="log-line system">Standard configuration: Ingests 3 regional coordinates + simulated anomalies.</div>
+            `;
+        });
+        
+        btnModeUpload.addEventListener("click", () => {
+            btnModePreset.className = "btn btn-secondary";
+            btnModeUpload.className = "btn btn-primary";
+            if (uploadContainer) uploadContainer.style.display = "block";
+            if (btnRunPreset) btnRunPreset.style.display = "none";
+            if (btnRunUpload) btnRunUpload.style.display = "block";
+            
+            consoleLogs.innerHTML = `
+                <div class="log-line system">[Ready] Select a CSV or JSON file above, then click "Run Custom Profiler & Load".</div>
+            `;
+        });
+    }
+
+    // Uploader controls
+    const fileInput = document.getElementById("file-uploader-input");
+    const btnSelectFile = document.getElementById("btn-select-file");
+    const selectedFileBadge = document.getElementById("selected-file-badge");
+    const selectedFileName = document.getElementById("selected-file-name");
+    const btnClearFile = document.getElementById("btn-clear-file");
+    
+    if (btnSelectFile && fileInput) {
+        btnSelectFile.addEventListener("click", (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+        fileInput.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelection(e.target.files[0]);
+            }
+        });
+    }
+    
+    if (uploadContainer) {
+        uploadContainer.addEventListener("click", () => {
+            if (fileInput) fileInput.click();
+        });
+        uploadContainer.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            uploadContainer.style.borderColor = "var(--accent-cyan)";
+            uploadContainer.style.backgroundColor = "rgba(14, 165, 233, 0.05)";
+        });
+        uploadContainer.addEventListener("dragleave", () => {
+            uploadContainer.style.borderColor = "var(--border-color)";
+            uploadContainer.style.backgroundColor = "transparent";
+        });
+        uploadContainer.addEventListener("drop", (e) => {
+            e.preventDefault();
+            uploadContainer.style.borderColor = "var(--border-color)";
+            uploadContainer.style.backgroundColor = "transparent";
+            if (e.dataTransfer.files.length > 0) {
+                handleFileSelection(e.dataTransfer.files[0]);
+            }
+        });
+    }
+    
+    if (btnClearFile) {
+        btnClearFile.addEventListener("click", (e) => {
+            e.stopPropagation();
+            selectedFile = null;
+            if (fileInput) fileInput.value = "";
+            if (selectedFileBadge) selectedFileBadge.style.display = "none";
+        });
+    }
+
+    // Wire up Run buttons
+    if (btnRunPreset) {
+        btnRunPreset.addEventListener("click", handleRunPipeline);
+    }
+    if (btnRunUpload) {
+        btnRunUpload.addEventListener("click", handleUploadRun);
     }
 });
+
+function handleFileSelection(file) {
+    const selectedFileBadge = document.getElementById("selected-file-badge");
+    const selectedFileName = document.getElementById("selected-file-name");
+    
+    selectedFile = file;
+    if (selectedFileBadge && selectedFileName) {
+        selectedFileName.innerText = file.name;
+        selectedFileBadge.style.display = "inline-flex";
+    }
+}
 
 /* ==========================================================================
    Ingestion Log Poller & Terminal Monitor
@@ -374,4 +475,279 @@ function saveMockDataToLocalStorage() {
     ];
     
     localStorage.setItem("sim_quarantine_records", JSON.stringify(qData));
+}
+
+async function handleUploadRun() {
+    const btnRunUpload = document.getElementById("btn-upload-run");
+    const consoleDot = document.getElementById("console-status-dot");
+    const consoleTitle = document.getElementById("console-title");
+    const consoleLogs = document.getElementById("console-logs");
+    const promptCard = document.getElementById("completion-prompt-card");
+    
+    if (!selectedFile) {
+        alert("Please upload/select a file first!");
+        return;
+    }
+    
+    if (btnRunUpload.classList.contains("disabled")) return;
+    
+    // UI state adjustments
+    btnRunUpload.classList.add("disabled");
+    btnRunUpload.disabled = true;
+    consoleDot.className = "console-status-dot running";
+    consoleTitle.innerText = "ETL Console: RUNNING (UPLOAD)";
+    if (promptCard) promptCard.style.display = "none";
+    
+    // Reset flowchart nodes
+    resetFlowNodes();
+    
+    consoleLogs.innerHTML = `<div class="log-line system">[Upload] Uploading file to analytics engine: ${selectedFile.name} (${(selectedFile.size / 1024).toFixed(1)} KB)...</div>`;
+    
+    executionStartTime = Date.now();
+    startElapsedTimer();
+    
+    try {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        
+        const response = await fetch(`${API_BASE}/pipeline/upload`, {
+            method: "POST",
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.status === 200 || response.status === 202) {
+            consoleLogs.innerHTML += `<div class="log-line success">[Backend] File uploaded. Spawning analysis pipeline...</div>`;
+            logPollingInterval = setInterval(pollUploadLogs, 500);
+        } else {
+            stopElapsedTimer();
+            consoleLogs.innerHTML += `<div class="log-line error">[Abort] Failed to analyze file: ${data.message}</div>`;
+            resetTerminalUI("failed", "ETL Console: FAILED");
+        }
+    } catch (err) {
+        consoleLogs.innerHTML += `<div class="log-line warning">[Mixed-Content Block / Offline] Cloud environment or offline local backend detected.</div>`;
+        consoleLogs.innerHTML += `<div class="log-line system">[Simulator] Reading file locally for client-side ETL simulation...</div>`;
+        consoleLogs.scrollTop = consoleLogs.scrollHeight;
+        
+        // Start simulation flow
+        setTimeout(runClientSideFileParser, 1000);
+    }
+}
+
+// Log Polling for upload status
+async function pollUploadLogs() {
+    const consoleLogs = document.getElementById("console-logs");
+    const btnRunUpload = document.getElementById("btn-upload-run");
+    
+    try {
+        const cacheBuster = `_=${Date.now()}`;
+        const response = await fetch(`${API_BASE}/pipeline/upload/status?${cacheBuster}`);
+        const data = await response.json();
+        
+        const newLogs = data.logs || [];
+        
+        if (newLogs.length > 0) {
+            consoleLogs.innerHTML = "";
+            newLogs.forEach(line => {
+                let cssClass = "";
+                if (line.includes("STAGE")) cssClass = "stage";
+                else if (line.includes("Successfully") || line.includes("completed") || line.includes("successfully")) cssClass = "success";
+                else if (line.includes("Error") || line.includes("FAILED")) cssClass = "error";
+                else if (line.includes("Warning") || line.includes("anomalies") || line.includes("Dropped") || line.includes("Filled")) cssClass = "warning";
+                
+                consoleLogs.innerHTML += `<div class="log-line ${cssClass}">${line}</div>`;
+            });
+            
+            consoleLogs.scrollTop = consoleLogs.scrollHeight;
+            updateFlowChartAnimation(newLogs);
+        }
+        
+        if (data.status === "COMPLETED" || data.status === "FAILED") {
+            clearInterval(logPollingInterval);
+            stopElapsedTimer();
+            
+            btnRunUpload.classList.remove("disabled");
+            btnRunUpload.disabled = false;
+            
+            const stateClass = data.status.toLowerCase();
+            resetTerminalUI(stateClass, `ETL Console: ${data.status}`);
+            
+            if (data.status === "COMPLETED") {
+                completeFlowChartNodes();
+                // Save state to indicate we have a dynamic dataset loaded
+                localStorage.setItem("using_custom_dataset", "true");
+                
+                const promptCard = document.getElementById("completion-prompt-card");
+                if (promptCard) {
+                    promptCard.style.display = "flex";
+                    promptCard.scrollIntoView({ behavior: "smooth" });
+                }
+            } else {
+                quarantineFlowChartNodes();
+            }
+        }
+    } catch (err) {
+        clearInterval(logPollingInterval);
+        stopElapsedTimer();
+        consoleLogs.innerHTML += `<div class="log-line error">[Error Polling] Connection lost to Flask API server.</div>`;
+        resetTerminalUI("failed", "ETL Console: INTERRUPTED");
+    }
+}
+
+function runClientSideFileParser() {
+    const consoleLogs = document.getElementById("console-logs");
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        
+        // Simulating step-by-step logs
+        const logs = [];
+        logs.push("Initializing Client-Side Data Ingestion Parser...");
+        logs.push(`STAGE 1: EXTRACTION - Reading uploaded file content: ${selectedFile.name}`);
+        
+        try {
+            let rows = [];
+            let columns = [];
+            let totalNulls = 0;
+            
+            if (selectedFile.name.endsWith(".json")) {
+                const parsed = JSON.parse(text);
+                rows = Array.isArray(parsed) ? parsed : [parsed];
+                if (rows.length > 0) {
+                    columns = Object.keys(rows[0]);
+                }
+            } else {
+                // Parse CSV
+                const lines = text.split("\n").map(l => l.trim()).filter(l => l);
+                if (lines.length > 0) {
+                    columns = lines[0].split(",").map(c => c.trim().replace(/^["']|["']$/g, ''));
+                    for (let i = 1; i < lines.length; i++) {
+                        const values = lines[i].split(",").map(v => v.trim().replace(/^["']|["']$/g, ''));
+                        if (values.length === columns.length) {
+                            const row = {};
+                            columns.forEach((col, index) => {
+                                row[col] = values[index];
+                            });
+                            rows.push(row);
+                        }
+                    }
+                }
+            }
+            
+            logs.push(`Successfully extracted ${rows.length} rows and ${columns.length} columns.`);
+            logs.push("STAGE 2: DATA QUALITY & PROFILING - Analyzing schema rules...");
+            
+            // Check null values
+            const columnTypes = {};
+            const cleanColumns = columns.map(col => col.replace(/[^a-zA-Z0-9_]/g, '_'));
+            
+            // Standardize rows columns keys
+            const cleanRows = rows.map(r => {
+                const cleanRow = {};
+                columns.forEach((col, idx) => {
+                    const val = r[col];
+                    if (val === "" || val === undefined || val === null || val.toLowerCase() === "null" || val.toLowerCase() === "na") {
+                        totalNulls++;
+                    }
+                    cleanRow[cleanColumns[idx]] = val;
+                });
+                return cleanRow;
+            });
+            
+            logs.push(`Analyzed null value profiles. Found ${totalNulls} empty/null values across columns.`);
+            
+            // Map types
+            cleanColumns.forEach(col => {
+                const sampleVal = cleanRows[0] ? cleanRows[0][col] : "";
+                if (!isNaN(sampleVal) && sampleVal !== "") {
+                    columnTypes[col] = "number";
+                } else if (col.toLowerCase().includes("date") || col.toLowerCase().includes("time")) {
+                    columnTypes[col] = "date";
+                } else {
+                    columnTypes[col] = "string";
+                }
+            });
+            
+            logs.push(`Data types mapped. Numerical columns: ${cleanColumns.filter(c => columnTypes[c] === 'number').length}, String columns: ${cleanColumns.filter(c => columnTypes[c] === 'string').length}.`);
+            logs.push("STAGE 3: TRANSFORMATION - Cleansing data...");
+            logs.push("Standardized column headers to SQL-compliant names.");
+            
+            // Impute nulls
+            cleanColumns.forEach(col => {
+                cleanRows.forEach(r => {
+                    const val = r[col];
+                    if (val === "" || val === undefined || val === null || val.toLowerCase() === "null" || val.toLowerCase() === "na") {
+                        if (columnTypes[col] === "number") {
+                            r[col] = "0"; // Mock median
+                        } else {
+                            r[col] = "N/A";
+                        }
+                    }
+                });
+            });
+            
+            logs.push("Filled null values in columns with defaults (0 for numerical, N/A for strings).");
+            logs.push("STAGE 4: LOADING - Storing clean dataset in LocalStorage...");
+            logs.push("ETL Job successfully loaded into database. Ready for visualization.");
+            
+            let logIdx = 0;
+            
+            function printUploadSimulationLog() {
+                if (logIdx < logs.length) {
+                    const line = logs[logIdx];
+                    const timestamp = new Date().toLocaleTimeString();
+                    const fullLine = `[${timestamp}] ${line}`;
+                    
+                    let cssClass = "";
+                    if (line.includes("STAGE")) cssClass = "stage";
+                    else if (line.includes("Successfully") || line.includes("completed") || line.includes("successfully")) cssClass = "success";
+                    else if (line.includes("Error") || line.includes("FAILED")) cssClass = "error";
+                    else if (line.includes("Warning") || line.includes("anomalies") || line.includes("Dropped") || line.includes("Filled")) cssClass = "warning";
+                    
+                    consoleLogs.innerHTML += `<div class="log-line ${cssClass}">${fullLine}</div>`;
+                    consoleLogs.scrollTop = consoleLogs.scrollHeight;
+                    
+                    // Highlight flow chart nodes
+                    updateFlowChartAnimation(logs.slice(0, logIdx + 1));
+                    
+                    logIdx++;
+                    setTimeout(printUploadSimulationLog, 250);
+                } else {
+                    stopElapsedTimer();
+                    resetTerminalUI("completed", "ETL Console: COMPLETED (SIM)");
+                    completeFlowChartNodes();
+                    
+                    // Save to LocalStorage
+                    localStorage.setItem("using_custom_dataset", "true");
+                    localStorage.setItem("dynamic_metadata", JSON.stringify({
+                        filename: selectedFile.name,
+                        row_count: cleanRows.length,
+                        col_count: cleanColumns.length,
+                        total_nulls_cleaned: totalNulls,
+                        columns: cleanColumns,
+                        column_types: columnTypes,
+                        ingested_at: new Date().toISOString()
+                    }));
+                    localStorage.setItem("dynamic_rows", JSON.stringify(cleanRows));
+                    
+                    const promptCard = document.getElementById("completion-prompt-card");
+                    if (promptCard) {
+                        promptCard.style.display = "flex";
+                        promptCard.scrollIntoView({ behavior: "smooth" });
+                    }
+                }
+            }
+            
+            printUploadSimulationLog();
+            
+        } catch (ex) {
+            stopElapsedTimer();
+            consoleLogs.innerHTML += `<div class="log-line error">[Abort] Simulation failed: ${ex.message}</div>`;
+            resetTerminalUI("failed", "ETL Console: FAILED");
+        }
+    };
+    
+    reader.readAsText(selectedFile);
 }

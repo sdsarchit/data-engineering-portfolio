@@ -13,7 +13,54 @@ let chartDataCache = null;
 let timeSeriesChartInstance = null;
 let aqiChartInstance = null;
 
+let customChartInstance = null;
+let dynamicDataCache = null;
+
 document.addEventListener("DOMContentLoaded", () => {
+    // Top-level Dashboard Tab Toggles
+    const tabWeather = document.getElementById("tab-weather");
+    const tabCustom = document.getElementById("tab-custom");
+    const weatherWrapper = document.getElementById("weather-dashboard-wrapper");
+    const customWrapper = document.getElementById("custom-dashboard-wrapper");
+    
+    if (tabWeather && tabCustom) {
+        tabWeather.addEventListener("click", () => {
+            tabWeather.className = "btn btn-primary";
+            tabCustom.className = "btn btn-secondary";
+            if (weatherWrapper) weatherWrapper.style.display = "block";
+            if (customWrapper) customWrapper.style.display = "none";
+            fetchCurrentDashboardState();
+        });
+        
+        tabCustom.addEventListener("click", () => {
+            tabWeather.className = "btn btn-secondary";
+            tabCustom.className = "btn btn-primary";
+            if (weatherWrapper) weatherWrapper.style.display = "none";
+            if (customWrapper) customWrapper.style.display = "block";
+            loadDynamicDashboard();
+        });
+    }
+
+    // Submit AI Query
+    const btnSubmitQuery = document.getElementById("btn-submit-query");
+    const queryInput = document.getElementById("agent-query-input");
+    if (btnSubmitQuery) {
+        btnSubmitQuery.addEventListener("click", handleAgentQuery);
+    }
+    if (queryInput) {
+        queryInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") handleAgentQuery();
+        });
+    }
+
+    // Chart Selectors
+    const selX = document.getElementById("chart-x-col");
+    const selY = document.getElementById("chart-y-col");
+    if (selX && selY) {
+        selX.addEventListener("change", renderCustomDynamicChart);
+        selY.addEventListener("change", renderCustomDynamicChart);
+    }
+
     fetchCurrentDashboardState();
 });
 
@@ -333,8 +380,299 @@ function loadSimulationDashboard(emptyState, coreContent) {
             breakdown[item.aqi_category] = (breakdown[item.aqi_category] || 0) + 1;
         });
         
-        chartDataCache = series;
-        renderTimeSeriesChart();
         renderAqiBreakdownChart(breakdown);
     }
+}
+
+async function loadDynamicDashboard() {
+    const tableBody = document.getElementById("custom-table-rows");
+    
+    // Check if custom dataset was uploaded locally or if backend is available
+    try {
+        const cacheBuster = `_=${Date.now()}`;
+        const response = await fetch(`${API_BASE}/dynamic/stats?${cacheBuster}`);
+        const data = await response.json();
+        
+        if (data.status === "SUCCESS") {
+            const meta = data.metadata;
+            dynamicDataCache = {
+                metadata: meta,
+                rows: data.rows,
+                summaries: data.summaries
+            };
+            populateCustomDashboardUI(dynamicDataCache);
+            return;
+        }
+    } catch (err) {
+        console.warn("Backend offline. Loading custom dataset from client-side localStorage...");
+    }
+    
+    // Client-side local storage fallback
+    if (localStorage.getItem("using_custom_dataset") === "true") {
+        const meta = JSON.parse(localStorage.getItem("dynamic_metadata") || "{}");
+        const rows = JSON.parse(localStorage.getItem("dynamic_rows") || "[]");
+        
+        dynamicDataCache = {
+            metadata: meta,
+            rows: rows,
+            summaries: {}
+        };
+        populateCustomDashboardUI(dynamicDataCache);
+    } else {
+        // Show empty message in table
+        if (tableBody) {
+            tableBody.innerHTML = `<tr><td colspan="100%" class="text-center text-muted" style="padding: 3rem 0;">No custom files ingested yet. Please go to the ETL Ingestion Console and upload a CSV/JSON dataset first.</td></tr>`;
+        }
+    }
+}
+
+function populateCustomDashboardUI(data) {
+    const meta = data.metadata;
+    const rows = data.rows;
+    
+    // Set KPIs
+    document.getElementById("custom-metric-rows").innerText = meta.row_count.toLocaleString();
+    document.getElementById("custom-metric-cols").innerText = meta.col_count.toLocaleString();
+    document.getElementById("custom-metric-nulls").innerText = meta.total_nulls_cleaned.toLocaleString();
+    document.getElementById("custom-metric-filename").innerText = meta.filename;
+    
+    const ingestDate = new Date(meta.ingested_at).toLocaleString();
+    document.getElementById("custom-metric-date").innerHTML = `<i class="fa-solid fa-clock"></i> Ingested: ${ingestDate}`;
+    
+    document.getElementById("custom-rows-count-badge").innerText = `${meta.row_count} Rows Loaded`;
+    
+    // Populate Dropdowns
+    const selX = document.getElementById("chart-x-col");
+    const selY = document.getElementById("chart-y-col");
+    if (selX && selY) {
+        const prevX = selX.value;
+        const prevY = selY.value;
+        
+        selX.innerHTML = "";
+        selY.innerHTML = "";
+        
+        meta.columns.forEach(col => {
+            selX.innerHTML += `<option value="${col}">${col}</option>`;
+            const colType = meta.column_types[col];
+            if (colType === "number") {
+                selY.innerHTML += `<option value="${col}">${col}</option>`;
+            }
+        });
+        
+        // Restore values if available
+        if (prevX && meta.columns.includes(prevX)) selX.value = prevX;
+        if (prevY && meta.columns.includes(prevY)) {
+            selY.value = prevY;
+        } else if (selY.options.length > 0) {
+            selY.selectedIndex = 0;
+        }
+    }
+    
+    // Build Data Explorer Table
+    const tableHead = document.getElementById("custom-table-head");
+    const tableBody = document.getElementById("custom-table-rows");
+    
+    if (tableHead && tableBody) {
+        tableHead.innerHTML = "<tr>" + meta.columns.map(c => `<th>${c}</th>`).join("") + "</tr>";
+        
+        tableBody.innerHTML = "";
+        const limitRows = rows.slice(0, 50);
+        
+        if (limitRows.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="${meta.columns.length}" class="text-center text-muted">Empty dataset table.</td></tr>`;
+        } else {
+            limitRows.forEach(r => {
+                const cells = meta.columns.map(c => {
+                    let val = r[c];
+                    if (val === undefined || val === null) val = "";
+                    return `<td>${escapeHtml(String(val))}</td>`;
+                }).join("");
+                tableBody.innerHTML += `<tr>${cells}</tr>`;
+            });
+        }
+    }
+    
+    renderCustomDynamicChart();
+}
+
+function renderCustomDynamicChart() {
+    const selX = document.getElementById("chart-x-col");
+    const selY = document.getElementById("chart-y-col");
+    const canvas = document.getElementById("customDynamicChart");
+    if (!selX || !selY || !canvas || !dynamicDataCache) return;
+    
+    const colX = selX.value;
+    const colY = selY.value;
+    if (!colX || !colY) return;
+    
+    const rows = dynamicDataCache.rows;
+    const labels = rows.map(r => String(r[colX]).slice(0, 15)); // truncate for spacing
+    const values = rows.map(r => parseFloat(r[colY]) || 0);
+    
+    const ctx = canvas.getContext("2d");
+    if (customChartInstance) {
+        customChartInstance.destroy();
+    }
+    
+    const barGradient = ctx.createLinearGradient(0, 0, 0, 200);
+    barGradient.addColorStop(0, "rgba(14, 165, 233, 0.6)");
+    barGradient.addColorStop(1, "rgba(14, 165, 233, 0.05)");
+    
+    customChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: `${colY} by ${colX}`,
+                data: values,
+                backgroundColor: barGradient,
+                borderColor: "#0ea5e9",
+                borderWidth: 2,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: "#94a3b8", font: { family: "Space Grotesk" } }
+                },
+                tooltip: {
+                    backgroundColor: "#0d1118",
+                    borderColor: "rgba(255,255,255,0.08)",
+                    borderWidth: 1,
+                    titleColor: "#0ea5e9"
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: "rgba(255, 255, 255, 0.02)" },
+                    ticks: { color: "#94a3b8", font: { family: "Space Grotesk", size: 9 } }
+                },
+                y: {
+                    grid: { color: "rgba(255, 255, 255, 0.02)" },
+                    ticks: { color: "#94a3b8", font: { family: "Space Grotesk" } }
+                }
+            }
+        }
+    });
+}
+
+async function handleAgentQuery() {
+    const input = document.getElementById("agent-query-input");
+    const responseBox = document.getElementById("agent-response-box");
+    if (!input || !responseBox || !dynamicDataCache) return;
+    
+    const query = input.value.trim();
+    if (!query) return;
+    
+    responseBox.innerHTML = `
+        <div style="color: var(--accent-cyan);"><i class="fa-solid fa-spinner fa-spin"></i> Parsing NLP prompt...</div>
+    `;
+    input.value = "";
+    
+    try {
+        const response = await fetch(`${API_BASE}/dynamic/query`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: query })
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === "SUCCESS") {
+            const sqlQuery = data.sql;
+            const res = data.results[0];
+            
+            responseBox.innerHTML = `
+                <div style="color: var(--accent-purple); font-weight: bold;"><i class="fa-solid fa-code"></i> Generated SQL Query:</div>
+                <div style="background: rgba(0,0,0,0.5); padding: 0.5rem; border-radius: 4px; margin-bottom: 0.8rem; border: 1px solid var(--border-color); color: #a5f3fc; font-size: 0.78rem; word-break: break-all;">${sqlQuery}</div>
+                <div style="color: var(--accent-green); font-weight: bold;"><i class="fa-solid fa-list-check"></i> Query Output:</div>
+                <div style="padding-left: 0.5rem; color: #f1f5f9; font-size: 0.95rem;">${formatQueryResult(res)}</div>
+            `;
+            return;
+        }
+    } catch (err) {
+        console.warn("Backend offline. Executing client-side SQL simulation...");
+    }
+    
+    // Offline / Local Simulation Mode
+    simulateClientSideAgentQuery(query, responseBox);
+}
+
+function formatQueryResult(res) {
+    if (!res) return "No results returned.";
+    const keys = Object.keys(res);
+    return keys.map(k => `<strong>${k}:</strong> ${res[k]}`).join(" | ");
+}
+
+function simulateClientSideAgentQuery(query, responseBox) {
+    const q = query.toLowerCase();
+    const rows = dynamicDataCache.rows;
+    const meta = dynamicDataCache.metadata;
+    const columns = meta.columns;
+    
+    // Find column from query
+    let col = null;
+    for (let c of columns) {
+        if (q.includes(c.toLowerCase())) {
+            col = c;
+            break;
+        }
+    }
+    
+    let answer = "";
+    let sql = "";
+    
+    if (q.includes("average") || q.includes("avg") || q.includes("mean")) {
+        if (col) {
+            const vals = rows.map(r => parseFloat(r[col]) || 0);
+            const avg = vals.reduce((a, b) => a + b, 0) / Math.max(1, vals.length);
+            sql = `SELECT AVG(${col}) as average_${col} FROM dynamic_processed_data`;
+            answer = `Average value of <strong>${col}</strong> is: <strong>${avg.toFixed(2)}</strong>`;
+        } else {
+            answer = "Please mention a numerical column name in your query (e.g. average speed).";
+        }
+    } else if (q.includes("max") || q.includes("highest") || q.includes("maximum")) {
+        if (col) {
+            const vals = rows.map(r => parseFloat(r[col]) || 0);
+            const max = Math.max(...vals);
+            sql = `SELECT MAX(${col}) as max_${col} FROM dynamic_processed_data`;
+            answer = `Maximum value of <strong>${col}</strong> is: <strong>${max}</strong>`;
+        } else {
+            answer = "Please mention a column name in your query.";
+        }
+    } else if (q.includes("min") || q.includes("lowest") || q.includes("minimum")) {
+        if (col) {
+            const vals = rows.map(r => parseFloat(r[col]) || 0);
+            const min = Math.min(...vals);
+            sql = `SELECT MIN(${col}) as min_${col} FROM dynamic_processed_data`;
+            answer = `Minimum value of <strong>${col}</strong> is: <strong>${min}</strong>`;
+        } else {
+            answer = "Please mention a column name in your query.";
+        }
+    } else if (q.includes("sum") || q.includes("total")) {
+        if (col) {
+            const vals = rows.map(r => parseFloat(r[col]) || 0);
+            const sum = vals.reduce((a, b) => a + b, 0);
+            sql = `SELECT SUM(${col}) as total_${col} FROM dynamic_processed_data`;
+            answer = `Sum total of <strong>${col}</strong> is: <strong>${sum.toFixed(2)}</strong>`;
+        } else {
+            answer = "Please specify a numerical column name.";
+        }
+    } else if (q.includes("count") || q.includes("how many") || q.includes("rows")) {
+        sql = `SELECT COUNT(*) as count FROM dynamic_processed_data`;
+        answer = `Total record count in dataset is: <strong>${rows.length} rows</strong>`;
+    } else {
+        sql = `SELECT * FROM dynamic_processed_data LIMIT 5`;
+        answer = `I found <strong>${rows.length} records</strong>. Try asking "what is average [column]", "maximum [column]" or "total count".`;
+    }
+    
+    responseBox.innerHTML = `
+        <div style="color: var(--accent-purple); font-weight: bold;"><i class="fa-solid fa-code"></i> Generated SQL Query (Simulated):</div>
+        <div style="background: rgba(0,0,0,0.5); padding: 0.5rem; border-radius: 4px; margin-bottom: 0.8rem; border: 1px solid var(--border-color); color: #a5f3fc; font-size: 0.78rem; word-break: break-all;">${sql}</div>
+        <div style="color: var(--accent-green); font-weight: bold;"><i class="fa-solid fa-list-check"></i> Query Output:</div>
+        <div style="padding-left: 0.5rem; color: #f1f5f9; font-size: 0.95rem;">${answer}</div>
+    `;
 }

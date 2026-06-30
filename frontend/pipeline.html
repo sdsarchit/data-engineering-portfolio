@@ -90,6 +90,29 @@
                 </div>
             </div>
 
+            <!-- Pipeline Mode Selector -->
+            <div class="pipeline-selector-wrap" style="display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2.5rem;">
+                <button class="btn btn-primary" id="btn-mode-preset">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> Preset API Ingestion
+                </button>
+                <button class="btn btn-secondary" id="btn-mode-upload">
+                    <i class="fa-solid fa-file-upload"></i> Custom File Profiler
+                </button>
+            </div>
+
+            <!-- Custom File Upload Container (Hidden by default) -->
+            <div id="upload-pipeline-container" class="glass-card" style="display: none; padding: 3rem; text-align: center; border: 2px dashed var(--border-color); margin-bottom: 2.5rem; border-radius: 12px; transition: var(--transition-smooth); cursor: pointer;">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--accent-cyan); margin-bottom: 1rem;"></i>
+                <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Drag &amp; Drop CSV or JSON File</h4>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">or click to browse local files (Supports CSV, JSON)</p>
+                <input type="file" id="file-uploader-input" accept=".csv,.json" style="display: none;">
+                <button class="btn btn-secondary" id="btn-select-file">Browse Files</button>
+                <div id="selected-file-badge" style="display: none; margin-top: 1.5rem; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.95rem; color: var(--accent-cyan);">
+                    <i class="fa-solid fa-file-lines"></i> <span id="selected-file-name">data.csv</span>
+                    <button id="btn-clear-file" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.2rem;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+
             <div class="pipeline-interactive-grid single-console-layout">
                 <!-- Trigger Panel -->
                 <div class="console-panel glass-card">
@@ -108,6 +131,9 @@
                     <div class="console-actions">
                         <button class="btn btn-primary btn-block" id="btn-run-pipeline">
                             <i class="fa-solid fa-bolt"></i> Trigger ETL Ingestion
+                        </button>
+                        <button class="btn btn-primary btn-block" id="btn-upload-run" style="display: none;">
+                            <i class="fa-solid fa-play"></i> Run Custom Profiler &amp; Load
                         </button>
                     </div>
                 </div>
