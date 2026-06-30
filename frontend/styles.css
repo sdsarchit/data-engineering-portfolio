@@ -1,21 +1,21 @@
 /* ==========================================================================
    ARCHIT SOMAYAJULA PORTFOLIO STYLING SHEET
-   Custom Vanilla CSS: Premium Neon Dark Mode & Glassmorphic Data Dashboard
+   Custom Vanilla CSS: Clean, Structured Data Platform Theme
    ========================================================================== */
 
 :root {
-    --bg-dark: #0a0e17;
-    --bg-card: rgba(15, 23, 42, 0.75);
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-glow: rgba(14, 165, 233, 0.15);
+    --bg-dark: #0f172a;                              /* Professional Slate Dark Background */
+    --bg-card: #1e293b;                              /* Flat Slate Card Background */
+    --border-color: #334155;                         /* Clean Slate Border */
+    --border-glow: rgba(56, 189, 248, 0.2);
     
-    /* Modern Data Architect / Cloud Data Warehouse Palettes */
-    --accent-cyan: hsl(199, 89%, 48%);              /* Cloud Teal/Blue (Snowflake) */
-    --accent-cyan-glow: hsla(199, 89%, 48%, 0.35);
-    --accent-purple: hsl(24, 95%, 53%);             /* Spark Orange (Databricks) */
-    --accent-purple-glow: hsla(24, 95%, 53%, 0.35);
-    --accent-green: hsl(142, 70%, 45%);             /* Healthy Ingest Green */
-    --accent-yellow: hsl(45, 93%, 47%);            /* Quarantine Gold */
+    /* Modern Data Architect Brand Colors */
+    --accent-cyan: #0ea5e9;                          /* Steel Blue */
+    --accent-cyan-glow: rgba(14, 165, 233, 0.15);
+    --accent-purple: #f97316;                        /* Brand Orange */
+    --accent-purple-glow: rgba(249, 115, 22, 0.15);
+    --accent-green: #10b981;                         /* Green */
+    --accent-yellow: #f59e0b;                        /* Gold */
     --text-primary: #f8fafc;
     --text-secondary: #cbd5e1;
     --text-muted: #64748b;
@@ -26,7 +26,7 @@
     --font-mono: 'Consolas', 'Courier New', monospace;
     
     /* Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --transition-smooth: all 0.2s ease-in-out;
 }
 
 /* Global Reset & Base Styling */
@@ -67,12 +67,7 @@ body {
 
 /* Background Ambient Lighting Spheres */
 .glow-sphere {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(140px);
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0.35;
+    display: none;
 }
 .sphere-1 {
     top: 5%;
@@ -255,23 +250,21 @@ body {
 }
 .text-center { text-align: center; }
 .text-gradient {
-    background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--accent-cyan);
 }
 
-/* Glassmorphic Components */
+/* Flat Professional Card Components */
 .glass-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
     transition: var(--transition-smooth);
 }
 .glass-card:hover {
-    border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-color: rgba(14, 165, 233, 0.3);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 /* Button UI */
@@ -289,14 +282,14 @@ body {
     border: none;
 }
 .btn-primary {
-    background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
-    color: #07090e;
-    box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
+    background-color: var(--accent-cyan);
+    color: #ffffff;
+    box-shadow: none;
 }
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 242, 254, 0.4);
-    filter: brightness(1.1);
+    background-color: #0284c7;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
 }
 .btn-secondary {
     background-color: rgba(255, 255, 255, 0.05);
@@ -2406,50 +2399,6 @@ body {
     .paper-summary-grid {
         grid-template-columns: 1fr;
     }
-}
-
-/* ==========================================================================
-   FUTURISTIC NASA HUD & CONTROL CONSOLE THEME
-   ========================================================================== */
-
-/* Technical background grid overlay */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: -2;
-    pointer-events: none;
-}
-
-/* Glowing Neon Card Outlines */
-.glass-card {
-    position: relative;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-}
-
-.glass-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: inherit;
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    pointer-events: none;
-    transition: var(--transition-smooth);
-}
-
-.glass-card:hover::before {
-    border-color: rgba(14, 165, 233, 0.2);
-    box-shadow: inset 0 0 10px rgba(14, 165, 233, 0.05);
 }
 
 /* Futuristic Slider Skins */
