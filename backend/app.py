@@ -208,6 +208,76 @@ dynamic_upload_state = {
     "logs": []
 }
 
+class RAGSchemaResolver:
+    """
+    RAG (Retrieval-Augmented Generation) Column Schema Resolver.
+    Maps natural language concept requests to database schema columns dynamically
+    using TF-IDF-like semantic synonym expansion.
+    """
+    def __init__(self, columns, column_types, sample_rows=None):
+        self.columns = columns
+        self.column_types = column_types
+        self.sample_rows = sample_rows or []
+        self.index = self._build_semantic_index()
+
+    def _build_semantic_index(self):
+        # Semantic mapping index for RAG concepts
+        semantic_dictionary = {
+            "time": ["date", "time", "timestamp", "year", "month", "hour", "created_at", "updated_at", "timeline", "clock", "chronological"],
+            "location": ["city", "region", "town", "location", "country", "state", "place", "area", "address", "geographic", "lat", "lon", "coordinates"],
+            "quantity": ["quantity", "count", "amount", "number", "total", "sum", "size", "volume"],
+            "financial": ["price", "cost", "revenue", "sales", "profit", "income", "charge", "fee", "tax", "dollar"],
+            "metric": ["value", "reading", "index", "pm25", "pm10", "score", "rate", "speed", "temp", "temperature", "humidity", "weather", "dust"]
+        }
+        
+        index = []
+        for col in self.columns:
+            col_lower = col.lower()
+            related_terms = [col_lower]
+            for category, keywords in semantic_dictionary.items():
+                if col_lower == category or any(kw in col_lower for kw in keywords):
+                    related_terms.extend(keywords)
+                    related_terms.append(category)
+            
+            sample_vals = []
+            for row in self.sample_rows[:5]:
+                if col in row and row[col] is not None:
+                    sample_vals.append(str(row[col]))
+            
+            index.append({
+                "column": col,
+                "type": self.column_types.get(col, "string"),
+                "terms": list(set(related_terms)),
+                "samples": sample_vals
+            })
+        return index
+
+    def retrieve_relevant_column(self, query):
+        q_words = re.findall(r"\w+", query.lower())
+        best_col = None
+        highest_score = 0
+        
+        for doc in self.index:
+            score = 0
+            for q_word in q_words:
+                if q_word in doc["column"].lower():
+                    score += 10 # Substring match
+                for term in doc["terms"]:
+                    if q_word == term:
+                        score += 5 # Synonym match
+                    elif q_word in term or term in q_word:
+                        score += 2
+            
+            if "average" in query.lower() or "mean" in query.lower() or "sum" in query.lower():
+                if doc["type"] == "number":
+                    score += 3
+                    
+            if score > highest_score:
+                highest_score = score
+                best_col = doc["column"]
+                
+        return best_col
+
 @app.route("/api/pipeline/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
@@ -369,10 +439,65 @@ def get_upload_status():
         "logs": dynamic_upload_state["logs"]
     })
 
+def seed_preset_into_dynamic():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Check if dynamic metadata already exists
+    cursor.execute("SELECT 1 FROM dynamic_metadata_registry WHERE key = 'latest_metadata'")
+    if cursor.fetchone():
+        conn.close()
+        return
+        
+    # Check if preset weather data exists in processed_metrics
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='processed_metrics'")
+    if not cursor.fetchone():
+        conn.close()
+        return
+        
+    try:
+        df = pd.read_sql("SELECT * FROM processed_metrics", conn)
+        if df.empty:
+            conn.close()
+            return
+            
+        df.to_sql("dynamic_processed_data", conn, if_exists="replace", index=False)
+        
+        # Save registry metadata
+        from datetime import datetime
+        metadata = {
+            "filename": "Preset Weather API Stream",
+            "row_count": len(df),
+            "col_count": len(df.columns),
+            "total_nulls_cleaned": 0,
+            "columns": list(df.columns),
+            "column_types": {
+                "city": "string",
+                "timestamp": "date",
+                "pm2_5": "number",
+                "pm2_5_rolling_avg": "number",
+                "aqi_category": "string"
+            },
+            "ingested_at": datetime.now().isoformat()
+        }
+        
+        cursor.execute(
+            "INSERT OR REPLACE INTO dynamic_metadata_registry (key, value) VALUES ('latest_metadata', ?)",
+            (json.dumps(metadata),)
+        )
+        conn.commit()
+    except Exception as e:
+        print(f"Error seeding preset weather: {str(e)}")
+        
+    conn.close()
+
 @app.route("/api/dynamic/stats", methods=["GET"])
 def get_dynamic_stats():
     if not os.path.exists(DB_PATH):
         return jsonify({"status": "EMPTY", "message": "No database found."})
+        
+    # Seed preset data if no custom upload exists yet
+    seed_preset_into_dynamic()
         
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -433,12 +558,14 @@ def query_dynamic_data():
     where_clause = ""
     limit_clause = " LIMIT 10"
     
-    # 1. Detect target column
-    target_col = None
-    for col in columns:
-        if col.lower() in q:
-            target_col = col
-            break
+    # 1. Dynamically retrieve best matching column using RAG Schema Resolver
+    # Query first few rows as sample data to feed semantic index
+    cursor.execute("SELECT * FROM dynamic_processed_data LIMIT 5")
+    sample_headers = [desc[0] for desc in cursor.description]
+    sample_rows = [dict(zip(sample_headers, r)) for r in cursor.fetchall()]
+    
+    resolver = RAGSchemaResolver(columns, col_types, sample_rows)
+    target_col = resolver.retrieve_relevant_column(query_str)
             
     # 2. Match Aggregation
     is_agg = False
@@ -463,14 +590,17 @@ def query_dynamic_data():
         is_agg = True
         
     # 3. Match Filter (Simple "where region equals East" or "city = Painesville")
+    # Resolve semantic column name in filters using RAG resolver
     for col in columns:
         col_lower = col.lower()
-        pattern = rf"{col_lower}\s*(?:is|=|==|equals)\s*([\w\s\-\.,]+)"
-        match = re.search(pattern, q)
-        if match:
-            val = match.group(1).strip().replace("'", "").replace('"', '')
-            where_clause = f" WHERE {col} = '{val}'"
-            break
+        pattern = rf"([\w_]+)\s*(?:is|=|==|equals)\s*([\w\s\-\.,]+)"
+        for match in re.finditer(pattern, q):
+            filter_concept = match.group(1).strip()
+            filter_val = match.group(2).strip().replace("'", "").replace('"', '')
+            matched_filter_col = resolver.retrieve_relevant_column(filter_concept)
+            if matched_filter_col == col:
+                where_clause = f" WHERE {col} = '{filter_val}'"
+                break
             
     sql = f"SELECT {select_clause} FROM dynamic_processed_data{where_clause}"
     if not is_agg and "limit" not in q:

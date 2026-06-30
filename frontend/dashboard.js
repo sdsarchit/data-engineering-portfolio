@@ -418,6 +418,30 @@ async function loadDynamicDashboard() {
             summaries: {}
         };
         populateCustomDashboardUI(dynamicDataCache);
+    } else if (localStorage.getItem("sim_processed_metrics")) {
+        const cleanData = JSON.parse(localStorage.getItem("sim_processed_metrics") || "[]");
+        const meta = {
+            filename: "Preset Weather Simulator (Offline)",
+            row_count: cleanData.length,
+            col_count: 5,
+            total_nulls_cleaned: 0,
+            columns: ["city", "timestamp", "pm2_5", "pm2_5_rolling_avg", "aqi_category"],
+            column_types: {
+                city: "string",
+                timestamp: "date",
+                pm2_5: "number",
+                pm2_5_rolling_avg: "number",
+                aqi_category: "string"
+            },
+            ingested_at: new Date().toISOString()
+        };
+        
+        dynamicDataCache = {
+            metadata: meta,
+            rows: cleanData,
+            summaries: {}
+        };
+        populateCustomDashboardUI(dynamicDataCache);
     } else {
         // Show empty message in table
         if (tableBody) {
@@ -613,14 +637,9 @@ function simulateClientSideAgentQuery(query, responseBox) {
     const meta = dynamicDataCache.metadata;
     const columns = meta.columns;
     
-    // Find column from query
-    let col = null;
-    for (let c of columns) {
-        if (q.includes(c.toLowerCase())) {
-            col = c;
-            break;
-        }
-    }
+    // Dynamically retrieve column using client-side RAG Schema Resolver
+    const resolver = new RAGSchemaResolver(columns, meta.column_types, rows);
+    const col = resolver.retrieveRelevantColumn(q);
     
     let answer = "";
     let sql = "";
@@ -675,4 +694,76 @@ function simulateClientSideAgentQuery(query, responseBox) {
         <div style="color: var(--accent-green); font-weight: bold;"><i class="fa-solid fa-list-check"></i> Query Output:</div>
         <div style="padding-left: 0.5rem; color: #f1f5f9; font-size: 0.95rem;">${answer}</div>
     `;
+}
+
+class RAGSchemaResolver {
+    constructor(columns, columnTypes, sampleRows) {
+        this.columns = columns;
+        this.columnTypes = columnTypes;
+        this.sampleRows = sampleRows || [];
+        this.index = this.buildSemanticIndex();
+    }
+
+    buildSemanticIndex() {
+        const semanticDictionary = {
+            "time": ["date", "time", "timestamp", "year", "month", "hour", "created_at", "updated_at", "timeline", "clock", "chronological"],
+            "location": ["city", "region", "town", "location", "country", "state", "place", "area", "address", "geographic", "lat", "lon", "coordinates"],
+            "quantity": ["quantity", "count", "amount", "number", "total", "sum", "size", "volume"],
+            "financial": ["price", "cost", "revenue", "sales", "profit", "income", "charge", "fee", "tax", "dollar"],
+            "metric": ["value", "reading", "index", "pm25", "pm10", "score", "rate", "speed", "temp", "temperature", "humidity", "weather", "dust"]
+        };
+        
+        return this.columns.map(col => {
+            const colLower = col.toLowerCase();
+            const relatedTerms = [colLower];
+            
+            for (const [category, keywords] of Object.entries(semanticDictionary)) {
+                if (colLower === category || keywords.some(kw => colLower.includes(kw))) {
+                    relatedTerms.push(...keywords);
+                    relatedTerms.push(category);
+                }
+            }
+            
+            return {
+                column: col,
+                type: this.columnTypes[col] || "string",
+                terms: Array.from(new Set(relatedTerms))
+            };
+        });
+    }
+
+    retrieveRelevantColumn(query) {
+        const qWords = query.toLowerCase().match(/\w+/g) || [];
+        let bestCol = null;
+        let highestScore = 0;
+        
+        this.index.forEach(doc => {
+            let score = 0;
+            qWords.forEach(qWord => {
+                if (doc.column.toLowerCase().includes(qWord)) {
+                    score += 10;
+                }
+                doc.terms.forEach(term => {
+                    if (qWord === term) {
+                        score += 5;
+                    } else if (term.includes(qWord) || qWord.includes(term)) {
+                        score += 2;
+                    }
+                });
+            });
+            
+            if (query.includes("average") || query.includes("mean") || query.includes("sum")) {
+                if (doc.type === "number") {
+                    score += 3;
+                }
+            }
+            
+            if (score > highest_score) {
+                highest_score = score;
+                bestCol = doc.column;
+            }
+        });
+        
+        return bestCol;
+    }
 }
