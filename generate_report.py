@@ -446,9 +446,27 @@ env_variables:
     story.append(Spacer(1, 10))
 
     # ==========================================
-    # SECTION 7: GLOSSARY & DEFINITIONS
+    # SECTION 7: CUSTOM INGEST & RAG DASHBOARD
     # ==========================================
-    story.append(Paragraph("7. Data Engineering Glossary & Key Definitions", h1_style))
+    story.append(PageBreak())
+    story.append(Paragraph("7. Custom File Ingestion & Dynamic RAG Dashboard", h1_style))
+    story.append(Paragraph(
+        "To support generic dataset workflows, we implemented a custom file uploader and a RAG (Retrieval-Augmented "
+        "Generation) schema mapper on the Live Dashboard. This allows the portfolio to analyze, transform, and map "
+        "any CSV or JSON file dynamically.", body_style))
+    
+    story.append(Paragraph("Core Functionality & Flow Details", h2_style))
+    story.append(Paragraph("&bull; <b>Cleansing & Profiling</b>: Standardizes column headers to snake_case variables, drops empty columns, and imputes null values using numerical column medians or 'N/A' defaults.", bullet_style))
+    story.append(Paragraph("&bull; <b>RAG Column Resolver</b>: Maps natural language queries semantically. Matches user keywords (e.g. 'dust reading') to the target column names (e.g. 'pm2_5') using synonym weights.", bullet_style))
+    story.append(Paragraph("&bull; <b>AI SQL Assistant Chat</b>: An agentic chat panel where users query the dataset in plain English. The resolver automatically compiles SQL queries, runs them on SQLite, and prints responses.", bullet_style))
+    story.append(Paragraph("&bull; <b>Pre-seeded Preset</b>: Seeding weather data automatically into the custom workspace to enable immediate querying out-of-the-box.", bullet_style))
+    
+    story.append(Spacer(1, 10))
+
+    # ==========================================
+    # SECTION 8: GLOSSARY & DEFINITIONS
+    # ==========================================
+    story.append(Paragraph("8. Data Engineering Glossary & Key Definitions", h1_style))
     story.append(Paragraph("&bull; <b>ETL (Extract, Transform, Load)</b>: The core data integration process where data is read from sources, cleaned/aggregated, and loaded into databases.", bullet_style))
     story.append(Paragraph("&bull; <b>Data Quality (DQ) Rules Engine</b>: A validation framework that inspects incoming data packets against schema constraints (missing columns, null bounds) before writing to target storages.", bullet_style))
     story.append(Paragraph("&bull; <b>Quarantine Table</b>: A designated database table where records failing validation rules are isolated alongside detailed error metadata, preventing pipeline failures.", bullet_style))
