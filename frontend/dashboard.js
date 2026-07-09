@@ -529,9 +529,10 @@ function renderCustomDynamicChart() {
     const colY = selY.value;
     if (!colX || !colY) return;
     
-    const rows = dynamicDataCache.rows;
-    const labels = rows.map(r => String(r[colX]).slice(0, 15)); // truncate for spacing
-    const values = rows.map(r => parseFloat(r[colY]) || 0);
+    // Downsample chart data points to first 200 rows for high-performance rendering
+    const chartRows = dynamicDataCache.rows.slice(0, 200);
+    const labels = chartRows.map(r => String(r[colX]).slice(0, 15)); // truncate for spacing
+    const values = chartRows.map(r => parseFloat(r[colY]) || 0);
     
     const ctx = canvas.getContext("2d");
     if (customChartInstance) {
