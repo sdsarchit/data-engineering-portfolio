@@ -456,7 +456,7 @@ env_variables:
         "any CSV or JSON file dynamically.", body_style))
     
     story.append(Paragraph("Core Functionality & Flow Details", h2_style))
-    story.append(Paragraph("&bull; <b>Cleansing & Profiling</b>: Standardizes column headers to snake_case variables, drops empty columns, and imputes null values using numerical column medians or 'N/A' defaults.", bullet_style))
+    story.append(Paragraph("&bull; <b>Cleansing & Profiling</b>: Standardizes column headers, drops empty fields, and profiles data schemas using a hybrid PySpark and Pandas execution engine.", bullet_style))
     story.append(Paragraph("&bull; <b>RAG Column Resolver</b>: Maps natural language queries semantically. Matches user keywords (e.g. 'dust reading') to the target column names (e.g. 'pm2_5') using synonym weights.", bullet_style))
     story.append(Paragraph("&bull; <b>AI SQL Assistant Chat</b>: An agentic chat panel where users query the dataset in plain English. The resolver automatically compiles SQL queries, runs them on SQLite, and prints responses.", bullet_style))
     story.append(Paragraph("&bull; <b>Pre-seeded Preset</b>: Seeding weather data automatically into the custom workspace to enable immediate querying out-of-the-box.", bullet_style))
