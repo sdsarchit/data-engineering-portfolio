@@ -306,56 +306,119 @@ def upload_file():
     from datetime import datetime
     log_upload(f"STAGE 1: EXTRACTION - Reading uploaded file: {filename}")
     
+    row_count = 0
+    col_count = 0
+    total_nulls = 0
+    col_types = {}
+    df = None
+    
+    use_spark = False
     try:
-        # Stream the file directly to pandas and limit rows to 20,000
-        # This prevents Out-Of-Memory (OOM) crashes on GAE Standard F1 instances
-        uploaded_file.seek(0)
-        if ext == ".csv":
-            df = pd.read_csv(uploaded_file, nrows=20000)
-        else:
-            df = pd.read_json(uploaded_file)
-            if len(df) > 20000:
-                df = df.head(20000)
-            
-        row_count = len(df)
-        col_count = len(df.columns)
-        sample_suffix = " (sampled for performance)" if row_count >= 20000 else ""
-        log_upload(f"Successfully extracted {row_count} rows and {col_count} columns{sample_suffix}.")
+        from pyspark.sql import SparkSession
+        from pyspark.sql.functions import col
+        use_spark = True
+    except ImportError:
+        pass
         
-    except Exception as e:
-        log_upload(f"Error parsing file: {str(e)}")
-        dynamic_upload_state["status"] = "FAILED"
-        return jsonify({"status": "FAILED", "message": f"Parsing failed: {str(e)}"}), 400
-        
-    # Stage 2: Data Quality & Profiling
-    log_upload("STAGE 2: DATA QUALITY & PROFILING - Analyzing schema rules...")
-    try:
-        # Check nulls
-        null_counts = df.isnull().sum().to_dict()
-        total_nulls = sum(null_counts.values())
-        log_upload(f"Analyzed null value profiles. Found {total_nulls} empty/null values across columns.")
-        
-        # Profile data types
-        col_types = {}
-        numerical_cols = []
-        categorical_cols = []
-        for col in df.columns:
-            dtype = str(df[col].dtype)
-            if "int" in dtype or "float" in dtype:
-                col_types[col] = "number"
-                numerical_cols.append(col)
-            elif "datetime" in dtype or "date" in col.lower() or "time" in col.lower():
-                col_types[col] = "date"
-            else:
-                col_types[col] = "string"
-                categorical_cols.append(col)
+    if use_spark:
+        try:
+            log_upload("Initializing PySpark Session for high-efficiency distributed dataset profiling...")
+            spark = SparkSession.builder \
+                .appName("PortfolioETL") \
+                .master("local[2]") \
+                .config("spark.driver.memory", "512m") \
+                .config("spark.sql.shuffle.partitions", "2") \
+                .getOrCreate()
                 
-        log_upload(f"Data types mapped. Numerical columns: {len(numerical_cols)}, String columns: {len(categorical_cols)}.")
-        
-    except Exception as e:
-        log_upload(f"Profiling error: {str(e)}")
-        dynamic_upload_state["status"] = "FAILED"
-        return jsonify({"status": "FAILED", "message": f"Profiling failed: {str(e)}"}), 400
+            # Save uploaded bytes to temp disk file
+            temp_dir = os.path.dirname(os.path.abspath(__file__))
+            temp_path = os.path.join(temp_dir, f"temp_spark_{filename}")
+            
+            uploaded_file.seek(0)
+            with open(temp_path, "wb") as f:
+                f.write(uploaded_file.read())
+                
+            if ext == ".csv":
+                df_spark = spark.read.csv(temp_path, header=True, inferSchema=True)
+            else:
+                df_spark = spark.read.json(temp_path)
+                
+            row_count = df_spark.count()
+            col_count = len(df_spark.columns)
+            
+            # Map column types
+            for field in df_spark.schema.fields:
+                spark_type = str(field.dataType).lower()
+                if "int" in spark_type or "double" in spark_type or "float" in spark_type or "long" in spark_type:
+                    col_types[field.name] = "number"
+                elif "date" in spark_type or "timestamp" in spark_type or "date" in field.name.lower() or "time" in field.name.lower():
+                    col_types[field.name] = "date"
+                else:
+                    col_types[field.name] = "string"
+            
+            # Profile nulls using Spark select expression
+            from pyspark.sql.functions import count, when, isnan
+            null_exprs = [count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in df_spark.columns]
+            null_df = df_spark.select(*null_exprs).collect()[0].asDict()
+            total_nulls = sum(null_df.values())
+            
+            log_upload(f"[PySpark] Successfully extracted {row_count} rows and {col_count} columns.")
+            log_upload(f"[PySpark] Analyzed null value profiles. Found {total_nulls} null values.")
+            
+            # Limit to first 20,000 records for DB insertion to prevent GAE OOM
+            df = df_spark.limit(20000).toPandas()
+            
+            # Clean up temp file
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+                
+        except Exception as spark_err:
+            log_upload(f"PySpark extraction failed: {str(spark_err)}. Falling back to Pandas...")
+            use_spark = False
+            if 'temp_path' in locals() and os.path.exists(temp_path):
+                os.remove(temp_path)
+                
+    if not use_spark:
+        try:
+            # Stream file directly to pandas and limit rows to 20,000
+            uploaded_file.seek(0)
+            if ext == ".csv":
+                df = pd.read_csv(uploaded_file, nrows=20000)
+            else:
+                df = pd.read_json(uploaded_file)
+                if len(df) > 20000:
+                    df = df.head(20000)
+                
+            row_count = len(df)
+            col_count = len(df.columns)
+            sample_suffix = " (sampled for performance)" if row_count >= 20000 else ""
+            log_upload(f"Successfully extracted {row_count} rows and {col_count} columns{sample_suffix}.")
+            
+            # Profile Nulls in Pandas
+            null_counts = df.isnull().sum().to_dict()
+            total_nulls = sum(null_counts.values())
+            log_upload(f"Analyzed null value profiles. Found {total_nulls} empty/null values across columns.")
+            
+            # Profile types in Pandas
+            numerical_cols = []
+            categorical_cols = []
+            for col in df.columns:
+                dtype = str(df[col].dtype)
+                if "int" in dtype or "float" in dtype:
+                    col_types[col] = "number"
+                    numerical_cols.append(col)
+                elif "datetime" in dtype or "date" in col.lower() or "time" in col.lower():
+                    col_types[col] = "date"
+                else:
+                    col_types[col] = "string"
+                    categorical_cols.append(col)
+            
+            log_upload(f"Data types mapped. Numerical columns: {len(numerical_cols)}, String columns: {len(categorical_cols)}.")
+            
+        except Exception as e:
+            log_upload(f"Pandas profiling failed: {str(e)}")
+            dynamic_upload_state["status"] = "FAILED"
+            return jsonify({"status": "FAILED", "message": f"Parsing failed: {str(e)}"}), 400
         
     # Stage 3: Transformation
     log_upload("STAGE 3: TRANSFORMATION - Cleansing data...")
