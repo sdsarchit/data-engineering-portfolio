@@ -600,12 +600,22 @@ function runClientSideFileParser() {
     
     const reader = new FileReader();
     reader.onload = function(e) {
-        const text = e.target.result;
+        let text = e.target.result;
+        let isSampled = false;
+        
+        // If file is larger than 1.5MB, slice it to prevent browser OOM/freeze
+        if (selectedFile.size > 1.5 * 1024 * 1024) {
+            const sliceEnd = 1.5 * 1024 * 1024;
+            const cutIndex = text.lastIndexOf("\n", sliceEnd);
+            text = text.substring(0, cutIndex > 0 ? cutIndex : sliceEnd);
+            isSampled = true;
+        }
         
         // Simulating step-by-step logs
         const logs = [];
         logs.push("Initializing Client-Side Data Ingestion Parser...");
-        logs.push(`STAGE 1: EXTRACTION - Reading uploaded file content: ${selectedFile.name}`);
+        const suffix = isSampled ? " (sampling first 1.5MB for browser performance)" : "";
+        logs.push(`STAGE 1: EXTRACTION - Reading uploaded file content: ${selectedFile.name}${suffix}`);
         
         try {
             let rows = [];
@@ -655,7 +665,8 @@ function runClientSideFileParser() {
                 }
             }
             
-            logs.push(`Successfully extracted ${rows.length} rows and ${columns.length} columns.`);
+            const sampleSuffix = isSampled ? " (sampled for performance)" : "";
+            logs.push(`Successfully extracted ${rows.length} rows and ${columns.length} columns${sampleSuffix}.`);
             logs.push("STAGE 2: DATA QUALITY & PROFILING - Analyzing schema rules...");
             
             // Check null values

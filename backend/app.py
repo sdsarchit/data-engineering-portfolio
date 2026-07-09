@@ -307,17 +307,20 @@ def upload_file():
     log_upload(f"STAGE 1: EXTRACTION - Reading uploaded file: {filename}")
     
     try:
-        file_bytes = uploaded_file.read()
-        file_str = file_bytes.decode("utf-8", errors="ignore")
-        
+        # Stream the file directly to pandas and limit rows to 20,000
+        # This prevents Out-Of-Memory (OOM) crashes on GAE Standard F1 instances
+        uploaded_file.seek(0)
         if ext == ".csv":
-            df = pd.read_csv(io.StringIO(file_str))
+            df = pd.read_csv(uploaded_file, nrows=20000)
         else:
-            df = pd.read_json(io.StringIO(file_str))
+            df = pd.read_json(uploaded_file)
+            if len(df) > 20000:
+                df = df.head(20000)
             
         row_count = len(df)
         col_count = len(df.columns)
-        log_upload(f"Successfully extracted {row_count} rows and {col_count} columns.")
+        sample_suffix = " (sampled for performance)" if row_count >= 20000 else ""
+        log_upload(f"Successfully extracted {row_count} rows and {col_count} columns{sample_suffix}.")
         
     except Exception as e:
         log_upload(f"Error parsing file: {str(e)}")
