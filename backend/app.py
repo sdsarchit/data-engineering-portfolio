@@ -21,7 +21,20 @@ def add_header(response):
     response.headers["Expires"] = "0"
     return response
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.db")
+# Use /tmp for SQLite database in read-only serverless environments like GCP App Engine Standard
+if os.environ.get("GAE_ENV") or not os.access(os.path.dirname(os.path.abspath(__file__)), os.W_OK):
+    DB_PATH = "/tmp/data.db"
+    # Copy pre-seeded repository database template to /tmp if it doesn't exist
+    src_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.db")
+    if not os.path.exists(DB_PATH) and os.path.exists(src_db):
+        import shutil
+        try:
+            shutil.copy2(src_db, DB_PATH)
+            os.chmod(DB_PATH, 0o666)
+        except Exception as copy_err:
+            print(f"Error copying pre-seeded database: {str(copy_err)}")
+else:
+    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.db")
 
 # Initialize database registry table
 def init_registry_db():
