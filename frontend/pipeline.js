@@ -619,16 +619,35 @@ function runClientSideFileParser() {
                     columns = Object.keys(rows[0]);
                 }
             } else {
-                // Parse CSV
-                const lines = text.split("\n").map(l => l.trim()).filter(l => l);
+                // Parse CSV using robust quote-aware splitting
+                const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l);
                 if (lines.length > 0) {
-                    columns = lines[0].split(",").map(c => c.trim().replace(/^["']|["']$/g, ''));
+                    const splitCsvLine = (line) => {
+                        const result = [];
+                        let current = "";
+                        let inQuotes = false;
+                        for (let i = 0; i < line.length; i++) {
+                            const char = line[i];
+                            if (char === '"' || char === "'") {
+                                inQuotes = !inQuotes;
+                            } else if (char === ',' && !inQuotes) {
+                                result.push(current.trim().replace(/^["']|["']$/g, ''));
+                                current = "";
+                            } else {
+                                current += char;
+                            }
+                        }
+                        result.push(current.trim().replace(/^["']|["']$/g, ''));
+                        return result;
+                    };
+
+                    columns = splitCsvLine(lines[0]);
                     for (let i = 1; i < lines.length; i++) {
-                        const values = lines[i].split(",").map(v => v.trim().replace(/^["']|["']$/g, ''));
-                        if (values.length === columns.length) {
+                        const values = splitCsvLine(lines[i]);
+                        if (values.length > 0) {
                             const row = {};
                             columns.forEach((col, index) => {
-                                row[col] = values[index];
+                                row[col] = values[index] !== undefined ? values[index] : "";
                             });
                             rows.push(row);
                         }
