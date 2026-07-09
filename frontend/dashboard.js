@@ -638,6 +638,43 @@ function simulateClientSideAgentQuery(query, responseBox) {
     const meta = dynamicDataCache.metadata;
     const columns = meta.columns;
     
+    // Identify qualitative, open-ended question checks
+    const isQualitative = ["what does", "represent", "what is", "about", "describe", "explain", "insight", "general", "observation", "summary", "tell me about", "meaning"].some(w => q.includes(w));
+    
+    if (isQualitative) {
+        const qWords = q.match(/\w+/g) || [];
+        const chunks = [
+            `The dataset is named '${meta.filename}' and contains ${rows.length} rows and ${columns.length} attributes.`,
+            `The columns available in this dataset are: ${columns.join(", ")}.`,
+            `Column data types: ` + columns.map(c => `'${c}' (${meta.column_types[c] || "string"})`).join(", ") + `.`,
+            `Sample Record 1: ` + columns.map(c => `${c}: ${rows[0] ? rows[0][c] : 'N/A'}`).join(", ") + `.`,
+            `Sample Record 2: ` + columns.map(c => `${c}: ${rows[1] ? rows[1][c] : 'N/A'}`).join(", ") + `.`
+        ];
+        
+        const scoredChunks = chunks.map(txt => {
+            let score = 0;
+            const words = txt.toLowerCase().match(/\w+/g) || [];
+            qWords.forEach(qw => {
+                if (words.includes(qw)) score += 1;
+            });
+            return { text: txt, score: score };
+        });
+        
+        scoredChunks.sort((a, b) => b.score - a.score);
+        const insights = scoredChunks.slice(0, 3).map(c => `• ${c.text}`).join("<br>");
+        
+        responseBox.innerHTML = `
+            <div style="color: var(--accent-purple); font-weight: bold;"><i class="fa-solid fa-code"></i> Generated SQL Query:</div>
+            <div style="background: rgba(0,0,0,0.5); padding: 0.5rem; border-radius: 4px; margin-bottom: 0.8rem; border: 1px solid var(--border-color); color: #a5f3fc; font-size: 0.78rem; word-break: break-all;">-- Client-Side Semantic RAG Simulation (No SQL needed)</div>
+            <div style="color: var(--accent-green); font-weight: bold;"><i class="fa-solid fa-list-check"></i> Semantic Agent Output:</div>
+            <div style="padding-left: 0.5rem; color: #f1f5f9; font-size: 0.95rem; line-height: 1.6;">
+                <div style="margin-bottom: 0.8rem; font-weight: bold;">🤖 Local RAG Insights:</div>
+                ${insights}
+            </div>
+        `;
+        return;
+    }
+    
     // Dynamically retrieve column using client-side RAG Schema Resolver
     const resolver = new RAGSchemaResolver(columns, meta.column_types, rows);
     const col = resolver.retrieveRelevantColumn(q);

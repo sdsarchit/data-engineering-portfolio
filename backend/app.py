@@ -480,12 +480,42 @@ def upload_file():
             "ingested_at": datetime.now().isoformat()
         }
         
-        cursor = conn.cursor()
         cursor.execute(
             "INSERT OR REPLACE INTO dynamic_metadata_registry (key, value) VALUES ('latest_metadata', ?)",
             (json.dumps(metadata),)
         )
         conn.commit()
+        
+        # Build and cache Vector Index for Semantic RAG Chat Assistant
+        try:
+            from vector_db import SimpleVectorStore
+            log_upload("STAGE 4: SEMANTIC INDEXING - Building Vector Database chunks...")
+            vector_docs = []
+            
+            schema_desc = f"The dataset '{filename}' has columns: {', '.join(columns)}."
+            vector_docs.append({"text": schema_desc, "metadata": {"type": "schema"}})
+            
+            for col_name in columns:
+                col_desc = f"Column '{col_name}' represents a metric of type '{col_types.get(col_name, 'string')}'."
+                vector_docs.append({"text": col_desc, "metadata": {"type": "column", "name": col_name}})
+                
+            for i, row in df.head(30).iterrows():
+                row_items = [f"{col}: {val}" for col, val in row.to_dict().items()]
+                row_desc = f"Record sample {i+1} in the dataset: {', '.join(row_items)}."
+                vector_docs.append({"text": row_desc, "metadata": {"type": "record", "index": i}})
+                
+            v_store = SimpleVectorStore()
+            v_store.add_documents(vector_docs)
+            
+            cursor.execute(
+                "INSERT OR REPLACE INTO dynamic_metadata_registry (key, value) VALUES ('latest_vector_index', ?)",
+                (v_store.to_json(),)
+            )
+            conn.commit()
+            log_upload(f"Semantic Vector Database initialized with {len(vector_docs)} documents.")
+        except Exception as vec_err:
+            log_upload(f"Warning: Failed to build Vector database ({str(vec_err)})")
+            
         conn.close()
         
         log_upload("ETL Job successfully loaded into database. Ready for visualization.")
@@ -552,6 +582,43 @@ def seed_preset_into_dynamic():
             (json.dumps(metadata),)
         )
         conn.commit()
+        
+        # Build Vector index for preset weather data
+        try:
+            from vector_db import SimpleVectorStore
+            vector_docs = []
+            columns = list(df.columns)
+            col_types = {
+                "city": "string",
+                "timestamp": "date",
+                "pm2_5": "number",
+                "pm2_5_rolling_avg": "number",
+                "aqi_category": "string"
+            }
+            
+            schema_desc = f"The dataset 'Preset Weather API Stream' has columns: {', '.join(columns)}."
+            vector_docs.append({"text": schema_desc, "metadata": {"type": "schema"}})
+            
+            for col_name in columns:
+                col_desc = f"Column '{col_name}' represents a metric of type '{col_types.get(col_name, 'string')}'."
+                vector_docs.append({"text": col_desc, "metadata": {"type": "column", "name": col_name}})
+                
+            for i, row in df.head(30).iterrows():
+                row_items = [f"{col}: {val}" for col, val in row.to_dict().items()]
+                row_desc = f"Record sample {i+1} in the dataset: {', '.join(row_items)}."
+                vector_docs.append({"text": row_desc, "metadata": {"type": "record", "index": i}})
+                
+            v_store = SimpleVectorStore()
+            v_store.add_documents(vector_docs)
+            
+            cursor.execute(
+                "INSERT OR REPLACE INTO dynamic_metadata_registry (key, value) VALUES ('latest_vector_index', ?)",
+                (v_store.to_json(),)
+            )
+            conn.commit()
+        except Exception as e:
+            print(f"Error seeding preset vector database: {str(e)}")
+            
     except Exception as e:
         print(f"Error seeding preset weather: {str(e)}")
         
@@ -623,6 +690,42 @@ def query_dynamic_data():
     
     # NLP SQL Query Generator
     q = query_str.lower()
+    
+    # Identify qualitative, open-ended question checks
+    is_qualitative = any(w in q for w in [
+        "what does", "represent", "what is", "about", "describe", "explain", 
+        "insight", "general", "observation", "summary", "tell me about", "meaning"
+    ])
+    
+    if is_qualitative:
+        cursor.execute("SELECT value FROM dynamic_metadata_registry WHERE key = 'latest_vector_index'")
+        vec_row = cursor.fetchone()
+        if vec_row:
+            try:
+                from vector_db import SimpleVectorStore
+                vector_store = SimpleVectorStore.from_json(vec_row[0])
+                hits = vector_store.search(query_str, k=4)
+                
+                # Format conversational agent insights
+                insights = []
+                for idx, hit in enumerate(hits):
+                    insights.append(f"• {hit['document']['text']}")
+                
+                summary = (
+                    f"### 🤖 Qualitative Data Insights\n"
+                    f"Based on semantic vector search matching your query *\"{query_str}\"*, here is what the dataset represents:\n\n"
+                    f"{chr(10).join(insights)}\n\n"
+                    f"*Note: These observations were retrieved dynamically using a local Cosine Similarity TF-IDF vector database matching column schemas and record definitions.*"
+                )
+                conn.close()
+                return jsonify({
+                    "status": "SUCCESS",
+                    "sql": "-- Semantic Vector Search (No SQL execution needed)",
+                    "columns": ["insights"],
+                    "rows": [{"insights": summary}]
+                })
+            except Exception as r_err:
+                pass
     select_clause = "*"
     where_clause = ""
     limit_clause = " LIMIT 10"
