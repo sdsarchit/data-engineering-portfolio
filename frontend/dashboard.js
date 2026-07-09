@@ -736,7 +736,7 @@ class RAGSchemaResolver {
     retrieveRelevantColumn(query) {
         const qWords = query.toLowerCase().match(/\w+/g) || [];
         let bestCol = null;
-        let highestScore = 0;
+        let highest_score = 0;
         
         this.index.forEach(doc => {
             let score = 0;

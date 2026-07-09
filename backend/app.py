@@ -599,6 +599,9 @@ def get_dynamic_stats():
 
 @app.route("/api/dynamic/query", methods=["POST"])
 def query_dynamic_data():
+    # Guarantee preset database is seeded
+    seed_preset_into_dynamic()
+    
     req_data = request.get_json() or {}
     query_str = req_data.get("query", "").strip()
     
