@@ -61,7 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
         selY.addEventListener("change", renderCustomDynamicChart);
     }
 
-    fetchCurrentDashboardState();
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("tab") === "custom" && tabCustom) {
+        tabCustom.click();
+    } else {
+        fetchCurrentDashboardState();
+    }
 });
 
 // Fetching with aggressive cache-busters to completely disable local caching
