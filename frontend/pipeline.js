@@ -684,7 +684,7 @@ function runClientSideFileParser() {
                 const cleanRow = {};
                 columns.forEach((col, idx) => {
                     const val = r[col];
-                    if (val === "" || val === undefined || val === null || val.toLowerCase() === "null" || val.toLowerCase() === "na") {
+                    if (val === "" || val === undefined || val === null || (typeof val === "string" && (val.toLowerCase() === "null" || val.toLowerCase() === "na"))) {
                         totalNulls++;
                     }
                     cleanRow[cleanColumns[idx]] = val;
@@ -714,7 +714,7 @@ function runClientSideFileParser() {
             cleanColumns.forEach(col => {
                 cleanRows.forEach(r => {
                     const val = r[col];
-                    if (val === "" || val === undefined || val === null || val.toLowerCase() === "null" || val.toLowerCase() === "na") {
+                    if (val === "" || val === undefined || val === null || (typeof val === "string" && (val.toLowerCase() === "null" || val.toLowerCase() === "na"))) {
                         if (columnTypes[col] === "number") {
                             r[col] = "0"; // Mock median
                         } else {
