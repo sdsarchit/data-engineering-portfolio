@@ -678,6 +678,24 @@ def get_dynamic_stats():
         "rows": df.to_dict(orient="records")
     })
 
+@app.route("/api/dynamic/reset", methods=["POST"])
+def reset_dynamic_data():
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Drop the dynamic tables if they exist
+        cursor.execute("DROP TABLE IF EXISTS dynamic_processed_data")
+        
+        # Delete dynamic metadata from registry
+        cursor.execute("DELETE FROM dynamic_metadata_registry WHERE key IN ('latest_metadata', 'latest_vector_index')")
+        
+        conn.commit()
+        conn.close()
+        return jsonify({"status": "RESET", "message": "Dynamic dataset successfully wiped from database."})
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": f"Reset failed: {str(e)}"}), 500
+
 @app.route("/api/dynamic/query", methods=["POST"])
 def query_dynamic_data():
     # Guarantee preset database is seeded

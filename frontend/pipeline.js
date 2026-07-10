@@ -491,6 +491,12 @@ async function handleUploadRun() {
     
     if (btnRunUpload.classList.contains("disabled")) return;
     
+    // Reset uploader state before starting new upload run
+    localStorage.removeItem("using_custom_dataset");
+    localStorage.removeItem("dynamic_metadata");
+    localStorage.removeItem("dynamic_rows");
+    fetch(`${API_BASE}/dynamic/reset`, { method: "POST" }).catch(err => console.warn(err));
+
     // UI state adjustments
     btnRunUpload.classList.add("disabled");
     btnRunUpload.disabled = true;
