@@ -506,11 +506,11 @@ def upload_file():
             log_upload("STAGE 4: SEMANTIC INDEXING - Building Vector Database chunks...")
             vector_docs = []
             
-            schema_desc = f"The dataset '{filename}' has columns: {', '.join(columns)}."
+            schema_desc = f"The dataset '{filename}' has columns: {', '.join(df.columns)}."
             vector_docs.append({"text": schema_desc, "metadata": {"type": "schema"}})
             
-            for col_name in columns:
-                col_desc = f"Column '{col_name}' represents a metric of type '{col_types.get(col_name, 'string')}'."
+            for col_name in df.columns:
+                col_desc = f"Column '{col_name}' represents a metric of type '{clean_col_types.get(col_name, 'string')}'."
                 vector_docs.append({"text": col_desc, "metadata": {"type": "column", "name": col_name}})
                 
             for i, row in df.head(30).iterrows():
