@@ -482,6 +482,7 @@ def upload_file():
         # Save to dynamic table
         df.to_sql("dynamic_processed_data", conn, if_exists="replace", index=False)
         
+        cursor = conn.cursor()
         # Save profile metadata to registry
         metadata = {
             "filename": filename,
