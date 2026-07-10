@@ -393,6 +393,8 @@ async function loadDynamicDashboard() {
     const tableBody = document.getElementById("custom-table-rows");
     
     // Check if custom dataset was uploaded locally or if backend is available
+    const hasLocalCustom = localStorage.getItem("using_custom_dataset") === "true";
+    
     try {
         const cacheBuster = `_=${Date.now()}`;
         const response = await fetch(`${API_BASE}/dynamic/stats?${cacheBuster}`);
@@ -400,20 +402,24 @@ async function loadDynamicDashboard() {
         
         if (data.status === "SUCCESS") {
             const meta = data.metadata;
-            dynamicDataCache = {
-                metadata: meta,
-                rows: data.rows,
-                summaries: data.summaries
-            };
-            populateCustomDashboardUI(dynamicDataCache);
-            return;
+            // If the backend has only seeded preset Weather data, but we have a real custom file locally
+            // (e.g. from a client-side simulation run), load the local dataset
+            if (meta.filename !== "Preset Weather API Stream" || !hasLocalCustom) {
+                dynamicDataCache = {
+                    metadata: meta,
+                    rows: data.rows,
+                    summaries: data.summaries
+                };
+                populateCustomDashboardUI(dynamicDataCache);
+                return;
+            }
         }
     } catch (err) {
         console.warn("Backend offline. Loading custom dataset from client-side localStorage...");
     }
     
     // Client-side local storage fallback
-    if (localStorage.getItem("using_custom_dataset") === "true") {
+    if (hasLocalCustom) {
         const meta = JSON.parse(localStorage.getItem("dynamic_metadata") || "{}");
         const rows = JSON.parse(localStorage.getItem("dynamic_rows") || "[]");
         
