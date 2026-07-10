@@ -407,7 +407,7 @@ async function loadDynamicDashboard() {
     const tableBody = document.getElementById("custom-table-rows");
     
     // Check if custom dataset was uploaded locally or if backend is available
-    const hasLocalCustom = localStorage.getItem("using_custom_dataset") === "true";
+    const hasLocalCustom = localStorage.getItem("using_custom_dataset") === "true" && localStorage.getItem("dynamic_metadata") !== null;
     
     try {
         const cacheBuster = `_=${Date.now()}`;
