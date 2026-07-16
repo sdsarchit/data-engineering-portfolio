@@ -9,6 +9,12 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from pipeline import ETLPipeline
 
+try:
+    from google.cloud import storage
+    HAS_GCS = True
+except ImportError:
+    HAS_GCS = False
+
 app = Flask(__name__)
 # Enable CORS with restricted origins in production (fallback to * in dev)
 allowed_origins = os.environ.get("ALLOWED_ORIGIN", "*")
@@ -36,8 +42,41 @@ if os.environ.get("GAE_ENV") or not os.access(os.path.dirname(os.path.abspath(__
 else:
     DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.db")
 
+# Detect GCS default App Engine bucket name
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("GAE_APPLICATION", "").replace("s~", "").replace("e~", "")
+BUCKET_NAME = f"{PROJECT_ID}.appspot.com" if PROJECT_ID else None
+
+def sync_db_from_gcs():
+    """Download data.db from GCS to local /tmp/data.db if it exists on GCS."""
+    if not HAS_GCS or not BUCKET_NAME or not os.environ.get("GAE_ENV"):
+        return
+    try:
+        client = storage.Client()
+        bucket = client.bucket(BUCKET_NAME)
+        blob = bucket.blob("data.db")
+        if blob.exists():
+            blob.download_to_filename(DB_PATH)
+            os.chmod(DB_PATH, 0o666)
+            print(f"[GCS Sync] Downloaded latest data.db from gs://{BUCKET_NAME}/data.db")
+    except Exception as e:
+        print(f"[GCS Sync] Error downloading DB from GCS: {str(e)}")
+
+def sync_db_to_gcs():
+    """Upload local /tmp/data.db to GCS."""
+    if not HAS_GCS or not BUCKET_NAME or not os.environ.get("GAE_ENV"):
+        return
+    try:
+        client = storage.Client()
+        bucket = client.bucket(BUCKET_NAME)
+        blob = bucket.blob("data.db")
+        blob.upload_from_filename(DB_PATH)
+        print(f"[GCS Sync] Uploaded latest data.db to gs://{BUCKET_NAME}/data.db")
+    except Exception as e:
+        print(f"[GCS Sync] Error uploading DB to GCS: {str(e)}")
+
 # Initialize database registry table
 def init_registry_db():
+    sync_db_from_gcs()
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
@@ -48,6 +87,7 @@ def init_registry_db():
     """)
     conn.commit()
     conn.close()
+    sync_db_to_gcs()
 
 init_registry_db()
 
@@ -66,6 +106,7 @@ def execute_pipeline_async():
     pipeline_state["logs"] = []
     
     try:
+        sync_db_from_gcs()
         pipeline = ETLPipeline(db_path=DB_PATH, log_callback=log_collector)
         results = pipeline.run_etl()
         pipeline_state["last_result"] = results
@@ -73,6 +114,7 @@ def execute_pipeline_async():
             pipeline_state["status"] = "COMPLETED"
         else:
             pipeline_state["status"] = "FAILED"
+        sync_db_to_gcs()
     except Exception as e:
         err_msg = f"CRITICAL PIPELINE EXCEPTION: {str(e)}"
         pipeline_state["logs"].append(err_msg)
@@ -97,6 +139,7 @@ def trigger_pipeline():
 
 @app.route("/api/pipeline/status", methods=["GET"])
 def get_pipeline_status():
+    sync_db_from_gcs()
     return jsonify({
         "status": pipeline_state["status"],
         "logs": pipeline_state["logs"],
@@ -105,6 +148,7 @@ def get_pipeline_status():
 
 @app.route("/api/dashboard/stats", methods=["GET"])
 def get_dashboard_stats():
+    sync_db_from_gcs()
     if not os.path.exists(DB_PATH):
         return jsonify({
             "total_processed": 0,
@@ -147,6 +191,7 @@ def get_dashboard_stats():
 
 @app.route("/api/dashboard/charts", methods=["GET"])
 def get_chart_data():
+    sync_db_from_gcs()
     if not os.path.exists(DB_PATH):
         return jsonify({"series": {}, "summary": {}})
         
@@ -183,6 +228,7 @@ def get_chart_data():
 
 @app.route("/api/dashboard/quarantine", methods=["GET"])
 def get_quarantine_records():
+    sync_db_from_gcs()
     if not os.path.exists(DB_PATH):
         return jsonify([])
         
@@ -217,6 +263,7 @@ def get_quarantine_records():
 
 def save_upload_state(status, logs):
     try:
+        sync_db_from_gcs()
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute(
@@ -225,11 +272,13 @@ def save_upload_state(status, logs):
         )
         conn.commit()
         conn.close()
+        sync_db_to_gcs()
     except Exception as err:
         print(f"Error saving upload state: {str(err)}")
 
 def get_upload_state():
     try:
+        sync_db_from_gcs()
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT value FROM dynamic_metadata_registry WHERE key = 'upload_state'")
@@ -501,6 +550,7 @@ def upload_file():
     # Stage 4: Loading into SQLite
     log_upload("STAGE 4: LOADING - Storing clean dataset in database...")
     try:
+        sync_db_from_gcs()
         conn = sqlite3.connect(DB_PATH)
         # Save to dynamic table
         df.to_sql("dynamic_processed_data", conn, if_exists="replace", index=False)
@@ -554,6 +604,7 @@ def upload_file():
             log_upload(f"Warning: Failed to build Vector database ({str(vec_err)})")
             
         conn.close()
+        sync_db_to_gcs()
         
         log_upload("ETL Job successfully loaded into database. Ready for visualization.")
         state = get_upload_state()
@@ -563,6 +614,11 @@ def upload_file():
         
     except Exception as e:
         log_upload(f"Loading error: {str(e)}")
+        try:
+            conn.close()
+        except:
+            pass
+        sync_db_to_gcs()
         state = get_upload_state()
         save_upload_state("FAILED", state["logs"])
         return jsonify({"status": "FAILED", "message": f"Loading failed: {str(e)}"}), 500
@@ -576,6 +632,7 @@ def get_upload_status():
     })
 
 def seed_preset_into_dynamic():
+    sync_db_from_gcs()
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
@@ -663,9 +720,11 @@ def seed_preset_into_dynamic():
         print(f"Error seeding preset weather: {str(e)}")
         
     conn.close()
+    sync_db_to_gcs()
 
 @app.route("/api/dynamic/stats", methods=["GET"])
 def get_dynamic_stats():
+    sync_db_from_gcs()
     if not os.path.exists(DB_PATH):
         return jsonify({"status": "EMPTY", "message": "No database found."})
         
@@ -707,6 +766,7 @@ def get_dynamic_stats():
 @app.route("/api/dynamic/reset", methods=["POST"])
 def reset_dynamic_data():
     try:
+        sync_db_from_gcs()
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         
@@ -718,12 +778,14 @@ def reset_dynamic_data():
         
         conn.commit()
         conn.close()
+        sync_db_to_gcs()
         return jsonify({"status": "RESET", "message": "Dynamic dataset successfully wiped from database."})
     except Exception as e:
         return jsonify({"status": "ERROR", "message": f"Reset failed: {str(e)}"}), 500
 
 @app.route("/api/dynamic/query", methods=["POST"])
 def query_dynamic_data():
+    sync_db_from_gcs()
     # Guarantee preset database is seeded
     seed_preset_into_dynamic()
     

@@ -7,9 +7,7 @@ instance_class: F1
 # Use Gunicorn as the production WSGI server
 entrypoint: gunicorn -b :$PORT app:app
 
-# Restrict standard environment to 1 instance to maintain a single SQLite state
-automatic_scaling:
-  max_instances: 1
+# Enable default autoscaling for high concurrency
 
 env_variables:
   FLASK_ENV: "production"
