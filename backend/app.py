@@ -215,11 +215,31 @@ def get_quarantine_records():
 # CUSTOM GENERIC FILE INGESTION & NLP QUERY
 # ==========================================
 
-# Temporary in-memory log list for the dynamic upload job
-dynamic_upload_state = {
-    "status": "IDLE", # IDLE, RUNNING, COMPLETED, FAILED
-    "logs": []
-}
+def save_upload_state(status, logs):
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT OR REPLACE INTO dynamic_metadata_registry (key, value) VALUES ('upload_state', ?)",
+            (json.dumps({"status": status, "logs": logs}),)
+        )
+        conn.commit()
+        conn.close()
+    except Exception as err:
+        print(f"Error saving upload state: {str(err)}")
+
+def get_upload_state():
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT value FROM dynamic_metadata_registry WHERE key = 'upload_state'")
+        row = cursor.fetchone()
+        conn.close()
+        if row:
+            return json.loads(row[0])
+    except Exception as err:
+        print(f"Error loading upload state: {str(err)}")
+    return {"status": "IDLE", "logs": []}
 
 class RAGSchemaResolver:
     """
@@ -306,14 +326,15 @@ def upload_file():
     if ext not in [".csv", ".json"]:
         return jsonify({"status": "FAILED", "message": "Unsupported file format. Please upload a CSV or JSON file."}), 400
         
-    dynamic_upload_state["status"] = "RUNNING"
-    dynamic_upload_state["logs"] = []
+    save_upload_state("RUNNING", [])
     
     def log_upload(msg):
         from datetime import datetime
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         full_msg = f"[{timestamp}] {msg}"
-        dynamic_upload_state["logs"].append(full_msg)
+        state = get_upload_state()
+        state["logs"].append(full_msg)
+        save_upload_state(state["status"], state["logs"])
         print(full_msg)
         
     from datetime import datetime
@@ -430,7 +451,8 @@ def upload_file():
             
         except Exception as e:
             log_upload(f"Pandas profiling failed: {str(e)}")
-            dynamic_upload_state["status"] = "FAILED"
+            state = get_upload_state()
+            save_upload_state("FAILED", state["logs"])
             return jsonify({"status": "FAILED", "message": f"Parsing failed: {str(e)}"}), 400
         
     # Stage 3: Transformation
@@ -472,7 +494,8 @@ def upload_file():
         
     except Exception as e:
         log_upload(f"Transformation error: {str(e)}")
-        dynamic_upload_state["status"] = "FAILED"
+        state = get_upload_state()
+        save_upload_state("FAILED", state["logs"])
         return jsonify({"status": "FAILED", "message": f"Transformation failed: {str(e)}"}), 400
         
     # Stage 4: Loading into SQLite
@@ -533,20 +556,23 @@ def upload_file():
         conn.close()
         
         log_upload("ETL Job successfully loaded into database. Ready for visualization.")
-        dynamic_upload_state["status"] = "COMPLETED"
+        state = get_upload_state()
+        save_upload_state("COMPLETED", state["logs"])
         
         return jsonify({"status": "COMPLETED", "message": "ETL ingestion completed successfully.", "metadata": metadata})
         
     except Exception as e:
         log_upload(f"Loading error: {str(e)}")
-        dynamic_upload_state["status"] = "FAILED"
+        state = get_upload_state()
+        save_upload_state("FAILED", state["logs"])
         return jsonify({"status": "FAILED", "message": f"Loading failed: {str(e)}"}), 500
 
 @app.route("/api/pipeline/upload/status", methods=["GET"])
 def get_upload_status():
+    state = get_upload_state()
     return jsonify({
-        "status": dynamic_upload_state["status"],
-        "logs": dynamic_upload_state["logs"]
+        "status": state["status"],
+        "logs": state["logs"]
     })
 
 def seed_preset_into_dynamic():
