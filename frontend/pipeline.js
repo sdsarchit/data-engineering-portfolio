@@ -248,11 +248,18 @@ async function pollPipelineLogs() {
 
 function resetTerminalUI(dotClass, titleText) {
     const runBtn = document.getElementById("btn-run-pipeline");
+    const uploadBtn = document.getElementById("btn-upload-run");
     const consoleDot = document.getElementById("console-status-dot");
     const consoleTitle = document.getElementById("console-title");
     
-    runBtn.classList.remove("disabled");
-    runBtn.disabled = false;
+    if (runBtn) {
+        runBtn.classList.remove("disabled");
+        runBtn.disabled = false;
+    }
+    if (uploadBtn) {
+        uploadBtn.classList.remove("disabled");
+        uploadBtn.disabled = false;
+    }
     consoleDot.className = `console-status-dot ${dotClass}`;
     consoleTitle.innerText = titleText;
 }
