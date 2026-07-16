@@ -263,7 +263,6 @@ def get_quarantine_records():
 
 def save_upload_state(status, logs):
     try:
-        sync_db_from_gcs()
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute(
@@ -272,13 +271,11 @@ def save_upload_state(status, logs):
         )
         conn.commit()
         conn.close()
-        sync_db_to_gcs()
     except Exception as err:
         print(f"Error saving upload state: {str(err)}")
 
 def get_upload_state():
     try:
-        sync_db_from_gcs()
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT value FROM dynamic_metadata_registry WHERE key = 'upload_state'")
@@ -632,7 +629,6 @@ def get_upload_status():
     })
 
 def seed_preset_into_dynamic():
-    sync_db_from_gcs()
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
@@ -720,7 +716,6 @@ def seed_preset_into_dynamic():
         print(f"Error seeding preset weather: {str(e)}")
         
     conn.close()
-    sync_db_to_gcs()
 
 @app.route("/api/dynamic/stats", methods=["GET"])
 def get_dynamic_stats():
@@ -730,6 +725,7 @@ def get_dynamic_stats():
         
     # Seed preset data if no custom upload exists yet
     seed_preset_into_dynamic()
+    sync_db_to_gcs()
         
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -788,6 +784,7 @@ def query_dynamic_data():
     sync_db_from_gcs()
     # Guarantee preset database is seeded
     seed_preset_into_dynamic()
+    sync_db_to_gcs()
     
     req_data = request.get_json() or {}
     query_str = req_data.get("query", "").strip()
