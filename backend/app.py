@@ -529,10 +529,10 @@ def upload_file():
                 dtype = col_types.get(old_cols[new_cols.index(col)], "string")
                 if dtype == "number":
                     median_val = df[col].median()
-                    df[col].fillna(median_val, inplace=True)
+                    df[col] = df[col].fillna(median_val)
                     log_upload(f"Filled null values in numerical column '{col}' with column median ({median_val}).")
                 else:
-                    df[col].fillna("N/A", inplace=True)
+                    df[col] = df[col].fillna("N/A")
                     log_upload(f"Filled null values in text column '{col}' with default 'N/A'.")
                     
         # Update col types keys to match standardized names

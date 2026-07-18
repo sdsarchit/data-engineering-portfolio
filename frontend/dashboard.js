@@ -61,25 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
         selY.addEventListener("change", renderCustomDynamicChart);
     }
 
-    // Check if the page is being reloaded/refreshed
-    const isReload = performance.getEntriesByType("navigation")[0]?.type === "reload";
-    if (isReload) {
-        console.log("[Dashboard] Page reloaded. Clearing custom session dataset cache...");
-        localStorage.removeItem("using_custom_dataset");
-        localStorage.removeItem("dynamic_metadata");
-        localStorage.removeItem("dynamic_rows");
-        
-        // Quietly reset backend state
-        fetch(`${API_BASE}/dynamic/reset`, { method: "POST" })
-            .then(() => fetchCurrentDashboardState())
-            .catch(() => fetchCurrentDashboardState());
+    // Load dashboard state - check if we should open the custom tab directly
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("tab") === "custom" && tabCustom) {
+        tabCustom.click();
     } else {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get("tab") === "custom" && tabCustom) {
-            tabCustom.click();
-        } else {
-            fetchCurrentDashboardState();
-        }
+        fetchCurrentDashboardState();
     }
 });
 
