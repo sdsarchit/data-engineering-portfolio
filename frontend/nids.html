@@ -35,20 +35,31 @@
 
         /* Cyberpunk Panel Card Base */
         .cyber-panel {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.7);
             border: 1px solid #1e293b;
             border-radius: 12px;
             padding: 1.5rem;
             position: relative;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(12px);
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             transition: var(--transition-smooth);
+        }
+
+        .cyber-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0.8;
         }
 
         .cyber-panel:hover {
             border-color: #334155;
-            box-shadow: 0 10px 40px rgba(14, 165, 233, 0.05);
+            box-shadow: 0 10px 40px rgba(14, 165, 233, 0.08);
         }
 
         .cyber-panel-header {
@@ -57,17 +68,18 @@
             align-items: center;
             border-bottom: 1px solid #1e293b;
             padding-bottom: 0.8rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .cyber-panel-title {
             font-family: var(--font-heading);
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 0.6rem;
+            letter-spacing: 0.5px;
         }
 
         .cyber-panel-title i {
@@ -77,18 +89,19 @@
 
         /* SLEEK TERMINAL SIMULATOR */
         .terminal-container {
-            background: #030712;
+            background: #02040a;
             border: 1px solid #1e293b;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
-            height: 380px;
+            height: 340px;
             overflow: hidden;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
         }
 
         .terminal-header {
             background: #0b0f19;
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -111,44 +124,48 @@
         .terminal-dot.maximize { background: #10b981; }
 
         .terminal-menubar {
-            background: #0b0f19;
+            background: #070a13;
             border-bottom: 1px solid #1e293b;
             display: flex;
-            padding: 0.2rem 0.5rem;
-            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            gap: 0.8rem;
+            align-items: center;
         }
 
         .terminal-menu-btn {
             background: transparent;
-            border: none;
+            border: 1px solid rgba(255,255,255,0.05);
             color: #94a3b8;
-            font-size: 0.75rem;
-            padding: 0.3rem 0.7rem;
-            border-radius: 4px;
+            font-size: 0.78rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 6px;
             cursor: pointer;
             font-family: var(--font-mono);
             transition: var(--transition-smooth);
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 0.4rem;
         }
 
         .terminal-menu-btn:hover {
             background: rgba(255,255,255,0.05);
             color: #fff;
+            border-color: var(--accent-cyan);
         }
 
         .terminal-menu-btn.active {
-            background: rgba(14, 165, 233, 0.1);
+            background: rgba(14, 165, 233, 0.15);
+            border-color: var(--accent-cyan);
             color: var(--accent-cyan);
             font-weight: 600;
+            box-shadow: 0 0 10px rgba(14,165,233,0.15);
         }
 
         .terminal-logs {
             flex: 1;
             padding: 1rem;
             font-family: var(--font-mono);
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: #38bdf8; /* Cyan terminal output */
             overflow-y: auto;
             white-space: pre-wrap;
@@ -157,7 +174,7 @@
 
         /* INLINE ALERTS LOG */
         .threat-alert-ticker {
-            background: rgba(239, 68, 68, 0.03);
+            background: rgba(239, 68, 68, 0.02);
             border: 1px solid rgba(239, 68, 68, 0.1);
             border-radius: 8px;
             padding: 0.8rem 1rem;
@@ -165,18 +182,19 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
+            gap: 0.5rem;
             margin-top: 1rem;
+            box-shadow: inset 0 0 10px rgba(239,68,68,0.02);
         }
 
         .ticker-line {
             font-family: var(--font-mono);
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             color: #ef4444;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            animation: slideInLeft 0.2s ease-out;
+            animation: slideInLeft 0.15s ease-out;
         }
 
         @keyframes slideInLeft {
@@ -193,6 +211,7 @@
             border-radius: 8px;
             padding: 0.5rem;
             position: relative;
+            overflow: hidden;
         }
 
         .node-label {
@@ -214,7 +233,15 @@
             grid-template-columns: 140px 1fr 45px;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
+            padding: 0.4rem;
+            border-radius: 6px;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .feature-bar-row:hover {
+            background: rgba(255,255,255,0.02);
         }
 
         .feature-lbl {
@@ -248,6 +275,18 @@
             text-align: right;
         }
 
+        .feature-explainer-box {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: rgba(14, 165, 233, 0.03);
+            border-left: 2px solid var(--accent-cyan);
+            border-radius: 0 6px 6px 0;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            color: #cbd5e1;
+            min-height: 52px;
+        }
+
         /* Mode comparison select tabs */
         .model-select-tabs {
             display: flex;
@@ -276,6 +315,68 @@
             border-color: var(--accent-cyan);
             color: var(--accent-cyan);
             font-weight: 600;
+        }
+
+        /* SIDE-BY-SIDE MODEL CARDS */
+        .model-details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .model-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .model-detail-card {
+            background: rgba(255,255,255,0.01);
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: var(--transition-smooth);
+        }
+
+        .model-detail-card:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(14, 165, 233, 0.02);
+        }
+
+        .model-detail-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-bottom: 0.4rem;
+        }
+
+        .model-detail-acc {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .model-detail-meta {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Radar scan wave effect */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.6); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        .pulsing-ring {
+            transform-origin: center;
+            animation: pulse-ring 2s infinite ease-out;
         }
 
         /* Report Mock Popup window styles */
@@ -404,13 +505,32 @@
 
         <!-- Dynamic Control Center Dashboard -->
         <section class="section nids-dashboard-section">
+            <!-- Model Speeds / Accuracies Side-by-Side -->
+            <div class="model-details-grid">
+                <div class="model-detail-card">
+                    <div class="model-detail-title">XGBoost Classifier</div>
+                    <div class="model-detail-acc">99.91%</div>
+                    <div class="model-detail-meta"><i class="fa-solid fa-gauge-high"></i> Speed: Fast</div>
+                </div>
+                <div class="model-detail-card">
+                    <div class="model-detail-title">Random Forest</div>
+                    <div class="model-detail-acc">99.89%</div>
+                    <div class="model-detail-meta"><i class="fa-solid fa-gauge"></i> Speed: Moderate</div>
+                </div>
+                <div class="model-detail-card">
+                    <div class="model-detail-title">Extra Trees</div>
+                    <div class="model-detail-acc">99.81%</div>
+                    <div class="model-detail-meta"><i class="fa-solid fa-gauge-simple-high"></i> Speed: Fastest</div>
+                </div>
+            </div>
+
             <div class="cyber-dashboard">
                 
-                <!-- Left Panel: Tkinter Ingest Console -->
+                <!-- Left Panel: Ingest Console -->
                 <div class="cyber-panel">
                     <div class="cyber-panel-header">
                         <div class="cyber-panel-title">
-                            <i class="fa-solid fa-terminal"></i> Ingestion Terminal Emulator
+                            <i class="fa-solid fa-terminal"></i> Traffic Stream Ingest
                         </div>
                     </div>
                     
@@ -422,28 +542,14 @@
                                 <div class="terminal-dot minimize"></div>
                                 <div class="terminal-dot maximize"></div>
                             </div>
-                            <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono);">nids_gui_controller.py</div>
+                            <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); font-weight: 500;">realtime_stream.py</div>
                         </div>
 
                         <!-- Sub-menu navigation buttons -->
                         <div class="terminal-menubar">
-                            <button class="terminal-menu-btn" id="t-menu-start"><i class="fa-solid fa-play"></i> Start</button>
-                            <button class="terminal-menu-btn" id="t-menu-stop"><i class="fa-solid fa-stop"></i> Stop</button>
-                            <button class="terminal-menu-btn" id="t-menu-test"><i class="fa-solid fa-vial"></i> Test</button>
-                            <button class="terminal-menu-btn" id="t-menu-report"><i class="fa-solid fa-file-invoice"></i> Report</button>
-                        </div>
-                        
-                        <!-- Log Ingest Header -->
-                        <div style="background: rgba(255,255,255,0.02); padding: 0.5rem 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b;">
-                            <div style="display: flex; align-items: center; gap: 0.6rem;">
-                                <span class="tkinter-label" style="font-size: 0.78rem;">Browse File:</span>
-                                <select class="tkinter-select" id="nids-dataset-select" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-                                    <option value="" disabled selected>Select Ingest CSV...</option>
-                                    <option value="interface_1.csv">interface_1.csv (201 rows)</option>
-                                    <option value="sample_attacks.csv">sample_attacks.csv (Attacks Stream)</option>
-                                </select>
-                            </div>
-                            <a href="interface_1.csv" download style="font-size: 0.72rem; color: var(--accent-cyan); text-decoration: none;"><i class="fa-solid fa-download"></i> Get interface_1.csv</a>
+                            <button class="terminal-menu-btn" id="t-menu-start"><i class="fa-solid fa-play"></i> Start Ingestion Stream</button>
+                            <button class="terminal-menu-btn" id="t-menu-stop"><i class="fa-solid fa-stop"></i> Stop Stream</button>
+                            <button class="terminal-menu-btn" id="t-menu-report"><i class="fa-solid fa-file-invoice"></i> Compile Report</button>
                         </div>
 
                         <!-- Real-time scroll area logs -->
@@ -452,9 +558,9 @@
                         </div>
                     </div>
 
-                    <!-- Threat Alert Ticker (Replaces blocking modal popups) -->
+                    <!-- Threat Alert Ticker -->
                     <div class="threat-alert-ticker" id="nids-threat-ticker">
-                        <div class="ticker-line" style="color: var(--text-muted);"><i class="fa-solid fa-circle-info"></i> Waiting for threat occurrences...</div>
+                        <div class="ticker-line" style="color: var(--text-muted);"><i class="fa-solid fa-circle-info"></i> Waiting to begin network flow analysis...</div>
                     </div>
                 </div>
 
@@ -467,8 +573,10 @@
                     </div>
 
                     <!-- Interactive Feature Importance Explorer -->
-                    <div style="margin-bottom: 1.5rem;">
-                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem;">Model Relative Feature Importance</h4>
+                    <div style="margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Model Relative Feature Importance</h4>
+                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.8rem;">Click a feature to see its significance in classifying network abnormalities:</p>
+                        
                         <div class="model-select-tabs">
                             <button class="model-tab-btn active" data-model="xgb">XGBoost Classifier</button>
                             <button class="model-tab-btn" data-model="rf">Random Forest</button>
@@ -476,32 +584,37 @@
                         </div>
 
                         <!-- Dynamic SVG bars showing importance -->
-                        <div style="background: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 1rem;" id="feature-importance-bars">
+                        <div style="background: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 0.8rem;" id="feature-importance-bars">
                             <!-- Populated dynamically via JS -->
+                        </div>
+
+                        <!-- Dynamic Explainer Box -->
+                        <div class="feature-explainer-box" id="feature-explainer">
+                            Click any feature row above to analyze its role in network security detection.
                         </div>
                     </div>
 
                     <!-- Ensemble voting configuration -->
-                    <div style="border-top: 1px solid #1e293b; padding-top: 1.2rem;">
-                        <h4 style="font-size: 0.9rem; margin-bottom: 0.8rem;">Ensemble Voting Configuration</h4>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.2rem;">
+                    <div style="border-top: 1px solid #1e293b; padding-top: 1rem;">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.6rem; font-family: var(--font-heading);">Ensemble Voting Configuration</h4>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem;">
                             <div class="ensemble-option">
-                                <label class="tkinter-label" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem;">
-                                    <input type="checkbox" id="check-xgb" checked style="cursor: pointer; width: 14px; height: 14px;"> Include XGBoost in Ensemble
+                                <label class="tkinter-label" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem;">
+                                    <input type="checkbox" id="check-xgb" checked style="cursor: pointer; width: 14px; height: 14px;"> Include XGBoost in voting
                                 </label>
-                                <span class="text-cyan font-bold" style="font-size: 0.8rem; font-family: var(--font-mono);">99.91% Acc</span>
+                                <span class="text-cyan font-bold" style="font-size: 0.78rem; font-family: var(--font-mono);">99.91% Acc</span>
                             </div>
                             <div class="ensemble-option">
-                                <label class="tkinter-label" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem;">
-                                    <input type="checkbox" id="check-rf" checked style="cursor: pointer; width: 14px; height: 14px;"> Include Random Forest in Ensemble
+                                <label class="tkinter-label" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem;">
+                                    <input type="checkbox" id="check-rf" checked style="cursor: pointer; width: 14px; height: 14px;"> Include Random Forest in voting
                                 </label>
-                                <span class="text-cyan font-bold" style="font-size: 0.8rem; font-family: var(--font-mono);">99.89% Acc</span>
+                                <span class="text-cyan font-bold" style="font-size: 0.78rem; font-family: var(--font-mono);">99.89% Acc</span>
                             </div>
                             <div class="ensemble-option">
-                                <label class="tkinter-label" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem;">
-                                    <input type="checkbox" id="check-et" checked style="cursor: pointer; width: 14px; height: 14px;"> Include Extra Trees in Ensemble
+                                <label class="tkinter-label" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem;">
+                                    <input type="checkbox" id="check-et" checked style="cursor: pointer; width: 14px; height: 14px;"> Include Extra Trees in voting
                                 </label>
-                                <span class="text-cyan font-bold" style="font-size: 0.8rem; font-family: var(--font-mono);">99.81% Acc</span>
+                                <span class="text-cyan font-bold" style="font-size: 0.78rem; font-family: var(--font-mono);">99.81% Acc</span>
                             </div>
                         </div>
 
@@ -537,11 +650,16 @@
                     <div class="topology-hud">
                         <svg id="network-topology-svg" width="100%" height="100%" viewBox="0 0 600 160" style="background: transparent;">
                             <!-- Connection Paths -->
-                            <path id="path-attacker-router" d="M 60 40 Q 150 40 200 80" fill="none" stroke="#334155" stroke-width="1.5" stroke-dasharray="4"></path>
-                            <path id="path-client-router" d="M 60 120 Q 150 120 200 80" fill="none" stroke="#334155" stroke-width="1.5"></path>
-                            <path id="path-router-ids" d="M 200 80 L 300 80" fill="none" stroke="#334155" stroke-width="2"></path>
-                            <path id="path-ids-firewall" d="M 300 80 L 400 80" fill="none" stroke="#334155" stroke-width="2"></path>
-                            <path id="path-firewall-server" d="M 400 80 L 540 80" fill="none" stroke="#334155" stroke-width="2"></path>
+                            <path id="path-attacker-router" d="M 60 40 Q 150 40 200 80" fill="none" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4"></path>
+                            <path id="path-client-router" d="M 60 120 Q 150 120 200 80" fill="none" stroke="#1e293b" stroke-width="1.5"></path>
+                            <path id="path-router-ids" d="M 200 80 L 300 80" fill="none" stroke="#1e293b" stroke-width="2"></path>
+                            <path id="path-ids-firewall" d="M 300 80 L 400 80" fill="none" stroke="#1e293b" stroke-width="2"></path>
+                            <path id="path-firewall-server" d="M 400 80 L 540 80" fill="none" stroke="#1e293b" stroke-width="2"></path>
+
+                            <!-- Pulse circles around main security nodes -->
+                            <circle cx="300" cy="80" r="14" fill="none" stroke="rgba(139, 92, 246, 0.4)" stroke-width="1" class="pulsing-ring" id="ring-ids" style="display: none;"></circle>
+                            <circle cx="400" cy="80" r="14" fill="none" stroke="rgba(239, 68, 68, 0.4)" stroke-width="1" class="pulsing-ring" id="ring-fw" style="display: none;"></circle>
+                            <circle cx="540" cy="80" r="16" fill="none" stroke="rgba(14, 165, 233, 0.4)" stroke-width="1" class="pulsing-ring" id="ring-srv" style="display: none;"></circle>
 
                             <!-- Path flow particle overlays -->
                             <g id="topology-flow-particles"></g>
@@ -631,7 +749,7 @@
                 </div>
             </div>
         </section>
-    </section>
+    </main>
 
     <!-- Visual Matplotlib Report Modal Mock -->
     <div class="nids-modal-overlay" id="report-modal-overlay">
