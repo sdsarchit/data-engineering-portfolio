@@ -4,180 +4,820 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIDS Security Lab | Archit.DE</title>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
+    <meta name="description" content="Network Intrusion Detection Using Ensemble Classifier — Interactive Security Lab by S. Durga Sai Archit">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* Fallback CSS Variables if styles.css doesn't cover all */
-        :root {
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --border-color: #334155;
-            --accent-cyan: #0ea5e9;
-            --accent-purple: #f97316;
-            --accent-green: #10b981;
-            --accent-yellow: #f59e0b;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-muted: #64748b;
-            --font-heading: 'Space Grotesk', sans-serif;
-            --font-body: 'Plus Jakarta Sans', sans-serif;
-            --font-mono: 'Consolas', 'Courier New', monospace;
-            --transition-smooth: all 0.2s ease-in-out;
+        /* ========== NIDS PAGE — PREMIUM CYBERSECURITY AESTHETIC ========== */
+
+        .nids-page { position: relative; overflow-x: hidden; }
+
+        /* --- Animated Particle Canvas Background --- */
+        #particle-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
         }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            margin: 0;
-            padding: 0;
+        .nids-page .content-wrapper { position: relative; z-index: 1; }
+
+        /* --- Glow Utility Classes --- */
+        .glow-cyan { text-shadow: 0 0 20px rgba(14, 165, 233, 0.5), 0 0 40px rgba(14, 165, 233, 0.2); }
+        .glow-green { text-shadow: 0 0 20px rgba(16, 185, 129, 0.5), 0 0 40px rgba(16, 185, 129, 0.2); }
+        .glow-red { text-shadow: 0 0 20px rgba(239, 68, 68, 0.5), 0 0 40px rgba(239, 68, 68, 0.2); }
+
+        /* --- Gradient Border Card --- */
+        .cyber-card {
+            position: relative;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 2rem;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cyber-card::before {
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(14,165,233,0.4), rgba(139,92,246,0.2), rgba(14,165,233,0.1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .cyber-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.15), 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        /* --- Section Styling --- */
+        .nids-section {
+            padding: 5rem 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .nids-section:last-child { border-bottom: none; }
+
+        .nids-section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #0ea5e9;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .nids-section-label::before {
+            content: '';
+            width: 24px; height: 2px;
+            background: linear-gradient(90deg, #0ea5e9, transparent);
+        }
+
+        .nids-section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nids-section-desc {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            max-width: 700px;
+            line-height: 1.7;
+            margin-bottom: 3rem;
+        }
+
+        /* --- Scroll Animation --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .nids-hero {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+            padding: 2rem 0;
+        }
+        .nids-hero-inner {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 4rem;
+            align-items: center;
+            width: 100%;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            background: rgba(14, 165, 233, 0.08);
+            color: #38bdf8;
+            margin-bottom: 1.5rem;
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+        @keyframes pulse-badge {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(14, 165, 233, 0); }
+        }
+        .hero-badge .dot-live {
+            width: 8px; height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .hero-title-main {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin-bottom: 1.5rem;
+        }
+        .hero-title-main .line-gradient {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradient-shift 4s ease infinite;
+        }
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .hero-desc {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            max-width: 540px;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .btn-neon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.8rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .btn-neon-primary {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+        }
+        .btn-neon-primary:hover {
+            box-shadow: 0 0 35px rgba(14, 165, 233, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-neon-ghost {
+            background: transparent;
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+        .btn-neon-ghost:hover {
+            border-color: #0ea5e9;
+            color: #38bdf8;
+            background: rgba(14, 165, 233, 0.05);
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.1);
+        }
+
+        /* Hero Right — Big Accuracy Display */
+        .hero-stats-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .accuracy-showcase {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        .accuracy-showcase .acc-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+        }
+        .accuracy-showcase .acc-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg, #22c55e, #10b981, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            filter: drop-shadow(0 0 30px rgba(16, 185, 129, 0.3));
+        }
+        .accuracy-showcase .acc-suffix {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+        .hero-mini-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        .hero-mini-stat {
+            text-align: center;
+            padding: 1.2rem 0.5rem;
+        }
+        .hero-mini-stat .hms-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        .hero-mini-stat .hms-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ===== PROBLEM / SOLUTION SECTION ===== */
+        .ps-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .ps-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 0.75rem 0;
+        }
+        .ps-card p {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
             line-height: 1.6;
         }
+        .ps-card.problem { border-left: 3px solid #ef4444; }
+        .ps-card.problem h3 { color: #fca5a5; }
+        .ps-card.solution { border-left: 3px solid #10b981; }
+        .ps-card.solution h3 { color: #6ee7b7; }
 
-        /* Layout & Utilities */
-        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 100px 2rem 60px 2rem; }
-        .section { padding: 4rem 0; border-bottom: 1px solid var(--border-color); }
-        .section:last-child { border-bottom: none; }
-        .section-heading { font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
-        .section-subtitle { font-family: var(--font-mono); color: var(--accent-cyan); font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; }
-        .section-lead { font-size: 1.1rem; color: var(--text-secondary); max-width: 800px; margin-bottom: 2rem; }
-        
-        .text-center { text-align: center; }
-        .text-gradient { background: linear-gradient(to right, var(--accent-cyan), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; }
-        
-        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: var(--transition-smooth); text-decoration: none; border: none; font-family: var(--font-body); }
-        .btn-primary { background: var(--accent-cyan); color: #fff; }
-        .btn-primary:hover { background: #0284c7; }
-        .btn-secondary { background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); }
-        .btn-secondary:hover { background: rgba(14, 165, 233, 0.1); }
-        
-        /* Grid Layouts */
-        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .ps-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .ps-list li {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            margin-bottom: 1.25rem;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .ps-list li i {
+            margin-top: 3px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .ps-card.problem .ps-list li i { color: #f87171; }
+        .ps-card.solution .ps-list li i { color: #34d399; }
+
+        /* ===== PIPELINE SECTION ===== */
+        .pipeline-track {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            margin-top: 2.5rem;
+            position: relative;
+        }
+        .pipeline-track::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(14,165,233,0.1), rgba(14,165,233,0.4), rgba(139,92,246,0.4), rgba(14,165,233,0.1));
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+        .pipe-node {
+            flex: 1;
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        .pipe-node.visible {
+            animation: pipeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes pipeIn {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .pipe-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+            font-size: 1.5rem;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.25);
+            color: #38bdf8;
+            transition: all 0.3s ease;
+        }
+        .pipe-node:hover .pipe-icon {
+            background: rgba(14, 165, 233, 0.2);
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.3);
+            transform: scale(1.1);
+        }
+        .pipe-node h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 0 0 0.35rem 0;
+        }
+        .pipe-node p {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* ===== CHARTS SECTION ===== */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .chart-card { padding: 2rem; }
+        .chart-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 1.5rem 0;
+            color: #e2e8f0;
+            text-align: center;
+        }
+        .chart-wrap {
+            position: relative;
+            height: 280px;
+        }
+
+        /* ===== SIMULATOR SECTION ===== */
+        .sim-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 0.6fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .sim-terminal-card {
+            background: #020617;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .sim-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: rgba(30, 41, 59, 0.8);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        .sim-toolbar-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .sim-toolbar-title .dot-status {
+            width: 8px; height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+        .sim-toolbar-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .sim-btn {
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            color: #94a3b8;
+            padding: 0.35rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .sim-btn:hover {
+            background: rgba(14, 165, 233, 0.15);
+            border-color: rgba(14, 165, 233, 0.4);
+            color: #38bdf8;
+        }
+        .terminal-feed {
+            height: 380px;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: #38bdf8;
+            scrollbar-width: thin;
+            scrollbar-color: #1e293b transparent;
+        }
+        .terminal-feed::-webkit-scrollbar { width: 6px; }
+        .terminal-feed::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+
+        .t-row {
+            display: grid;
+            grid-template-columns: 1fr 30px 1fr 110px;
+            gap: 0;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.4);
+            align-items: center;
+        }
+        .t-row.threat { color: #f87171; background: rgba(239, 68, 68, 0.05); }
+        .t-row .t-arrow { text-align: center; color: #475569; }
+        .t-row .t-label {
+            text-align: right;
+            font-weight: 600;
+            padding-right: 0.5rem;
+        }
+        .t-row.threat .t-label { color: #fca5a5; }
+
+        /* Right Stats Panel */
+        .sim-stats-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .live-stat-card {
+            padding: 1.25rem;
+            text-align: center;
+        }
+        .live-stat-card .ls-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .live-stat-card .ls-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+        .ls-cyan { color: #38bdf8; }
+        .ls-green { color: #34d399; }
+        .ls-red { color: #f87171; }
+        .ls-orange { color: #fb923c; }
+
+        .threat-feed-card {
+            flex: 1;
+            padding: 1.25rem;
+            min-height: 120px;
+            overflow: hidden;
+        }
+        .threat-feed-card h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #f87171;
+            margin: 0 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .threat-feed-card h4 .pulse-dot {
+            width: 6px; height: 6px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+        .threat-feed-scroll {
+            max-height: 140px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .threat-feed-scroll::-webkit-scrollbar { display: none; }
+        .tf-line {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            color: #fca5a5;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.08);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ===== ENSEMBLE SECTION ===== */
+        .ensemble-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .feat-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .feat-tab {
+            background: rgba(51, 65, 85, 0.3);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            color: #94a3b8;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            transition: all 0.2s ease;
+        }
+        .feat-tab.active {
+            background: rgba(14, 165, 233, 0.15);
+            border-color: rgba(14, 165, 233, 0.4);
+            color: #38bdf8;
+        }
+        .feat-row {
+            margin-bottom: 1.25rem;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+        .feat-row:hover { background: rgba(14, 165, 233, 0.05); }
+        .feat-row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .feat-row-header span:first-child {
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+        .feat-row-header span:last-child {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #38bdf8;
+        }
+        .feat-bar-track {
+            height: 6px;
+            background: rgba(51, 65, 85, 0.5);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .feat-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
+        }
+        .feat-explain {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+            padding: 0.6rem 0.75rem;
+            background: rgba(2, 6, 23, 0.5);
+            border-left: 2px solid #0ea5e9;
+            border-radius: 0 6px 6px 0;
+            display: none;
+            line-height: 1.5;
+        }
+        .feat-row.open .feat-explain { display: block; animation: slideIn 0.3s ease; }
+
+        /* Ensemble Config Panel */
+        .ens-config-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 0 0 1.5rem 0;
+        }
+        .ens-checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .ens-chk-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            background: rgba(15, 23, 42, 0.5);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+        .ens-chk-label:hover {
+            border-color: rgba(14, 165, 233, 0.3);
+            background: rgba(14, 165, 233, 0.05);
+        }
+        .ens-chk-label input[type="checkbox"] {
+            width: 18px; height: 18px;
+            accent-color: #0ea5e9;
+            cursor: pointer;
+        }
+        .ens-metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .ens-metric-box {
+            text-align: center;
+            padding: 1.25rem;
+            background: rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            border-radius: 12px;
+            transition: border-color 0.3s ease;
+        }
+        .ens-metric-box:hover {
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+        .ens-metric-box .em-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #38bdf8;
+        }
+        .ens-metric-box .em-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        /* ===== FINDINGS SECTION ===== */
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .finding-card {
+            padding: 2rem;
+        }
+        .finding-card .fc-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 1.25rem;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            color: #38bdf8;
+        }
+        .finding-card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 0 0 0.75rem 0;
+        }
+        .finding-card p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* ===== REPORT MODAL ===== */
+        #report-modal {
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #report-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-box {
+            background: #0f172a;
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 550px;
+            padding: 2.5rem;
+            position: relative;
+        }
+        .modal-box h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin: 0 0 0.5rem 0;
+        }
+        .modal-box p { color: #94a3b8; margin-bottom: 1.5rem; }
+        .modal-close {
+            position: absolute;
+            top: 1rem; right: 1.25rem;
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: #f8fafc; }
+        .modal-chart-area { height: 280px; }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
-            .grid-2-col { grid-template-columns: 1fr; }
+            .nids-hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+            .hero-title-main { font-size: 2.8rem; }
+            .ps-grid { grid-template-columns: 1fr; }
+            .charts-grid { grid-template-columns: 1fr; }
+            .sim-grid { grid-template-columns: 1fr; }
+            .ensemble-grid { grid-template-columns: 1fr; }
+            .findings-grid { grid-template-columns: 1fr; }
+            .pipeline-track {
+                flex-direction: column;
+                align-items: center;
+            }
+            .pipeline-track::before {
+                top: 5%; bottom: 5%; left: 50%;
+                width: 2px; height: auto;
+                transform: translateX(-50%);
+            }
         }
-
-        /* Animations */
-        .fade-in-section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; will-change: opacity, visibility; }
-        .fade-in-section.visible { opacity: 1; transform: none; }
-
-        /* Section 1: Hero & Meta Card */
-        .paper-meta-card { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
-        .paper-details .paper-tag { background: rgba(14, 165, 233, 0.1); color: var(--accent-cyan); padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem; font-weight: 600; display: inline-block; margin-bottom: 1rem; }
-        .paper-authors { color: var(--text-secondary); margin-bottom: 0.5rem; }
-        .paper-affiliations { font-size: 0.9rem; color: var(--text-muted); }
-        .paper-download-action { display: flex; gap: 1rem; margin-top: 1rem; }
-
-        /* Section 2: Problem & Solution */
-        .card-problem { border-left: 4px solid #ef4444; }
-        .card-solution { border-left: 4px solid var(--accent-green); }
-        .icon-list { list-style: none; padding: 0; margin: 1.5rem 0 0 0; }
-        .icon-list li { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; color: var(--text-secondary); }
-        .icon-list li i { margin-top: 0.25rem; }
-        .card-problem .icon-list li i { color: #ef4444; }
-        .card-solution .icon-list li i { color: var(--accent-green); }
-
-        /* Section 3: ML Pipeline */
-        .pipeline-container { display: flex; align-items: stretch; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
-        .pipeline-step { flex: 1; min-width: 160px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; text-align: center; position: relative; opacity: 0; transform: translateY(20px); }
-        .pipeline-step.visible { animation: fadeInUp 0.6s forwards; }
-        .pipeline-step i { font-size: 2rem; margin-bottom: 1rem; color: var(--accent-cyan); }
-        .pipeline-step h4 { margin: 0 0 0.5rem 0; font-family: var(--font-heading); font-size: 1.1rem; }
-        .pipeline-step p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
-        
-        .pipeline-step:not(:last-child)::after {
-            content: '→'; position: absolute; right: -15px; top: 50%; transform: translateY(-50%);
-            color: var(--accent-cyan); font-size: 1.5rem; font-weight: bold; z-index: 10;
+        @media (max-width: 640px) {
+            .hero-title-main { font-size: 2.2rem; letter-spacing: -1px; }
+            .hero-mini-stats { grid-template-columns: 1fr; }
+            .ens-metrics-grid { grid-template-columns: 1fr; }
         }
-        @media (max-width: 1024px) {
-            .pipeline-step:not(:last-child)::after { content: '↓'; right: 50%; top: auto; bottom: -20px; transform: translateX(50%); }
-            .pipeline-container { flex-direction: column; }
-        }
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-
-        /* Section 4: Charts */
-        .chart-container { position: relative; height: 300px; width: 100%; }
-
-        /* Section 5: Live Simulator */
-        .sim-layout { display: flex; gap: 2rem; margin-top: 2rem; }
-        @media (max-width: 1024px) { .sim-layout { flex-direction: column; } }
-        
-        .sim-terminal { flex: 0 0 60%; background: #02040a; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
-        .sim-menubar { background: #1e293b; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
-        .sim-controls { display: flex; gap: 0.5rem; }
-        .sim-controls button { background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-family: var(--font-body); font-size: 0.85rem; }
-        .sim-controls button:hover { background: var(--border-color); color: #fff; }
-        .terminal-window { height: 350px; padding: 1rem; overflow-y: auto; font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-cyan); }
-        
-        .terminal-line { display: flex; justify-content: space-between; margin-bottom: 0.25rem; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 0.25rem; }
-        .terminal-line span { flex: 1; }
-        .terminal-line .label { flex: 0 0 100px; text-align: right; }
-        .terminal-line.attack { color: #ef4444; }
-        
-        .sim-stats { flex: 0 0 calc(40% - 2rem); display: flex; flex-direction: column; gap: 1rem; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .stat-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; text-align: center; }
-        .stat-box .value { font-size: 1.75rem; font-family: var(--font-heading); font-weight: bold; margin: 0.5rem 0 0 0; }
-        .stat-box.total .value { color: var(--accent-cyan); }
-        .stat-box.benign .value { color: var(--accent-green); }
-        .stat-box.threats .value { color: #ef4444; }
-        .stat-box.rate .value { color: var(--accent-purple); }
-        
-        .threat-alert-log { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; flex: 1; padding: 1rem; overflow-y: auto; max-height: 155px; }
-        .threat-alert-log h4 { color: #ef4444; margin: 0 0 0.5rem 0; font-size: 0.9rem; }
-        .alert-item { font-family: var(--font-mono); font-size: 0.75rem; color: #fca5a5; margin-bottom: 0.25rem; }
-
-        /* Section 6: Ensemble Config */
-        .feature-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        .tab-btn { background: transparent; border: none; color: var(--text-secondary); font-family: var(--font-heading); font-size: 1rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 4px; transition: var(--transition-smooth); }
-        .tab-btn.active { background: rgba(14, 165, 233, 0.1); color: var(--accent-cyan); font-weight: 600; }
-        
-        .feature-list { display: flex; flex-direction: column; gap: 1rem; }
-        .feature-item { margin-bottom: 0.5rem; cursor: pointer; }
-        .feature-item-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.25rem; }
-        .feature-bar-bg { background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden; }
-        .feature-bar-fill { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); height: 100%; border-radius: 4px; transition: width 0.5s ease; }
-        .feature-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; display: none; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px; }
-        .feature-item.active .feature-desc { display: block; }
-        
-        .ensemble-config { display: flex; flex-direction: column; gap: 1.5rem; }
-        .checkbox-group { display: flex; flex-direction: column; gap: 0.75rem; }
-        .checkbox-label { display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; cursor: pointer; }
-        .checkbox-label input { width: 18px; height: 18px; accent-color: var(--accent-cyan); }
-        
-        .metric-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .metric-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 1rem; text-align: center; }
-        .metric-box .label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; }
-        .metric-box .val { font-size: 1.5rem; font-family: var(--font-heading); color: var(--text-primary); font-weight: bold; margin-top: 0.25rem; }
-
-        /* Section 7: Key Findings (Reusing requested classes implicitly) */
-        .paper-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
-        .summary-doc-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; transition: transform 0.2s; }
-        .summary-doc-card:hover { transform: translateY(-5px); border-color: var(--accent-cyan); }
-        .summary-doc-card h3 { color: var(--text-primary); font-size: 1.25rem; margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-        .summary-doc-card h3 i { color: var(--accent-cyan); }
-
-        /* Modal Overlay */
-        #report-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
-        #report-modal-overlay.active { display: flex; opacity: 1; }
-        .modal-content { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 90%; max-width: 600px; padding: 2rem; position: relative; }
-        .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; }
-        .modal-chart-container { height: 300px; margin-top: 1.5rem; }
-
     </style>
 </head>
-<body>
+<body class="nids-page">
+
+    <!-- Animated Particle Background -->
+    <canvas id="particle-canvas"></canvas>
 
     <!-- Header -->
     <header class="main-header">
@@ -188,13 +828,13 @@
                 <span class="logo-bracket">/&gt;</span>
             </a>
             <nav class="nav-links">
-                <a href="index.html#about" class="nav-link ">About</a>
-                <a href="index.html#skills" class="nav-link ">Skills</a>
-                <a href="index.html#projects" class="nav-link ">Projects</a>
-                <a href="pipeline.html" class="nav-link "><i class="fa-solid fa-terminal"></i> ETL Console</a>
-                <a href="dashboard.html" class="nav-link "><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="index.html#skills" class="nav-link">Skills</a>
+                <a href="index.html#projects" class="nav-link">Projects</a>
+                <a href="pipeline.html" class="nav-link"><i class="fa-solid fa-terminal"></i> ETL Console</a>
+                <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
                 <a href="nids.html" class="nav-link active"><i class="fa-solid fa-shield-halved"></i> NIDS Lab</a>
-                <a href="xai.html" class="nav-link "><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
+                <a href="xai.html" class="nav-link"><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
             </nav>
             <div class="nav-actions">
                 <a href="mailto:sdsarchit2000@gmail.com" class="nav-btn" aria-label="Contact"><i class="fa-regular fa-envelope"></i> <span class="contact-text">Contact</span></a>
@@ -206,225 +846,275 @@
     </header>
 
     <main class="content-wrapper">
-        
-        <!-- SECTION 1: Hero + Dissertation Card -->
-        <section class="section fade-in-section">
-            <div class="section-subtitle">NETWORK INTRUSION DETECTION SYSTEM</div>
-            <h1 class="section-heading text-gradient">Ensemble Classifier Security Lab</h1>
-            <p class="section-lead">A comprehensive exploration of my B.Tech dissertation project, "Network Intrusion Detection Using Ensemble Classifier." This interactive laboratory demonstrates how integrating XGBoost, Random Forest, and Extra Trees can significantly enhance enterprise network security against modern cyber threats.</p>
-            
-            <div class="glass-card paper-meta-card">
-                <div class="paper-details">
-                    <span class="paper-tag"><i class="fa-solid fa-graduation-cap"></i> BVRIT Dissertation</span>
-                    <h3 style="margin:0 0 0.5rem 0;">Network Intrusion Detection Using Ensemble Classifier</h3>
-                    <div class="paper-authors">S. Durga Sai Archit</div>
-                    <div class="paper-affiliations">Department of Information Technology, BVRIT</div>
-                    
-                    <div class="paper-download-action">
-                        <a href="NIDS_Project_Report.pdf" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> Download Report</a>
-                        <a href="https://github.com/sdsarchit/network-intrusion-detection-ensemble" class="btn btn-secondary" target="_blank"><i class="fa-brands fa-github"></i> View GitHub Repo</a>
+
+        <!-- ===== HERO ===== -->
+        <section class="nids-hero reveal">
+            <div class="nids-hero-inner">
+                <div class="hero-left">
+                    <div class="hero-badge">
+                        <span class="dot-live"></span>
+                        B.Tech Dissertation Project
+                    </div>
+                    <h1 class="hero-title-main">
+                        Network Intrusion<br>Detection Using<br>
+                        <span class="line-gradient">Ensemble Classifier</span>
+                    </h1>
+                    <p class="hero-desc">
+                        A machine learning system that combines XGBoost, Random Forest, and Extra Trees
+                        through Hard Voting to detect cyber threats across 2.8M+ network flows
+                        with near-perfect accuracy on the CICIDS2017 benchmark.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="NIDS_Project_Report.pdf" class="btn-neon btn-neon-primary">
+                            <i class="fa-solid fa-file-pdf"></i> Download Report
+                        </a>
+                        <a href="https://github.com/sdsarchit/network-intrusion-detection-ensemble" target="_blank" class="btn-neon btn-neon-ghost">
+                            <i class="fa-brands fa-github"></i> View Source Code
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-stats-panel">
+                    <div class="cyber-card accuracy-showcase">
+                        <div class="acc-label">Ensemble Detection Accuracy</div>
+                        <div class="acc-number" id="hero-acc-counter">0.00</div>
+                        <div class="acc-suffix">% on CICIDS2017 — 2,830,743 Records</div>
+                    </div>
+                    <div class="hero-mini-stats">
+                        <div class="cyber-card hero-mini-stat">
+                            <div class="hms-value">47</div>
+                            <div class="hms-label">Features</div>
+                        </div>
+                        <div class="cyber-card hero-mini-stat">
+                            <div class="hms-value">7</div>
+                            <div class="hms-label">Attack Types</div>
+                        </div>
+                        <div class="cyber-card hero-mini-stat">
+                            <div class="hms-value">3</div>
+                            <div class="hms-label">Classifiers</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 2: The Problem & Solution -->
-        <section class="section fade-in-section">
-            <div class="grid-2-col">
-                <div class="glass-card card-problem">
-                    <h3 style="margin-top:0;">The Problem</h3>
-                    <p class="text-secondary">Traditional Intrusion Detection Systems struggle to keep pace with rapidly evolving attack vectors and massive data volumes.</p>
-                    <ul class="icon-list">
-                        <li><i class="fa-solid fa-circle-xmark"></i> <span><strong>High False Positives:</strong> Legacy systems flag benign traffic, causing alert fatigue for security operations.</span></li>
-                        <li><i class="fa-solid fa-stopwatch"></i> <span><strong>Slow Training Times:</strong> Traditional SVMs and deep learning models take too long to train on massive enterprise network logs.</span></li>
-                        <li><i class="fa-solid fa-chart-pie"></i> <span><strong>Imbalanced Data:</strong> Standard algorithms fail to detect rare zero-day threats hidden among millions of benign packets.</span></li>
+        <!-- ===== PROBLEM & SOLUTION ===== -->
+        <section class="nids-section reveal">
+            <div class="nids-section-label">Research Context</div>
+            <h2 class="nids-section-title">Why Ensemble Learning?</h2>
+            <p class="nids-section-desc">
+                Traditional single-model approaches have critical blind spots.
+                Our ensemble strategy eliminates them through consensus-based decision making.
+            </p>
+            <div class="ps-grid">
+                <div class="cyber-card ps-card problem">
+                    <h3><i class="fa-solid fa-triangle-exclamation"></i> The Problem</h3>
+                    <p>Legacy IDS technologies are losing the war against modern, polymorphic threats.</p>
+                    <ul class="ps-list">
+                        <li><i class="fa-solid fa-xmark"></i> <span><strong>Alert Fatigue</strong> — High false positive rates in signature-based systems overwhelm analysts, causing real threats to slip through.</span></li>
+                        <li><i class="fa-solid fa-xmark"></i> <span><strong>Single-Model Fragility</strong> — A lone SVM or neural network develops blind spots, making consistent misclassifications on novel attack patterns.</span></li>
+                        <li><i class="fa-solid fa-xmark"></i> <span><strong>Data Imbalance</strong> — With benign traffic outnumbering attacks 80:1, standard models are heavily biased toward the majority class.</span></li>
                     </ul>
                 </div>
-                <div class="glass-card card-solution">
-                    <h3 style="margin-top:0;">Our Solution</h3>
-                    <p class="text-secondary">A robust Ensemble Hard Voting mechanism combining three state-of-the-art tree-based classifiers for superior detection capabilities.</p>
-                    <ul class="icon-list">
-                        <li><i class="fa-solid fa-check-circle"></i> <span><strong>Ensemble Consensus:</strong> Combines predictions from XGBoost, Random Forest, and Extra Trees to eliminate single-model bias.</span></li>
-                        <li><i class="fa-solid fa-bolt"></i> <span><strong>High Throughput:</strong> Tree-based models offer rapid inference times suitable for real-time packet inspection.</span></li>
-                        <li><i class="fa-solid fa-shield-halved"></i> <span><strong>Accuracy & Reliability:</strong> Achieves 99.89% overall accuracy on the massive CICIDS2017 dataset with minimal false alarms.</span></li>
+                <div class="cyber-card ps-card solution">
+                    <h3><i class="fa-solid fa-shield-halved"></i> Our Solution</h3>
+                    <p>Hard Voting Ensemble — three independent decision-makers, one unified verdict.</p>
+                    <ul class="ps-list">
+                        <li><i class="fa-solid fa-check"></i> <span><strong>Consensus Detection</strong> — Majority voting across XGBoost, Random Forest, and Extra Trees eliminates individual model bias.</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span><strong>Real-Time Capable</strong> — Tree-based classifiers deliver sub-millisecond inference, enabling live packet analysis at enterprise scale.</span></li>
+                        <li><i class="fa-solid fa-check"></i> <span><strong>99.89% Accuracy</strong> — Validated on 2.8M records from CICIDS2017 with near-zero false alarm rate.</span></li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 3: ML Pipeline Architecture -->
-        <section class="section fade-in-section text-center">
-            <h2 class="section-heading">ML Pipeline Architecture</h2>
-            <p class="section-lead" style="margin: 0 auto;">End-to-end data flow from packet capture to threat detection.</p>
-            
-            <div class="pipeline-container">
-                <div class="pipeline-step" style="animation-delay: 0.1s;">
-                    <i class="fa-solid fa-database"></i>
-                    <h4>1. Data Ingestion</h4>
+        <!-- ===== PIPELINE ===== -->
+        <section class="nids-section reveal">
+            <div class="nids-section-label">System Architecture</div>
+            <h2 class="nids-section-title">ML Pipeline</h2>
+            <p class="nids-section-desc">
+                End-to-end data flow from raw packet capture to threat classification.
+            </p>
+            <div class="pipeline-track" id="pipeline-track">
+                <div class="pipe-node" style="--delay: 0.1s">
+                    <div class="pipe-icon"><i class="fa-solid fa-database"></i></div>
+                    <h4>Data Ingestion</h4>
                     <p>CICIDS2017 PCAP Logs</p>
                 </div>
-                <div class="pipeline-step" style="animation-delay: 0.3s;">
-                    <i class="fa-solid fa-filter"></i>
-                    <h4>2. Preprocessing</h4>
+                <div class="pipe-node" style="--delay: 0.25s">
+                    <div class="pipe-icon"><i class="fa-solid fa-filter"></i></div>
+                    <h4>Preprocessing</h4>
                     <p>47 Features Extracted</p>
                 </div>
-                <div class="pipeline-step" style="animation-delay: 0.5s;">
-                    <i class="fa-solid fa-brain"></i>
-                    <h4>3. Model Training</h4>
-                    <p>XGB + RF + ET</p>
+                <div class="pipe-node" style="--delay: 0.4s">
+                    <div class="pipe-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h4>Model Training</h4>
+                    <p>XGBoost + RF + ET</p>
                 </div>
-                <div class="pipeline-step" style="animation-delay: 0.7s;">
-                    <i class="fa-solid fa-check-to-slot"></i>
-                    <h4>4. Ensemble Voting</h4>
+                <div class="pipe-node" style="--delay: 0.55s">
+                    <div class="pipe-icon"><i class="fa-solid fa-check-to-slot"></i></div>
+                    <h4>Ensemble Voting</h4>
                     <p>Hard Majority Vote</p>
                 </div>
-                <div class="pipeline-step" style="animation-delay: 0.9s;">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <h4>5. Detection Output</h4>
-                    <p>Benign / Attack Classification</p>
+                <div class="pipe-node" style="--delay: 0.7s">
+                    <div class="pipe-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h4>Threat Output</h4>
+                    <p>Benign / Attack</p>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 4: Model Performance Comparison -->
-        <section class="section fade-in-section">
-            <div class="grid-2-col">
-                <div class="glass-card">
-                    <h3 style="margin-top:0; text-align:center;">Model Accuracy Comparison</h3>
-                    <div class="chart-container">
-                        <canvas id="accuracyChart"></canvas>
+        <!-- ===== CHARTS ===== -->
+        <section class="nids-section reveal">
+            <div class="nids-section-label">Evaluation Results</div>
+            <h2 class="nids-section-title">Model Performance</h2>
+            <p class="nids-section-desc">
+                Comparative accuracy across all classifiers and attack-type distribution
+                from the CICIDS2017 benchmark dataset.
+            </p>
+            <div class="charts-grid">
+                <div class="cyber-card chart-card">
+                    <h3>Classifier Accuracy Comparison</h3>
+                    <div class="chart-wrap"><canvas id="accuracyChart"></canvas></div>
+                </div>
+                <div class="cyber-card chart-card">
+                    <h3>CICIDS2017 Attack Distribution</h3>
+                    <div class="chart-wrap"><canvas id="datasetChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== LIVE SIMULATOR ===== -->
+        <section class="nids-section reveal">
+            <div class="nids-section-label">Interactive Demo</div>
+            <h2 class="nids-section-title">Live Detection Simulator</h2>
+            <p class="nids-section-desc">
+                Watch the ensemble classifier analyze network packets in real-time.
+                Threats are flagged in red as they pass through the detection pipeline.
+            </p>
+            <div class="sim-grid">
+                <div class="sim-terminal-card">
+                    <div class="sim-toolbar">
+                        <div class="sim-toolbar-title">
+                            <span class="dot-status"></span>
+                            nids_detector.py — live_stream
+                        </div>
+                        <div class="sim-toolbar-btns">
+                            <button class="sim-btn" id="t-start"><i class="fa-solid fa-play"></i> Start</button>
+                            <button class="sim-btn" id="t-stop"><i class="fa-solid fa-pause"></i> Pause</button>
+                            <button class="sim-btn" id="t-report"><i class="fa-solid fa-chart-pie"></i> Report</button>
+                        </div>
+                    </div>
+                    <div class="terminal-feed" id="terminal-feed">
+                        <div style="color: #475569; margin-bottom: 4px;">[SYSTEM] Initializing ensemble detection engine...</div>
+                        <div style="color: #475569; margin-bottom: 4px;">[SYSTEM] Loading XGBoost, RandomForest, ExtraTrees models...</div>
                     </div>
                 </div>
-                <div class="glass-card">
-                    <h3 style="margin-top:0; text-align:center;">CICIDS2017 Attack Distribution</h3>
-                    <div class="chart-container">
-                        <canvas id="datasetChart"></canvas>
+                <div class="sim-stats-col">
+                    <div class="cyber-card live-stat-card">
+                        <div class="ls-val ls-cyan" id="stat-total">0</div>
+                        <div class="ls-label">Packets Scanned</div>
+                    </div>
+                    <div class="cyber-card live-stat-card">
+                        <div class="ls-val ls-green" id="stat-benign">0</div>
+                        <div class="ls-label">Benign</div>
+                    </div>
+                    <div class="cyber-card live-stat-card">
+                        <div class="ls-val ls-red" id="stat-threats">0</div>
+                        <div class="ls-label">Threats</div>
+                    </div>
+                    <div class="cyber-card live-stat-card">
+                        <div class="ls-val ls-orange" id="stat-rate">0.0%</div>
+                        <div class="ls-label">Threat Rate</div>
+                    </div>
+                    <div class="cyber-card threat-feed-card">
+                        <h4><span class="pulse-dot"></span> Threat Alerts</h4>
+                        <div class="threat-feed-scroll" id="threat-log"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 5: Live Detection Simulator -->
-        <section class="section fade-in-section">
-            <h2 class="section-heading">Live Detection Simulator</h2>
-            <p class="section-lead">Simulating real-time inference on a network traffic stream.</p>
-            
-            <div class="sim-layout">
-                <div class="sim-terminal">
-                    <div class="sim-menubar">
-                        <div style="font-family: var(--font-mono); font-size: 0.9rem; color: #94a3b8;"><i class="fa-solid fa-terminal"></i> Network Traffic Stream</div>
-                        <div class="sim-controls">
-                            <button id="t-menu-start"><i class="fa-solid fa-play"></i> Start</button>
-                            <button id="t-menu-stop"><i class="fa-solid fa-stop"></i> Stop</button>
-                            <button id="t-menu-report"><i class="fa-solid fa-file-contract"></i> Report</button>
-                        </div>
+        <!-- ===== ENSEMBLE CONFIGURATION ===== -->
+        <section class="nids-section reveal">
+            <div class="nids-section-label">Model Analysis</div>
+            <h2 class="nids-section-title">Ensemble Configuration</h2>
+            <p class="nids-section-desc">
+                Explore learned feature importances per classifier and interactively
+                configure the voting ensemble to observe metric changes.
+            </p>
+            <div class="ensemble-grid">
+                <div class="cyber-card">
+                    <h3 style="font-family:'Space Grotesk',sans-serif; font-size:1.25rem; font-weight:600; color:#e2e8f0; margin:0 0 1.25rem 0;">
+                        Feature Importance
+                    </h3>
+                    <div class="feat-tabs">
+                        <button class="feat-tab active" data-model="xgb">XGBoost</button>
+                        <button class="feat-tab" data-model="rf">Random Forest</button>
+                        <button class="feat-tab" data-model="et">Extra Trees</button>
                     </div>
-                    <div class="terminal-window" id="terminal-output">
-                        <!-- Terminal lines will be injected here -->
-                        <div style="color: var(--text-muted);">[SYSTEM] Initializing detection engine...</div>
-                    </div>
+                    <div id="feature-bars"></div>
                 </div>
-                
-                <div class="sim-stats">
-                    <div class="stat-grid">
-                        <div class="stat-box total">
-                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Total Scanned</div>
-                            <div class="value" id="stat-total">0</div>
-                        </div>
-                        <div class="stat-box benign">
-                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Benign</div>
-                            <div class="value" id="stat-benign">0</div>
-                        </div>
-                        <div class="stat-box threats">
-                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Threats Detected</div>
-                            <div class="value" id="stat-threats">0</div>
-                        </div>
-                        <div class="stat-box rate">
-                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Threat Rate %</div>
-                            <div class="value" id="stat-rate">0.0%</div>
-                        </div>
-                    </div>
-                    
-                    <div class="threat-alert-log" id="threat-log-container">
-                        <h4><i class="fa-solid fa-triangle-exclamation"></i> Active Threat Log</h4>
-                        <div id="threat-log">
-                            <!-- Threat alerts go here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 6: Ensemble Configuration & Metrics -->
-        <section class="section fade-in-section">
-            <h2 class="section-heading">Ensemble Configuration</h2>
-            <p class="section-lead">Explore how different model combinations affect the overall evaluation metrics and examine the most important features learned by each base classifier.</p>
-            
-            <div class="grid-2-col">
-                <div class="glass-card">
-                    <h3 style="margin-top:0;">Feature Importance</h3>
-                    <div class="feature-tabs">
-                        <button class="tab-btn active" data-model="xgb">XGBoost</button>
-                        <button class="tab-btn" data-model="rf">Random Forest</button>
-                        <button class="tab-btn" data-model="et">Extra Trees</button>
-                    </div>
-                    <div class="feature-list" id="feature-bars">
-                        <!-- Rendered via JS -->
-                    </div>
-                </div>
-                
-                <div class="glass-card ensemble-config">
-                    <h3 style="margin-top:0;">Model Selection</h3>
-                    <div class="checkbox-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="check-xgb" checked> XGBoost Classifier
+                <div class="cyber-card ens-config-card">
+                    <h3>Voting Configuration</h3>
+                    <div class="ens-checkbox-group">
+                        <label class="ens-chk-label">
+                            <input type="checkbox" id="check-xgb" checked>
+                            <span>XGBoost Classifier <span style="color:#64748b; font-size:0.8rem;">— 99.91%</span></span>
                         </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="check-rf" checked> Random Forest Classifier
+                        <label class="ens-chk-label">
+                            <input type="checkbox" id="check-rf" checked>
+                            <span>Random Forest Classifier <span style="color:#64748b; font-size:0.8rem;">— 99.89%</span></span>
                         </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="check-et" checked> Extra Trees Classifier
+                        <label class="ens-chk-label">
+                            <input type="checkbox" id="check-et" checked>
+                            <span>Extra Trees Classifier <span style="color:#64748b; font-size:0.8rem;">— 99.81%</span></span>
                         </label>
                     </div>
-                    
-                    <h4 style="margin: 1rem 0 0 0; font-family: var(--font-heading); color: var(--text-secondary);">Ensemble Metrics</h4>
-                    <div class="metric-boxes">
-                        <div class="metric-box">
-                            <div class="label">Accuracy</div>
-                            <div class="val" id="ens-acc">99.89%</div>
+                    <h4 style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; text-transform:uppercase; letter-spacing:2px; color:#64748b; margin:0 0 1rem 0;">Ensemble Metrics</h4>
+                    <div class="ens-metrics-grid">
+                        <div class="ens-metric-box">
+                            <div class="em-val" id="ens-acc">99.89%</div>
+                            <div class="em-label">Accuracy</div>
                         </div>
-                        <div class="metric-box">
-                            <div class="label">Precision</div>
-                            <div class="val" id="ens-prec">0.99</div>
+                        <div class="ens-metric-box">
+                            <div class="em-val" id="ens-prec">0.99</div>
+                            <div class="em-label">Precision</div>
                         </div>
-                        <div class="metric-box">
-                            <div class="label">Recall</div>
-                            <div class="val" id="ens-rec">0.99</div>
+                        <div class="ens-metric-box">
+                            <div class="em-val" id="ens-rec">0.99</div>
+                            <div class="em-label">Recall</div>
                         </div>
-                        <div class="metric-box">
-                            <div class="label">F1-Score</div>
-                            <div class="val" id="ens-f1">0.99</div>
+                        <div class="ens-metric-box">
+                            <div class="em-val" id="ens-f1">0.99</div>
+                            <div class="em-label">F1-Score</div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 7: Key Findings Summary -->
-        <section class="section fade-in-section">
-            <h2 class="section-heading">Key Findings & Research Summary</h2>
-            <div class="paper-summary-grid">
-                <div class="summary-doc-card">
-                    <h3><i class="fa-solid fa-file-alt"></i> Abstract & Dataset</h3>
-                    <p class="text-secondary">The project utilized the <strong>CICIDS2017</strong> dataset, containing over 2.8 million records and 78 features. After rigorous preprocessing, features were reduced to 47 critical network characteristics, enabling robust evaluation across diverse attack profiles including DDoS, Web Attacks, and Botnets.</p>
+        <!-- ===== KEY FINDINGS ===== -->
+        <section class="nids-section reveal">
+            <div class="nids-section-label">Research Summary</div>
+            <h2 class="nids-section-title">Key Findings</h2>
+            <p class="nids-section-desc">
+                Core insights from the dissertation that validate the ensemble approach.
+            </p>
+            <div class="findings-grid">
+                <div class="cyber-card finding-card">
+                    <div class="fc-icon"><i class="fa-solid fa-database"></i></div>
+                    <h3>CICIDS2017 Dataset</h3>
+                    <p>Over 2.8 million labeled network flows across 78 features, reduced to 47 after feature engineering. Contains 7 distinct attack categories including DDoS, PortScan, DoS, Brute Force, Web Attacks, Botnets, and Infiltration.</p>
                 </div>
-                <div class="summary-doc-card">
-                    <h3><i class="fa-solid fa-layer-group"></i> Ensemble Paradigm</h3>
-                    <p class="text-secondary">By leveraging a <strong>Hard Voting Ensemble</strong>, the architecture combines the distinct decision boundaries of XGBoost, Random Forest, and Extra Trees. This approach drastically minimizes the variance seen in single-model deployments, resulting in highly stable intrusion detection.</p>
+                <div class="cyber-card finding-card">
+                    <div class="fc-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <h3>Ensemble Paradigm</h3>
+                    <p>Hard Voting merges the distinct decision boundaries of three tree classifiers. This consensus approach drastically minimizes variance and eliminates single-model blind spots, producing stable, reliable detection at scale.</p>
                 </div>
-                <div class="summary-doc-card">
-                    <h3><i class="fa-solid fa-chart-line"></i> Performance Highlights</h3>
-                    <p class="text-secondary">While XGBoost individually peaked at 99.91% accuracy, the Ensemble model delivered a superior balance with <strong>99.89% accuracy</strong> and a flawless False Positive tradeoff. This consensus-based detection proved specifically resilient against obfuscated attack patterns.</p>
+                <div class="cyber-card finding-card">
+                    <div class="fc-icon"><i class="fa-solid fa-chart-column"></i></div>
+                    <h3>Performance Edge</h3>
+                    <p>While XGBoost peaked at 99.91% individually, the ensemble achieved 99.89% with superior stability and near-zero false positives — critical for production deployment where false alarms erode analyst trust.</p>
                 </div>
             </div>
         </section>
@@ -443,18 +1133,15 @@
     </footer>
 
     <!-- Report Modal -->
-    <div id="report-modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal" id="close-modal-btn"><i class="fa-solid fa-times"></i></button>
-            <h3 style="margin-top:0; font-family: var(--font-heading); font-size: 1.5rem;">Live Session Report</h3>
-            <p class="text-secondary">Distribution of traffic processed during this active simulator session.</p>
-            <div class="modal-chart-container">
-                <canvas id="sessionReportChart"></canvas>
-            </div>
+    <div id="report-modal">
+        <div class="modal-box">
+            <button class="modal-close" id="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            <h3>Session Detection Report</h3>
+            <p>Traffic classification breakdown from the live simulator session.</p>
+            <div class="modal-chart-area"><canvas id="sessionChart"></canvas></div>
         </div>
     </div>
 
-    <!-- Script references -->
     <script src="security.js"></script>
     <script src="menu.js"></script>
     <script src="nids.js"></script>
