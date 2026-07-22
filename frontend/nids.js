@@ -1,9 +1,9 @@
 /* ==========================================================================
    ARCHIT SOMAYAJULA PORTFOLIO: VISUAL NIDS LAB CONTROLLER
-   Simulates Tkinter GUI, Matplotlib reporting canvas, and Ensemble Classifiers
+   Coordinates Cyber Dashboard, SVG Topology HUD, Ingest Ticker & Chart.js Reports
    ========================================================================== */
 
-// Real data points from interface_1.csv
+// Real data points from interface_1.csv (Benign network flows)
 const interface1Data = [
     { srcIp: "192.168.0.9", srcPort: "51250", dstIp: "157.240.15.60", dstPort: "443", protocol: "6", label: "BENIGN" },
     { srcIp: "192.168.0.9", srcPort: "51250", dstIp: "157.240.15.60", dstPort: "443", protocol: "6", label: "BENIGN" },
@@ -27,28 +27,53 @@ const interface1Data = [
     { srcIp: "192.168.0.9", srcPort: "51301", dstIp: "142.250.195.131", dstPort: "443", protocol: "6", label: "BENIGN" }
 ];
 
-// Mock data including various network attack intrusion vectors
+// Mock attack stream with malicious vectors
 const attackData = [
     { srcIp: "192.168.0.9", srcPort: "51250", dstIp: "157.240.15.60", dstPort: "443", protocol: "6", label: "BENIGN" },
-    { srcIp: "192.168.0.12", srcPort: "49202", dstIp: "192.168.0.1", dstPort: "80", protocol: "6", label: "DoS" },
-    { srcIp: "192.168.0.12", srcPort: "49203", dstIp: "192.168.0.1", dstPort: "80", protocol: "6", label: "DoS" },
+    { srcIp: "185.190.140.2", srcPort: "49202", dstIp: "192.168.0.10", dstPort: "80", protocol: "6", label: "DoS" },
+    { srcIp: "185.190.140.2", srcPort: "49203", dstIp: "192.168.0.10", dstPort: "80", protocol: "6", label: "DoS" },
     { srcIp: "192.168.0.9", srcPort: "51273", dstIp: "142.250.195.131", dstPort: "443", protocol: "6", label: "BENIGN" },
     { srcIp: "172.16.0.1", srcPort: "53112", dstIp: "192.168.0.10", dstPort: "22", protocol: "6", label: "SSH-Patator" },
     { srcIp: "172.16.0.1", srcPort: "53114", dstIp: "192.168.0.10", dstPort: "22", protocol: "6", label: "SSH-Patator" },
     { srcIp: "192.168.0.9", srcPort: "51288", dstIp: "52.184.87.25", dstPort: "443", protocol: "6", label: "BENIGN" },
-    { srcIp: "10.0.0.15", srcPort: "80", dstIp: "192.168.0.10", dstPort: "80", protocol: "6", label: "Web Attack" },
-    { srcIp: "185.190.140.2", srcPort: "34822", dstIp: "192.168.0.5", dstPort: "135", protocol: "6", label: "PortScan" },
-    { srcIp: "185.190.140.2", srcPort: "34823", dstIp: "192.168.0.5", dstPort: "137", protocol: "17", label: "PortScan" },
-    { srcIp: "185.190.140.2", srcPort: "34824", dstIp: "192.168.0.5", dstPort: "139", protocol: "6", label: "PortScan" },
-    { srcIp: "185.190.140.2", srcPort: "34825", dstIp: "192.168.0.5", dstPort: "445", protocol: "6", label: "PortScan" },
+    { srcIp: "185.190.140.2", srcPort: "80", dstIp: "192.168.0.10", dstPort: "80", protocol: "6", label: "Web Attack" },
+    { srcIp: "185.190.140.2", srcPort: "34822", dstIp: "192.168.0.10", dstPort: "135", protocol: "6", label: "PortScan" },
+    { srcIp: "185.190.140.2", srcPort: "34823", dstIp: "192.168.0.10", dstPort: "137", protocol: "17", label: "PortScan" },
+    { srcIp: "185.190.140.2", srcPort: "34824", dstIp: "192.168.0.10", dstPort: "139", protocol: "6", label: "PortScan" },
+    { srcIp: "185.190.140.2", srcPort: "34825", dstIp: "192.168.0.10", dstPort: "445", protocol: "6", label: "PortScan" },
     { srcIp: "192.168.0.9", srcPort: "5353", dstIp: "224.0.0.251", dstPort: "5353", protocol: "17", label: "BENIGN" },
-    { srcIp: "203.0.113.5", srcPort: "60112", dstIp: "192.168.0.8", dstPort: "8080", protocol: "6", label: "Bot" },
-    { srcIp: "203.0.113.5", srcPort: "60115", dstIp: "192.168.0.8", dstPort: "8080", protocol: "6", label: "Bot" },
-    { srcIp: "192.168.0.15", srcPort: "58221", dstIp: "192.168.0.1", dstPort: "80", protocol: "6", label: "DDoS" },
-    { srcIp: "192.168.0.16", srcPort: "58222", dstIp: "192.168.0.1", dstPort: "80", protocol: "6", label: "DDoS" },
-    { srcIp: "192.168.0.17", srcPort: "58223", dstIp: "192.168.0.1", dstPort: "80", protocol: "6", label: "DDoS" },
+    { srcIp: "172.16.0.1", srcPort: "60112", dstIp: "192.168.0.10", dstPort: "8080", protocol: "6", label: "Bot" },
+    { srcIp: "172.16.0.1", srcPort: "60115", dstIp: "192.168.0.10", dstPort: "8080", protocol: "6", label: "Bot" },
+    { srcIp: "185.190.140.2", srcPort: "58221", dstIp: "192.168.0.10", dstPort: "80", protocol: "6", label: "DDoS" },
+    { srcIp: "185.190.140.2", srcPort: "58222", dstIp: "192.168.0.10", dstPort: "80", protocol: "6", label: "DDoS" },
+    { srcIp: "185.190.140.2", srcPort: "58223", dstIp: "192.168.0.10", dstPort: "80", protocol: "6", label: "DDoS" },
     { srcIp: "192.168.0.9", srcPort: "51301", dstIp: "142.250.195.131", dstPort: "443", protocol: "6", label: "BENIGN" }
 ];
+
+// Relative feature importances matching Chapter 7 analysis
+const featureImportances = {
+    xgb: [
+        { name: "Flow Packets/s", val: 0.92 },
+        { name: "SYN Flag Count", val: 0.85 },
+        { name: "Fwd Packet Length Max", val: 0.74 },
+        { name: "Destination Port", val: 0.65 },
+        { name: "Flow Duration", val: 0.48 }
+    ],
+    rf: [
+        { name: "SYN Flag Count", val: 0.88 },
+        { name: "Flow Packets/s", val: 0.80 },
+        { name: "Destination Port", val: 0.76 },
+        { name: "Fwd Packet Length Max", val: 0.68 },
+        { name: "Flow Duration", val: 0.55 }
+    ],
+    et: [
+        { name: "Destination Port", val: 0.84 },
+        { name: "SYN Flag Count", val: 0.78 },
+        { name: "Fwd Packet Length Max", val: 0.70 },
+        { name: "Flow Packets/s", val: 0.64 },
+        { name: "Flow Duration", val: 0.60 }
+    ]
+};
 
 let selectedDataset = [];
 let processIndex = 0;
@@ -57,7 +82,21 @@ let currentDistribution = {};
 let isProcessing = false;
 let myPieChart = null;
 
+// Network Topology Particle Flow
+let particlesList = [];
+let topologyInterval = null;
+
 document.addEventListener("DOMContentLoaded", () => {
+    // Model Select Tab bindings
+    const modelButtons = document.querySelectorAll(".model-tab-btn");
+    modelButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            modelButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            renderFeatureImportance(btn.dataset.model);
+        });
+    });
+
     // Checkbox configuration listeners
     const checks = ["check-xgb", "check-rf", "check-et"];
     checks.forEach(id => {
@@ -65,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (el) el.addEventListener("change", updateEnsembleMetrics);
     });
 
-    // Menu Buttons Wire-up
+    // Ingest Control Buttons
     const btnStart = document.getElementById("t-menu-start");
     const btnStop = document.getElementById("t-menu-stop");
     const btnTest = document.getElementById("t-menu-test");
@@ -90,27 +129,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // OK button on warning alert popup
-    const btnAlertOk = document.getElementById("nids-alert-ok");
-    if (btnAlertOk) {
-        btnAlertOk.addEventListener("click", () => {
-            document.getElementById("nids-alert").style.display = "none";
-            // Resume detection processing loop
-            resumeDetectionLoop();
-        });
-    }
-
     // Close Report Modal
-    const btnCloseReport = document.getElementById("close-report-btn");
-    if (btnCloseReport) {
-        btnCloseReport.addEventListener("click", () => {
-            document.getElementById("nids-report-window").style.display = "none";
+    const btnCloseModal = document.getElementById("close-modal-btn");
+    if (btnCloseModal) {
+        btnCloseModal.addEventListener("click", () => {
+            document.getElementById("report-modal-overlay").style.display = "none";
         });
     }
 
-    // Initial terminal reset
+    // Initial renders
     resetTerminal();
     updateEnsembleMetrics();
+    renderFeatureImportance("xgb");
+    initTopologyLoop();
 });
 
 /* ==========================================================================
@@ -127,18 +158,41 @@ function logToTerminal(text) {
 function resetTerminal() {
     const term = document.getElementById("nids-terminal");
     if (term) {
-        term.innerText = "\n {:<18}   {:<18}   {:<18}   {:<18}   {:<18}\n".replace(/{:<18}/g, "                  ")
-            .replace("                  ", "Source IP")
-            .replace("                  ", "Source Port")
-            .replace("                  ", "Destination IP")
-            .replace("                  ", "Destination Port")
-            .replace("                  ", "Label");
-        term.innerText += "---------------------------------------------------------------------------------------\n";
+        term.innerText = "\n {:<18}   {:<18}   {:<18}   {:<18}   {:<18}\n".replace(/{:<18}/g, "                 ")
+            .replace("                 ", "Source IP")
+            .replace("                 ", "Source Port")
+            .replace("                 ", "Destination IP")
+            .replace("                 ", "Destination Port")
+            .replace("                 ", "Label");
+        term.innerText += "------------------------------------------------------------------------------------\n";
+    }
+    
+    // Clear alerts ticker
+    const ticker = document.getElementById("nids-threat-ticker");
+    if (ticker) {
+        ticker.innerHTML = `<div class="ticker-line" style="color: var(--text-muted);"><i class="fa-solid fa-circle-info"></i> Waiting for threat occurrences...</div>`;
+    }
+}
+
+function pushAlert(type, srcIp, dstPort) {
+    const ticker = document.getElementById("nids-threat-ticker");
+    if (ticker) {
+        // Remove empty state
+        if (ticker.innerHTML.includes("Waiting for threat")) {
+            ticker.innerHTML = "";
+        }
+        ticker.innerHTML += `
+            <div class="ticker-line">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                [ALERT] IP: ${srcIp} ➔ Port: ${dstPort} | Intrusion of type '${type}' detected!
+            </div>
+        `;
+        ticker.scrollTop = ticker.scrollHeight;
     }
 }
 
 /* ==========================================================================
-   DETECTION ORCHESTRATOR
+   DETECTION PROCESS LOOP
    ========================================================================== */
 function startDetection() {
     if (isProcessing) return;
@@ -147,7 +201,6 @@ function startDetection() {
         return;
     }
 
-    // Toggle menu highlight state
     document.getElementById("t-menu-start").classList.add("active");
     document.getElementById("t-menu-stop").classList.remove("active");
 
@@ -156,11 +209,6 @@ function startDetection() {
     currentDistribution = { "No Intrusion": 0 };
     resetTerminal();
     
-    resumeDetectionLoop();
-}
-
-function resumeDetectionLoop() {
-    if (!isProcessing) return;
     processInterval = setInterval(processNextRecord, 250);
 }
 
@@ -179,33 +227,29 @@ function processNextRecord() {
         k = "No Intrusion";
     }
 
-    // Increment distribution metrics
+    // Increment metrics
     currentDistribution[k] = (currentDistribution[k] || 0) + 1;
 
-    // Output line
+    // Output to emulator
     const formatLine = (ip1, p1, ip2, p2, lbl) => {
-        return ` ${ip1.padEnd(18)}   ${p1.padEnd(18)}   ${ip2.padEnd(18)}   ${p2.padEnd(18)}   ${lbl}\n`;
+        return ` ${ip1.padEnd(17)}   ${p1.padEnd(17)}   ${ip2.padEnd(17)}   ${p2.padEnd(17)}   ${lbl}\n`;
     };
 
     const outLine = formatLine(row.srcIp, row.srcPort, row.dstIp, row.dstPort, k);
     logToTerminal(outLine);
 
-    processIndex++;
+    // Dynamic topology packet flows
+    spawnTopologyPacket(row.label);
 
-    // If an intrusion attack is detected, pause and trigger Tkinter pop-up
+    // Non-blocking alert logs
     if (k !== "No Intrusion") {
-        clearInterval(processInterval);
-        showIntrusionAlert(k);
+        pushAlert(k, row.srcIp, row.dstPort);
+        triggerNodeHighlights(true);
+    } else {
+        triggerNodeHighlights(false);
     }
-}
 
-function showIntrusionAlert(type) {
-    const modal = document.getElementById("nids-alert");
-    const msg = document.getElementById("nids-alert-message");
-    if (modal && msg) {
-        msg.innerText = `Intrusion Of Type '${type}' Detected!`;
-        modal.style.display = "flex";
-    }
+    processIndex++;
 }
 
 function stopDetection() {
@@ -227,17 +271,120 @@ function runTestMode() {
 }
 
 /* ==========================================================================
-   MATPLOTLIB PIE CHART REPORT MODULE
+   INTERACTIVE SVGs FEATURE CHART RENDER
+   ========================================================================== */
+function renderFeatureImportance(model) {
+    const container = document.getElementById("feature-importance-bars");
+    if (!container) return;
+
+    container.innerHTML = "";
+    const list = featureImportances[model];
+    
+    list.forEach(f => {
+        const percent = Math.round(f.val * 100);
+        container.innerHTML += `
+            <div class="feature-bar-row">
+                <span class="feature-lbl">${f.name}</span>
+                <div class="feature-track">
+                    <div class="feature-fill" style="width: ${percent}%;"></div>
+                </div>
+                <span class="feature-val">${f.val.toFixed(2)}</span>
+            </div>
+        `;
+    });
+}
+
+/* ==========================================================================
+   SVG TOPOLOGY PACKET ANIMATIONS
+   ========================================================================== */
+function initTopologyLoop() {
+    if (topologyInterval) clearInterval(topologyInterval);
+    topologyInterval = setInterval(animateTopologyParticles, 35);
+}
+
+function spawnTopologyPacket(label) {
+    const isAttack = label !== "BENIGN";
+    const startY = isAttack ? 40 : 120;
+    particlesList.push({
+        x: 60,
+        y: startY,
+        progress: 0,
+        isAttack: isAttack,
+        speed: 0.02 + Math.random() * 0.015
+    });
+}
+
+function animateTopologyParticles() {
+    const particleGroup = document.getElementById("topology-flow-particles");
+    if (!particleGroup) return;
+
+    particlesList.forEach(p => {
+        p.progress += p.speed;
+        
+        // Attacker -> Router -> IDS -> FW -> Server routing coordinates
+        if (p.progress <= 0.3) {
+            // Path 1: Source (60) to Router (200)
+            const t = p.progress / 0.3;
+            p.x = 60 + (200 - 60) * t;
+            const startY = p.isAttack ? 40 : 120;
+            p.y = startY + (80 - startY) * t;
+        } else if (p.progress <= 0.5) {
+            // Path 2: Router (200) to IDS (300)
+            const t = (p.progress - 0.3) / 0.2;
+            p.x = 200 + (300 - 200) * t;
+            p.y = 80;
+        } else if (p.progress <= 0.7) {
+            // Path 3: IDS (300) to FW (400)
+            const t = (p.progress - 0.5) / 0.2;
+            p.x = 300 + (400 - 300) * t;
+            p.y = 80;
+        } else {
+            // Path 4: FW (400) to Server (540)
+            const t = (p.progress - 0.7) / 0.3;
+            p.x = 400 + (540 - 400) * t;
+            p.y = 80;
+        }
+    });
+
+    // Remove finished particles
+    particlesList = particlesList.filter(p => p.progress < 1.0);
+
+    // Render
+    particleGroup.innerHTML = particlesList.map(p => `
+        <circle cx="${p.x}" cy="${p.y}" r="${p.isAttack ? 2.5 : 2}" 
+                fill="${p.isAttack ? '#ef4444' : '#10b981'}" 
+                filter="drop-shadow(0 0 3px ${p.isAttack ? '#ef4444' : '#10b981'})"></circle>
+    `).join("");
+}
+
+function triggerNodeHighlights(isAttack) {
+    const idsNode = document.getElementById("node-ids");
+    const fwNode = document.getElementById("node-firewall");
+    const serverNode = document.getElementById("node-server");
+
+    if (isAttack) {
+        if (idsNode) idsNode.setAttribute("stroke", "#ef4444");
+        if (fwNode) fwNode.setAttribute("stroke", "#ef4444");
+        if (serverNode) serverNode.setAttribute("stroke", "#ef4444");
+    } else {
+        if (idsNode) idsNode.setAttribute("stroke", "#8b5cf6");
+        if (fwNode) fwNode.setAttribute("stroke", "#f59e0b");
+        if (serverNode) serverNode.setAttribute("stroke", "#0ea5e9");
+    }
+}
+
+/* ==========================================================================
+   REPORT CANVAS POPUP (MATPLOTLIB PIE CHART)
    ========================================================================== */
 function openReportWindow() {
     if (Object.keys(currentDistribution).length <= 1 && currentDistribution["No Intrusion"] === 0) {
-        alert("No detection report data available. Please select a CSV and run the detector first!");
+        alert("No detection data available. Please select a CSV and run the detector first!");
         return;
     }
 
-    const reportWin = document.getElementById("nids-report-window");
-    if (reportWin) {
-        reportWin.style.display = "flex";
+    const modal = document.getElementById("report-modal-overlay");
+    if (modal) {
+        modal.style.display = "flex";
         renderReportPieChart();
     }
 }
@@ -256,15 +403,15 @@ function renderReportPieChart() {
     });
     const benignCount = currentDistribution["No Intrusion"] || 0;
 
-    // Update Summary Texts (matches ax2.text details from Section 7.5)
-    const summaryTextEl = document.getElementById("report-summary-text");
-    if (summaryTextEl) {
-        summaryTextEl.innerHTML = `
-            <h3>Matplotlib Analytics</h3>
+    // Summary texts
+    const textEl = document.getElementById("report-summary-text");
+    if (textEl) {
+        textEl.innerHTML = `
+            <h3>Report Analytics</h3>
             <p><strong>Number of Intruders:</strong> ${s}</p>
             <p><strong>Number of Non-Intruders:</strong> ${benignCount}</p>
             <p><strong>Total Scanned Flows:</strong> ${s + benignCount}</p>
-            <p style="color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem;">CICIDS2017 Ensemble Pipeline</p>
+            <p style="color: var(--text-muted); font-size: 0.72rem; font-family: monospace; margin-top: 1rem;">CICIDS2017 Ensemble Pipeline</p>
         `;
     }
 
@@ -272,7 +419,6 @@ function renderReportPieChart() {
         myPieChart.destroy();
     }
 
-    // Chart.js matches tkinter pie distribution colors
     myPieChart = new Chart(canvas, {
         type: 'pie',
         data: {
@@ -280,12 +426,12 @@ function renderReportPieChart() {
             datasets: [{
                 data: data,
                 backgroundColor: [
-                    '#3b82f6', // Benign Blue
+                    '#0ea5e9', // Benign Blue
                     '#ef4444', // Red
                     '#f59e0b', // Yellow
                     '#10b981', // Green
                     '#8b5cf6', // Purple
-                    '#f97316'  // Orange
+                    '#6366f1'  // Indigo
                 ],
                 borderWidth: 1,
                 borderColor: '#1e293b'
@@ -301,7 +447,7 @@ function renderReportPieChart() {
                         color: '#cbd5e1',
                         font: {
                             family: 'monospace',
-                            size: 11
+                            size: 10
                         }
                     }
                 }
@@ -311,7 +457,7 @@ function renderReportPieChart() {
 }
 
 /* ==========================================================================
-   ENSEMBLE MODEL COMBINATOR MATH
+   ENSEMBLE ENSEMBLE CLASSIFIERS METRICS MATH
    ========================================================================== */
 function updateEnsembleMetrics() {
     const xgb = document.getElementById("check-xgb").checked;
@@ -323,7 +469,6 @@ function updateEnsembleMetrics() {
     let rec = "0.00";
     let f1 = "0.00";
 
-    // Matching Section 7.2 and 7.3 Ensemble outcomes exactly:
     if (xgb && rf && et) {
         acc = "99.89%";
         prec = "0.99";
@@ -361,7 +506,6 @@ function updateEnsembleMetrics() {
         f1 = "0.99";
     }
 
-    // Update frontend
     document.getElementById("ens-acc").innerText = acc;
     document.getElementById("ens-prec").innerText = prec;
     document.getElementById("ens-rec").innerText = rec;
