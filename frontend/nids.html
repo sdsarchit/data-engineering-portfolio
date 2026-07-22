@@ -3,450 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIDS Ensemble Security Lab | Archit Somayajula Portfolio</title>
+    <title>NIDS Security Lab | Archit.DE</title>
     
-    <!-- Modern Typography & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Styling Sheet -->
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Premium Cyber Security Control Dashboard Styles -->
     <style>
-        .cyber-dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 2rem;
+        /* Fallback CSS Variables if styles.css doesn't cover all */
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --accent-cyan: #0ea5e9;
+            --accent-purple: #f97316;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'Consolas', 'Courier New', monospace;
+            --transition-smooth: all 0.2s ease-in-out;
         }
 
-        .cyber-span-all {
-            grid-column: 1 / -1;
-        }
-
-        @media (max-width: 1024px) {
-            .cyber-dashboard {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Cyberpunk Panel Card Base */
-        .cyber-panel {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            padding: 1.5rem;
-            position: relative;
-            backdrop-filter: blur(12px);
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            transition: var(--transition-smooth);
-        }
-
-        .cyber-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-            opacity: 0.8;
-        }
-
-        .cyber-panel:hover {
-            border-color: #334155;
-            box-shadow: 0 10px 40px rgba(14, 165, 233, 0.08);
-        }
-
-        .cyber-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #1e293b;
-            padding-bottom: 0.8rem;
-            margin-bottom: 1.2rem;
-        }
-
-        .cyber-panel-title {
-            font-family: var(--font-heading);
-            font-size: 1.15rem;
-            font-weight: 700;
+        body {
+            background-color: var(--bg-dark);
             color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            letter-spacing: 0.5px;
-        }
-
-        .cyber-panel-title i {
-            color: var(--accent-cyan);
-            filter: drop-shadow(0 0 5px var(--accent-cyan));
-        }
-
-        /* SLEEK TERMINAL SIMULATOR */
-        .terminal-container {
-            background: #02040a;
-            border: 1px solid #1e293b;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            height: 340px;
-            overflow: hidden;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
-        }
-
-        .terminal-header {
-            background: #0b0f19;
-            padding: 0.6rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        .terminal-controls {
-            display: flex;
-            gap: 0.4rem;
-        }
-
-        .terminal-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #334155;
-        }
-        .terminal-dot.close { background: #ef4444; }
-        .terminal-dot.minimize { background: #eab308; }
-        .terminal-dot.maximize { background: #10b981; }
-
-        .terminal-menubar {
-            background: #070a13;
-            border-bottom: 1px solid #1e293b;
-            display: flex;
-            padding: 0.4rem 0.8rem;
-            gap: 0.8rem;
-            align-items: center;
-        }
-
-        .terminal-menu-btn {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.05);
-            color: #94a3b8;
-            font-size: 0.78rem;
-            padding: 0.4rem 0.9rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: var(--font-mono);
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .terminal-menu-btn:hover {
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            border-color: var(--accent-cyan);
-        }
-
-        .terminal-menu-btn.active {
-            background: rgba(14, 165, 233, 0.15);
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-            font-weight: 600;
-            box-shadow: 0 0 10px rgba(14,165,233,0.15);
-        }
-
-        .terminal-logs {
-            flex: 1;
-            padding: 1rem;
-            font-family: var(--font-mono);
-            font-size: 0.78rem;
-            color: #38bdf8; /* Cyan terminal output */
-            overflow-y: auto;
-            white-space: pre-wrap;
+            font-family: var(--font-body);
+            margin: 0;
+            padding: 0;
             line-height: 1.6;
         }
 
-        /* INLINE ALERTS LOG */
-        .threat-alert-ticker {
-            background: rgba(239, 68, 68, 0.02);
-            border: 1px solid rgba(239, 68, 68, 0.1);
-            border-radius: 8px;
-            padding: 0.8rem 1rem;
-            height: 110px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            box-shadow: inset 0 0 10px rgba(239,68,68,0.02);
+        /* Layout & Utilities */
+        .content-wrapper { max-width: 1200px; margin: 0 auto; padding: 100px 2rem 60px 2rem; }
+        .section { padding: 4rem 0; border-bottom: 1px solid var(--border-color); }
+        .section:last-child { border-bottom: none; }
+        .section-heading { font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+        .section-subtitle { font-family: var(--font-mono); color: var(--accent-cyan); font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; }
+        .section-lead { font-size: 1.1rem; color: var(--text-secondary); max-width: 800px; margin-bottom: 2rem; }
+        
+        .text-center { text-align: center; }
+        .text-gradient { background: linear-gradient(to right, var(--accent-cyan), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; }
+        
+        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: var(--transition-smooth); text-decoration: none; border: none; font-family: var(--font-body); }
+        .btn-primary { background: var(--accent-cyan); color: #fff; }
+        .btn-primary:hover { background: #0284c7; }
+        .btn-secondary { background: transparent; border: 1px solid var(--accent-cyan); color: var(--accent-cyan); }
+        .btn-secondary:hover { background: rgba(14, 165, 233, 0.1); }
+        
+        /* Grid Layouts */
+        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 1024px) {
+            .grid-2-col { grid-template-columns: 1fr; }
         }
 
-        .ticker-line {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            color: #ef4444;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            animation: slideInLeft 0.15s ease-out;
-        }
+        /* Animations */
+        .fade-in-section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; will-change: opacity, visibility; }
+        .fade-in-section.visible { opacity: 1; transform: none; }
 
-        @keyframes slideInLeft {
-            0% { transform: translateX(-10px); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
+        /* Section 1: Hero & Meta Card */
+        .paper-meta-card { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+        .paper-details .paper-tag { background: rgba(14, 165, 233, 0.1); color: var(--accent-cyan); padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.875rem; font-weight: 600; display: inline-block; margin-bottom: 1rem; }
+        .paper-authors { color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .paper-affiliations { font-size: 0.9rem; color: var(--text-muted); }
+        .paper-download-action { display: flex; gap: 1rem; margin-top: 1rem; }
 
-        /* TOPOLOGY HUD SVG */
-        .topology-hud {
-            width: 100%;
-            height: 180px;
-            background: #020617;
-            border: 1px solid #1e293b;
-            border-radius: 8px;
-            padding: 0.5rem;
-            position: relative;
-            overflow: hidden;
-        }
+        /* Section 2: Problem & Solution */
+        .card-problem { border-left: 4px solid #ef4444; }
+        .card-solution { border-left: 4px solid var(--accent-green); }
+        .icon-list { list-style: none; padding: 0; margin: 1.5rem 0 0 0; }
+        .icon-list li { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; color: var(--text-secondary); }
+        .icon-list li i { margin-top: 0.25rem; }
+        .card-problem .icon-list li i { color: #ef4444; }
+        .card-solution .icon-list li i { color: var(--accent-green); }
 
-        .node-label {
-            font-size: 8px;
-            fill: #cbd5e1;
-            font-weight: 600;
-            text-anchor: middle;
+        /* Section 3: ML Pipeline */
+        .pipeline-container { display: flex; align-items: stretch; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+        .pipeline-step { flex: 1; min-width: 160px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; text-align: center; position: relative; opacity: 0; transform: translateY(20px); }
+        .pipeline-step.visible { animation: fadeInUp 0.6s forwards; }
+        .pipeline-step i { font-size: 2rem; margin-bottom: 1rem; color: var(--accent-cyan); }
+        .pipeline-step h4 { margin: 0 0 0.5rem 0; font-family: var(--font-heading); font-size: 1.1rem; }
+        .pipeline-step p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+        
+        .pipeline-step:not(:last-child)::after {
+            content: '→'; position: absolute; right: -15px; top: 50%; transform: translateY(-50%);
+            color: var(--accent-cyan); font-size: 1.5rem; font-weight: bold; z-index: 10;
         }
+        @media (max-width: 1024px) {
+            .pipeline-step:not(:last-child)::after { content: '↓'; right: 50%; top: auto; bottom: -20px; transform: translateX(50%); }
+            .pipeline-container { flex-direction: column; }
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
-        .node-ip {
-            font-size: 7px;
-            fill: #64748b;
-            text-anchor: middle;
-        }
+        /* Section 4: Charts */
+        .chart-container { position: relative; height: 300px; width: 100%; }
 
-        /* FEATURE IMPORTANCE GRAPH */
-        .feature-bar-row {
-            display: grid;
-            grid-template-columns: 140px 1fr 45px;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 0.85rem;
-            padding: 0.4rem;
-            border-radius: 6px;
-            transition: var(--transition-smooth);
-            cursor: pointer;
-        }
+        /* Section 5: Live Simulator */
+        .sim-layout { display: flex; gap: 2rem; margin-top: 2rem; }
+        @media (max-width: 1024px) { .sim-layout { flex-direction: column; } }
+        
+        .sim-terminal { flex: 0 0 60%; background: #02040a; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+        .sim-menubar { background: #1e293b; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .sim-controls { display: flex; gap: 0.5rem; }
+        .sim-controls button { background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.25rem 0.75rem; border-radius: 4px; cursor: pointer; font-family: var(--font-body); font-size: 0.85rem; }
+        .sim-controls button:hover { background: var(--border-color); color: #fff; }
+        .terminal-window { height: 350px; padding: 1rem; overflow-y: auto; font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-cyan); }
+        
+        .terminal-line { display: flex; justify-content: space-between; margin-bottom: 0.25rem; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 0.25rem; }
+        .terminal-line span { flex: 1; }
+        .terminal-line .label { flex: 0 0 100px; text-align: right; }
+        .terminal-line.attack { color: #ef4444; }
+        
+        .sim-stats { flex: 0 0 calc(40% - 2rem); display: flex; flex-direction: column; gap: 1rem; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .stat-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; text-align: center; }
+        .stat-box .value { font-size: 1.75rem; font-family: var(--font-heading); font-weight: bold; margin: 0.5rem 0 0 0; }
+        .stat-box.total .value { color: var(--accent-cyan); }
+        .stat-box.benign .value { color: var(--accent-green); }
+        .stat-box.threats .value { color: #ef4444; }
+        .stat-box.rate .value { color: var(--accent-purple); }
+        
+        .threat-alert-log { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; flex: 1; padding: 1rem; overflow-y: auto; max-height: 155px; }
+        .threat-alert-log h4 { color: #ef4444; margin: 0 0 0.5rem 0; font-size: 0.9rem; }
+        .alert-item { font-family: var(--font-mono); font-size: 0.75rem; color: #fca5a5; margin-bottom: 0.25rem; }
 
-        .feature-bar-row:hover {
-            background: rgba(255,255,255,0.02);
-        }
+        /* Section 6: Ensemble Config */
+        .feature-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        .tab-btn { background: transparent; border: none; color: var(--text-secondary); font-family: var(--font-heading); font-size: 1rem; cursor: pointer; padding: 0.5rem 1rem; border-radius: 4px; transition: var(--transition-smooth); }
+        .tab-btn.active { background: rgba(14, 165, 233, 0.1); color: var(--accent-cyan); font-weight: 600; }
+        
+        .feature-list { display: flex; flex-direction: column; gap: 1rem; }
+        .feature-item { margin-bottom: 0.5rem; cursor: pointer; }
+        .feature-item-header { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.25rem; }
+        .feature-bar-bg { background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden; }
+        .feature-bar-fill { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        .feature-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; display: none; background: rgba(0,0,0,0.2); padding: 0.5rem; border-radius: 4px; }
+        .feature-item.active .feature-desc { display: block; }
+        
+        .ensemble-config { display: flex; flex-direction: column; gap: 1.5rem; }
+        .checkbox-group { display: flex; flex-direction: column; gap: 0.75rem; }
+        .checkbox-label { display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; cursor: pointer; }
+        .checkbox-label input { width: 18px; height: 18px; accent-color: var(--accent-cyan); }
+        
+        .metric-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .metric-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 1rem; text-align: center; }
+        .metric-box .label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; }
+        .metric-box .val { font-size: 1.5rem; font-family: var(--font-heading); color: var(--text-primary); font-weight: bold; margin-top: 0.25rem; }
 
-        .feature-lbl {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        /* Section 7: Key Findings (Reusing requested classes implicitly) */
+        .paper-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .summary-doc-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; transition: transform 0.2s; }
+        .summary-doc-card:hover { transform: translateY(-5px); border-color: var(--accent-cyan); }
+        .summary-doc-card h3 { color: var(--text-primary); font-size: 1.25rem; margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .summary-doc-card h3 i { color: var(--accent-cyan); }
 
-        .feature-track {
-            height: 8px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 4px;
-            overflow: hidden;
-        }
+        /* Modal Overlay */
+        #report-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        #report-modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; width: 90%; max-width: 600px; padding: 2rem; position: relative; }
+        .close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; }
+        .modal-chart-container { height: 300px; margin-top: 1.5rem; }
 
-        .feature-fill {
-            height: 100%;
-            border-radius: 4px;
-            background: linear-gradient(90deg, #0ea5e9, #6366f1);
-            width: 0%;
-            transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        .feature-val {
-            font-size: 0.8rem;
-            color: var(--accent-cyan);
-            font-family: var(--font-mono);
-            text-align: right;
-        }
-
-        .feature-explainer-box {
-            margin-top: 1rem;
-            padding: 0.8rem;
-            background: rgba(14, 165, 233, 0.03);
-            border-left: 2px solid var(--accent-cyan);
-            border-radius: 0 6px 6px 0;
-            font-size: 0.78rem;
-            line-height: 1.5;
-            color: #cbd5e1;
-            min-height: 52px;
-        }
-
-        /* Mode comparison select tabs */
-        .model-select-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .model-tab-btn {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid #1e293b;
-            color: #94a3b8;
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-
-        .model-tab-btn:hover {
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-        }
-
-        .model-tab-btn.active {
-            background: rgba(14, 165, 233, 0.1);
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-            font-weight: 600;
-        }
-
-        /* SIDE-BY-SIDE MODEL CARDS */
-        .model-details-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        @media (max-width: 640px) {
-            .model-details-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .model-detail-card {
-            background: rgba(255,255,255,0.01);
-            border: 1px solid #1e293b;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            transition: var(--transition-smooth);
-        }
-
-        .model-detail-card:hover {
-            border-color: var(--accent-cyan);
-            background: rgba(14, 165, 233, 0.02);
-        }
-
-        .model-detail-title {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #cbd5e1;
-            margin-bottom: 0.4rem;
-        }
-
-        .model-detail-acc {
-            font-family: var(--font-mono);
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--accent-cyan);
-        }
-
-        .model-detail-meta {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            margin-top: 0.3rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Radar scan wave effect */
-        @keyframes pulse-ring {
-            0% { transform: scale(0.6); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: scale(1.6); opacity: 0; }
-        }
-
-        .pulsing-ring {
-            transform-origin: center;
-            animation: pulse-ring 2s infinite ease-out;
-        }
-
-        /* Report Mock Popup window styles */
-        .nids-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(4px);
-            z-index: 200;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .report-modal {
-            background: #0f172a;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            width: 720px;
-            max-width: 90%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            animation: modalFadeIn 0.3s ease-out;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .modal-header {
-            padding: 1rem 1.5rem;
-            background: #020617;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .modal-body {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
-
-    <!-- Chart.js for Pie Chart rendering -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="security.js"></script>
-    <script src="menu.js"></script>
 </head>
 <body>
-    <!-- Premium Ambient Glow Vectors -->
-    <div class="glow-sphere sphere-1"></div>
-    <div class="glow-sphere sphere-2"></div>
-    <div class="glow-sphere sphere-3"></div>
 
-    <!-- Sticky Navigation Header -->
+    <!-- Header -->
     <header class="main-header">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
@@ -473,305 +206,232 @@
     </header>
 
     <main class="content-wrapper">
-        <!-- Section Header -->
-        <section class="section nids-header-section">
-            <div class="section-title-wrap text-center">
-                <span class="section-subtitle">NETWORK INTRUSION DETECTION SYSTEM</span>
-                <h1 class="section-heading">Ensemble Classifier Lab</h1>
-                <p class="section-lead">Real-time anomaly detection and signature verification using high-accuracy XGBoost, Random Forest, and Extra Trees machine learning classifiers.</p>
-            </div>
-
-            <!-- Thesis Metadata Card -->
-            <div class="paper-meta-card glass-card">
-                <div class="paper-icon"><i class="fa-regular fa-file-pdf text-purple"></i></div>
+        
+        <!-- SECTION 1: Hero + Dissertation Card -->
+        <section class="section fade-in-section">
+            <div class="section-subtitle">NETWORK INTRUSION DETECTION SYSTEM</div>
+            <h1 class="section-heading text-gradient">Ensemble Classifier Security Lab</h1>
+            <p class="section-lead">A comprehensive exploration of my B.Tech dissertation project, "Network Intrusion Detection Using Ensemble Classifier." This interactive laboratory demonstrates how integrating XGBoost, Random Forest, and Extra Trees can significantly enhance enterprise network security against modern cyber threats.</p>
+            
+            <div class="glass-card paper-meta-card">
                 <div class="paper-details">
-                    <span class="paper-tag">Undergraduate Dissertation Project</span>
-                    <h3>Network Intrusion Detection Using Ensemble Classifier</h3>
-                    <p class="paper-authors"><strong>S. Durga Sai Archit</strong> (17211A12A4)</p>
-                    <p class="paper-affiliations">Department of Information Technology, B. V. Raju Institute of Technology (UGC Autonomous), Narsapur</p>
-                    <span class="paper-citation"><i class="fa-solid fa-graduation-cap"></i> Bachelor of Technology in Information Technology | JNTUH affiliated</span>
-                </div>
-                <div class="paper-download-action" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
-                    <a href="NIDS_Project_Report.pdf" download class="btn btn-primary btn-download">
-                        <i class="fa-solid fa-file-arrow-down"></i> Download Report
-                    </a>
-                    <a href="https://github.com/sdsarchit/network-intrusion-detection-ensemble" target="_blank" class="btn btn-download" style="background: rgba(255,255,255,0.05); border: 1px solid #334155; color: #fff; text-decoration: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: var(--transition-smooth);">
-                        <i class="fa-brands fa-github"></i> View GitHub Repo
-                    </a>
-                    <span class="file-size-tag">PDF (2.8 MB)</span>
+                    <span class="paper-tag"><i class="fa-solid fa-graduation-cap"></i> BVRIT Dissertation</span>
+                    <h3 style="margin:0 0 0.5rem 0;">Network Intrusion Detection Using Ensemble Classifier</h3>
+                    <div class="paper-authors">S. Durga Sai Archit</div>
+                    <div class="paper-affiliations">Department of Information Technology, BVRIT</div>
+                    
+                    <div class="paper-download-action">
+                        <a href="NIDS_Project_Report.pdf" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> Download Report</a>
+                        <a href="https://github.com/sdsarchit/network-intrusion-detection-ensemble" class="btn btn-secondary" target="_blank"><i class="fa-brands fa-github"></i> View GitHub Repo</a>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Dynamic Control Center Dashboard -->
-        <section class="section nids-dashboard-section">
-            <!-- Model Speeds / Accuracies Side-by-Side -->
-            <div class="model-details-grid">
-                <div class="model-detail-card">
-                    <div class="model-detail-title">XGBoost Classifier</div>
-                    <div class="model-detail-acc">99.91%</div>
-                    <div class="model-detail-meta"><i class="fa-solid fa-gauge-high"></i> Speed: Fast</div>
+        <!-- SECTION 2: The Problem & Solution -->
+        <section class="section fade-in-section">
+            <div class="grid-2-col">
+                <div class="glass-card card-problem">
+                    <h3 style="margin-top:0;">The Problem</h3>
+                    <p class="text-secondary">Traditional Intrusion Detection Systems struggle to keep pace with rapidly evolving attack vectors and massive data volumes.</p>
+                    <ul class="icon-list">
+                        <li><i class="fa-solid fa-circle-xmark"></i> <span><strong>High False Positives:</strong> Legacy systems flag benign traffic, causing alert fatigue for security operations.</span></li>
+                        <li><i class="fa-solid fa-stopwatch"></i> <span><strong>Slow Training Times:</strong> Traditional SVMs and deep learning models take too long to train on massive enterprise network logs.</span></li>
+                        <li><i class="fa-solid fa-chart-pie"></i> <span><strong>Imbalanced Data:</strong> Standard algorithms fail to detect rare zero-day threats hidden among millions of benign packets.</span></li>
+                    </ul>
                 </div>
-                <div class="model-detail-card">
-                    <div class="model-detail-title">Random Forest</div>
-                    <div class="model-detail-acc">99.89%</div>
-                    <div class="model-detail-meta"><i class="fa-solid fa-gauge"></i> Speed: Moderate</div>
-                </div>
-                <div class="model-detail-card">
-                    <div class="model-detail-title">Extra Trees</div>
-                    <div class="model-detail-acc">99.81%</div>
-                    <div class="model-detail-meta"><i class="fa-solid fa-gauge-simple-high"></i> Speed: Fastest</div>
+                <div class="glass-card card-solution">
+                    <h3 style="margin-top:0;">Our Solution</h3>
+                    <p class="text-secondary">A robust Ensemble Hard Voting mechanism combining three state-of-the-art tree-based classifiers for superior detection capabilities.</p>
+                    <ul class="icon-list">
+                        <li><i class="fa-solid fa-check-circle"></i> <span><strong>Ensemble Consensus:</strong> Combines predictions from XGBoost, Random Forest, and Extra Trees to eliminate single-model bias.</span></li>
+                        <li><i class="fa-solid fa-bolt"></i> <span><strong>High Throughput:</strong> Tree-based models offer rapid inference times suitable for real-time packet inspection.</span></li>
+                        <li><i class="fa-solid fa-shield-halved"></i> <span><strong>Accuracy & Reliability:</strong> Achieves 99.89% overall accuracy on the massive CICIDS2017 dataset with minimal false alarms.</span></li>
+                    </ul>
                 </div>
             </div>
+        </section>
 
-            <div class="cyber-dashboard">
+        <!-- SECTION 3: ML Pipeline Architecture -->
+        <section class="section fade-in-section text-center">
+            <h2 class="section-heading">ML Pipeline Architecture</h2>
+            <p class="section-lead" style="margin: 0 auto;">End-to-end data flow from packet capture to threat detection.</p>
+            
+            <div class="pipeline-container">
+                <div class="pipeline-step" style="animation-delay: 0.1s;">
+                    <i class="fa-solid fa-database"></i>
+                    <h4>1. Data Ingestion</h4>
+                    <p>CICIDS2017 PCAP Logs</p>
+                </div>
+                <div class="pipeline-step" style="animation-delay: 0.3s;">
+                    <i class="fa-solid fa-filter"></i>
+                    <h4>2. Preprocessing</h4>
+                    <p>47 Features Extracted</p>
+                </div>
+                <div class="pipeline-step" style="animation-delay: 0.5s;">
+                    <i class="fa-solid fa-brain"></i>
+                    <h4>3. Model Training</h4>
+                    <p>XGB + RF + ET</p>
+                </div>
+                <div class="pipeline-step" style="animation-delay: 0.7s;">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                    <h4>4. Ensemble Voting</h4>
+                    <p>Hard Majority Vote</p>
+                </div>
+                <div class="pipeline-step" style="animation-delay: 0.9s;">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h4>5. Detection Output</h4>
+                    <p>Benign / Attack Classification</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Model Performance Comparison -->
+        <section class="section fade-in-section">
+            <div class="grid-2-col">
+                <div class="glass-card">
+                    <h3 style="margin-top:0; text-align:center;">Model Accuracy Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="accuracyChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3 style="margin-top:0; text-align:center;">CICIDS2017 Attack Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="datasetChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Live Detection Simulator -->
+        <section class="section fade-in-section">
+            <h2 class="section-heading">Live Detection Simulator</h2>
+            <p class="section-lead">Simulating real-time inference on a network traffic stream.</p>
+            
+            <div class="sim-layout">
+                <div class="sim-terminal">
+                    <div class="sim-menubar">
+                        <div style="font-family: var(--font-mono); font-size: 0.9rem; color: #94a3b8;"><i class="fa-solid fa-terminal"></i> Network Traffic Stream</div>
+                        <div class="sim-controls">
+                            <button id="t-menu-start"><i class="fa-solid fa-play"></i> Start</button>
+                            <button id="t-menu-stop"><i class="fa-solid fa-stop"></i> Stop</button>
+                            <button id="t-menu-report"><i class="fa-solid fa-file-contract"></i> Report</button>
+                        </div>
+                    </div>
+                    <div class="terminal-window" id="terminal-output">
+                        <!-- Terminal lines will be injected here -->
+                        <div style="color: var(--text-muted);">[SYSTEM] Initializing detection engine...</div>
+                    </div>
+                </div>
                 
-                <!-- Left Panel: Ingest Console -->
-                <div class="cyber-panel">
-                    <div class="cyber-panel-header">
-                        <div class="cyber-panel-title">
-                            <i class="fa-solid fa-terminal"></i> Traffic Stream Ingest
+                <div class="sim-stats">
+                    <div class="stat-grid">
+                        <div class="stat-box total">
+                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Total Scanned</div>
+                            <div class="value" id="stat-total">0</div>
+                        </div>
+                        <div class="stat-box benign">
+                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Benign</div>
+                            <div class="value" id="stat-benign">0</div>
+                        </div>
+                        <div class="stat-box threats">
+                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Threats Detected</div>
+                            <div class="value" id="stat-threats">0</div>
+                        </div>
+                        <div class="stat-box rate">
+                            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Threat Rate %</div>
+                            <div class="value" id="stat-rate">0.0%</div>
                         </div>
                     </div>
                     
-                    <div class="terminal-container">
-                        <!-- Top-level window header controls -->
-                        <div class="terminal-header">
-                            <div class="terminal-controls">
-                                <div class="terminal-dot close"></div>
-                                <div class="terminal-dot minimize"></div>
-                                <div class="terminal-dot maximize"></div>
-                            </div>
-                            <div style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); font-weight: 500;">realtime_stream.py</div>
-                        </div>
-
-                        <!-- Sub-menu navigation buttons -->
-                        <div class="terminal-menubar">
-                            <button class="terminal-menu-btn" id="t-menu-start"><i class="fa-solid fa-play"></i> Start Ingestion Stream</button>
-                            <button class="terminal-menu-btn" id="t-menu-stop"><i class="fa-solid fa-stop"></i> Stop Stream</button>
-                            <button class="terminal-menu-btn" id="t-menu-report"><i class="fa-solid fa-file-invoice"></i> Compile Report</button>
-                        </div>
-
-                        <!-- Real-time scroll area logs -->
-                        <div class="terminal-logs" id="nids-terminal">
-                            <!-- Ingest log lines stream in here -->
-                        </div>
-                    </div>
-
-                    <!-- Threat Alert Ticker -->
-                    <div class="threat-alert-ticker" id="nids-threat-ticker">
-                        <div class="ticker-line" style="color: var(--text-muted);"><i class="fa-solid fa-circle-info"></i> Waiting to begin network flow analysis...</div>
-                    </div>
-                </div>
-
-                <!-- Right Panel: Model analysis, accuracies, and features -->
-                <div class="cyber-panel">
-                    <div class="cyber-panel-header">
-                        <div class="cyber-panel-title">
-                            <i class="fa-solid fa-microchip"></i> Model Decision Pathway
-                        </div>
-                    </div>
-
-                    <!-- Interactive Feature Importance Explorer -->
-                    <div style="margin-bottom: 1rem;">
-                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; font-family: var(--font-heading);">Model Relative Feature Importance</h4>
-                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.8rem;">Click a feature to see its significance in classifying network abnormalities:</p>
-                        
-                        <div class="model-select-tabs">
-                            <button class="model-tab-btn active" data-model="xgb">XGBoost Classifier</button>
-                            <button class="model-tab-btn" data-model="rf">Random Forest</button>
-                            <button class="model-tab-btn" data-model="et">Extra Trees</button>
-                        </div>
-
-                        <!-- Dynamic SVG bars showing importance -->
-                        <div style="background: #020617; border: 1px solid #1e293b; border-radius: 8px; padding: 0.8rem;" id="feature-importance-bars">
-                            <!-- Populated dynamically via JS -->
-                        </div>
-
-                        <!-- Dynamic Explainer Box -->
-                        <div class="feature-explainer-box" id="feature-explainer">
-                            Click any feature row above to analyze its role in network security detection.
-                        </div>
-                    </div>
-
-                    <!-- Ensemble voting configuration -->
-                    <div style="border-top: 1px solid #1e293b; padding-top: 1rem;">
-                        <h4 style="font-size: 0.9rem; margin-bottom: 0.6rem; font-family: var(--font-heading);">Ensemble Voting Configuration</h4>
-                        <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem;">
-                            <div class="ensemble-option">
-                                <label class="tkinter-label" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem;">
-                                    <input type="checkbox" id="check-xgb" checked style="cursor: pointer; width: 14px; height: 14px;"> Include XGBoost in voting
-                                </label>
-                                <span class="text-cyan font-bold" style="font-size: 0.78rem; font-family: var(--font-mono);">99.91% Acc</span>
-                            </div>
-                            <div class="ensemble-option">
-                                <label class="tkinter-label" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem;">
-                                    <input type="checkbox" id="check-rf" checked style="cursor: pointer; width: 14px; height: 14px;"> Include Random Forest in voting
-                                </label>
-                                <span class="text-cyan font-bold" style="font-size: 0.78rem; font-family: var(--font-mono);">99.89% Acc</span>
-                            </div>
-                            <div class="ensemble-option">
-                                <label class="tkinter-label" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem;">
-                                    <input type="checkbox" id="check-et" checked style="cursor: pointer; width: 14px; height: 14px;"> Include Extra Trees in voting
-                                </label>
-                                <span class="text-cyan font-bold" style="font-size: 0.78rem; font-family: var(--font-mono);">99.81% Acc</span>
-                            </div>
-                        </div>
-
-                        <!-- Ensemble Statistics Output -->
-                        <div class="model-card-grid">
-                            <div class="model-stat-box">
-                                <div class="model-stat-val" id="ens-acc">99.89%</div>
-                                <div class="model-stat-lbl">Accuracy</div>
-                            </div>
-                            <div class="model-stat-box">
-                                <div class="model-stat-val" id="ens-prec">0.99</div>
-                                <div class="model-stat-lbl">Precision</div>
-                            </div>
-                            <div class="model-stat-box">
-                                <div class="model-stat-val" id="ens-rec">0.99</div>
-                                <div class="model-stat-lbl">Recall</div>
-                            </div>
-                            <div class="model-stat-box">
-                                <div class="model-stat-val" id="ens-f1">0.99</div>
-                                <div class="model-stat-lbl">F1-Score</div>
-                            </div>
+                    <div class="threat-alert-log" id="threat-log-container">
+                        <h4><i class="fa-solid fa-triangle-exclamation"></i> Active Threat Log</h4>
+                        <div id="threat-log">
+                            <!-- Threat alerts go here -->
                         </div>
                     </div>
                 </div>
-
-                <!-- Bottom Panel: Visual Network Threat Topology HUD -->
-                <div class="cyber-panel cyber-span-all">
-                    <div class="cyber-panel-header" style="margin-bottom: 0.5rem;">
-                        <div class="cyber-panel-title">
-                            <i class="fa-solid fa-network-wired"></i> Live Threat Topology &amp; Packet Flow
-                        </div>
-                    </div>
-                    <div class="topology-hud">
-                        <svg id="network-topology-svg" width="100%" height="100%" viewBox="0 0 600 160" style="background: transparent;">
-                            <!-- Connection Paths -->
-                            <path id="path-attacker-router" d="M 60 40 Q 150 40 200 80" fill="none" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4"></path>
-                            <path id="path-client-router" d="M 60 120 Q 150 120 200 80" fill="none" stroke="#1e293b" stroke-width="1.5"></path>
-                            <path id="path-router-ids" d="M 200 80 L 300 80" fill="none" stroke="#1e293b" stroke-width="2"></path>
-                            <path id="path-ids-firewall" d="M 300 80 L 400 80" fill="none" stroke="#1e293b" stroke-width="2"></path>
-                            <path id="path-firewall-server" d="M 400 80 L 540 80" fill="none" stroke="#1e293b" stroke-width="2"></path>
-
-                            <!-- Pulse circles around main security nodes -->
-                            <circle cx="300" cy="80" r="14" fill="none" stroke="rgba(139, 92, 246, 0.4)" stroke-width="1" class="pulsing-ring" id="ring-ids" style="display: none;"></circle>
-                            <circle cx="400" cy="80" r="14" fill="none" stroke="rgba(239, 68, 68, 0.4)" stroke-width="1" class="pulsing-ring" id="ring-fw" style="display: none;"></circle>
-                            <circle cx="540" cy="80" r="16" fill="none" stroke="rgba(14, 165, 233, 0.4)" stroke-width="1" class="pulsing-ring" id="ring-srv" style="display: none;"></circle>
-
-                            <!-- Path flow particle overlays -->
-                            <g id="topology-flow-particles"></g>
-
-                            <!-- Node: Attacker -->
-                            <circle cx="60" cy="40" r="14" fill="#0b0f19" stroke="#ef4444" stroke-width="2" id="node-attacker"></circle>
-                            <text x="60" y="43" font-size="8" fill="#ef4444" font-weight="700" text-anchor="middle">ATK</text>
-                            <text class="node-label" x="60" y="18">Threat Node</text>
-                            <text class="node-ip" x="60" y="27">172.16.0.1</text>
-
-                            <!-- Node: Safe Client -->
-                            <circle cx="60" cy="120" r="14" fill="#0b0f19" stroke="#10b981" stroke-width="2" id="node-client"></circle>
-                            <text x="60" y="123" font-size="8" fill="#10b981" font-weight="700" text-anchor="middle">USR</text>
-                            <text class="node-label" x="60" y="145">Client Ingest</text>
-                            <text class="node-ip" x="60" y="153">192.168.0.9</text>
-
-                            <!-- Node: Network Router -->
-                            <circle cx="200" cy="80" r="12" fill="#0b0f19" stroke="#0ea5e9" stroke-width="1.5" id="node-router"></circle>
-                            <text x="200" y="83" font-size="7" fill="#0ea5e9" font-weight="700" text-anchor="middle">RTR</text>
-                            <text class="node-label" x="200" y="60">Router</text>
-
-                            <!-- Node: Intrusion Detection Sensor (IDS) -->
-                            <circle cx="300" cy="80" r="14" fill="#0b0f19" stroke="#8b5cf6" stroke-width="2" id="node-ids" style="transition: all 0.3s ease;"></circle>
-                            <text x="300" y="83" font-size="8" fill="#8b5cf6" font-weight="700" text-anchor="middle">IDS</text>
-                            <text class="node-label" x="300" y="58">Ensemble Sensor</text>
-
-                            <!-- Node: Firewall Guard -->
-                            <polygon points="400,68 412,80 400,92 388,80" fill="#0b0f19" stroke="#f59e0b" stroke-width="2" id="node-firewall" style="transition: all 0.3s ease;"></polygon>
-                            <text x="400" y="83" font-size="7" fill="#f59e0b" font-weight="700" text-anchor="middle">FW</text>
-                            <text class="node-label" x="400" y="58">Gatekeeper</text>
-
-                            <!-- Node: Target Server Hub -->
-                            <circle cx="540" cy="80" r="16" fill="#0b0f19" stroke="#0ea5e9" stroke-width="2.5" id="node-server"></circle>
-                            <text x="540" y="83" font-size="9" fill="#0ea5e9" font-weight="700" text-anchor="middle">SRV</text>
-                            <text class="node-label" x="540" y="54">Internal Server</text>
-                            <text class="node-ip" x="540" y="108">192.168.0.10</text>
-                        </svg>
-                    </div>
-                </div>
-
             </div>
         </section>
 
-        <!-- Project Analysis Summary -->
-        <section class="section nids-document-section">
-            <h2 class="section-heading text-center">Project Report <span class="text-gradient">Key Summary</span></h2>
-            <p class="section-lead text-center">Key findings, ensemble classifiers, and datasets from your academic BVRIT dissertation.</p>
+        <!-- SECTION 6: Ensemble Configuration & Metrics -->
+        <section class="section fade-in-section">
+            <h2 class="section-heading">Ensemble Configuration</h2>
+            <p class="section-lead">Explore how different model combinations affect the overall evaluation metrics and examine the most important features learned by each base classifier.</p>
+            
+            <div class="grid-2-col">
+                <div class="glass-card">
+                    <h3 style="margin-top:0;">Feature Importance</h3>
+                    <div class="feature-tabs">
+                        <button class="tab-btn active" data-model="xgb">XGBoost</button>
+                        <button class="tab-btn" data-model="rf">Random Forest</button>
+                        <button class="tab-btn" data-model="et">Extra Trees</button>
+                    </div>
+                    <div class="feature-list" id="feature-bars">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+                
+                <div class="glass-card ensemble-config">
+                    <h3 style="margin-top:0;">Model Selection</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="check-xgb" checked> XGBoost Classifier
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="check-rf" checked> Random Forest Classifier
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="check-et" checked> Extra Trees Classifier
+                        </label>
+                    </div>
+                    
+                    <h4 style="margin: 1rem 0 0 0; font-family: var(--font-heading); color: var(--text-secondary);">Ensemble Metrics</h4>
+                    <div class="metric-boxes">
+                        <div class="metric-box">
+                            <div class="label">Accuracy</div>
+                            <div class="val" id="ens-acc">99.89%</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="label">Precision</div>
+                            <div class="val" id="ens-prec">0.99</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="label">Recall</div>
+                            <div class="val" id="ens-rec">0.99</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="label">F1-Score</div>
+                            <div class="val" id="ens-f1">0.99</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <!-- SECTION 7: Key Findings Summary -->
+        <section class="section fade-in-section">
+            <h2 class="section-heading">Key Findings & Research Summary</h2>
             <div class="paper-summary-grid">
-                <!-- Summary Card 1 -->
-                <div class="summary-doc-card glass-card">
-                    <h3><i class="fa-solid fa-magnifying-glass-chart text-cyan"></i> Abstract &amp; CICIDS2017 Dataset</h3>
-                    <p>
-                        Network Intrusion Detection Systems (NIDS) are critical tools for administrators to detect security breaches. This project implements a machine learning-based approach using ensemble classifiers.
-                    </p>
-                    <p>
-                        The **CICIDS2017** dataset was used to validate the model, capturing benign traffic and seven common attack categories: DDoS, DoS, Botnet, Web Attack, PortScan, FTP-Patator, and SSH-Patator, containing over 80 traffic flow features.
-                    </p>
+                <div class="summary-doc-card">
+                    <h3><i class="fa-solid fa-file-alt"></i> Abstract & Dataset</h3>
+                    <p class="text-secondary">The project utilized the <strong>CICIDS2017</strong> dataset, containing over 2.8 million records and 78 features. After rigorous preprocessing, features were reduced to 47 critical network characteristics, enabling robust evaluation across diverse attack profiles including DDoS, Web Attacks, and Botnets.</p>
                 </div>
-
-                <!-- Summary Card 2 -->
-                <div class="summary-doc-card glass-card">
-                    <h3><i class="fa-solid fa-gears text-purple"></i> Algorithms &amp; Ensemble Paradigm</h3>
-                    <p>
-                        Existing single-algorithm methods (like SVM) are slower, less stable, and suffer from high false alarm rates on large-scale datasets. This project combines:
-                    </p>
-                    <ul>
-                        <li><strong>XGBoost</strong>: Gradient boosting framework with L1/L2 regularization to prevent overfitting.</li>
-                        <li><strong>Random Forest</strong>: Bagging meta-estimator to decrease prediction variance.</li>
-                        <li><strong>Extra Trees</strong>: Randomized split nodes to counter correlation errors.</li>
-                        <li><strong>Voting Classifier</strong>: Hard voting ensemble combining individual model outputs.</li>
-                    </ul>
+                <div class="summary-doc-card">
+                    <h3><i class="fa-solid fa-layer-group"></i> Ensemble Paradigm</h3>
+                    <p class="text-secondary">By leveraging a <strong>Hard Voting Ensemble</strong>, the architecture combines the distinct decision boundaries of XGBoost, Random Forest, and Extra Trees. This approach drastically minimizes the variance seen in single-model deployments, resulting in highly stable intrusion detection.</p>
                 </div>
-
-                <!-- Summary Card 3 -->
-                <div class="summary-doc-card glass-card">
-                    <h3><i class="fa-solid fa-chart-line text-green"></i> Key Model Accuracy Comparisons</h3>
-                    <p>
-                        The ensemble classifiers outperformed traditional single-model algorithms in both detection rates and computation speeds:
-                    </p>
-                    <ul>
-                        <li><strong>XGBoost</strong> achieved the highest individual detection accuracy of <strong>99.91%</strong>.</li>
-                        <li><strong>Random Forest Classifier</strong> achieved an accuracy of <strong>99.89%</strong>.</li>
-                        <li><strong>Extra Trees Classifier</strong> achieved an accuracy of <strong>99.81%</strong>.</li>
-                        <li><strong>Ensemble Voting Classifiers</strong> achieved up to <strong>99.89%</strong> accuracy while dramatically reducing false negative rates across highly imbalanced attack classes.</li>
-                    </ul>
+                <div class="summary-doc-card">
+                    <h3><i class="fa-solid fa-chart-line"></i> Performance Highlights</h3>
+                    <p class="text-secondary">While XGBoost individually peaked at 99.91% accuracy, the Ensemble model delivered a superior balance with <strong>99.89% accuracy</strong> and a flawless False Positive tradeoff. This consensus-based detection proved specifically resilient against obfuscated attack patterns.</p>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- Visual Matplotlib Report Modal Mock -->
-    <div class="nids-modal-overlay" id="report-modal-overlay">
-        <div class="report-modal">
-            <div class="modal-header">
-                <div class="cyber-panel-title"><i class="fa-solid fa-chart-pie text-purple"></i> Report Canvas Output</div>
-                <button class="terminal-menu-btn" id="close-modal-btn" style="padding: 0 0.5rem; font-size: 1.1rem;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body">
-                <!-- Pie Chart Canvas -->
-                <div style="position: relative; height: 260px; width: 100%; display: flex; align-items: center; justify-content: center;">
-                    <canvas id="reportPieChart"></canvas>
-                </div>
-                <!-- Summaries -->
-                <div class="report-text" id="report-summary-text">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Visual Footer -->
+    <!-- Footer -->
     <footer class="main-footer">
         <div class="footer-container">
             <p>&copy; 2026 Archit Somayajula. Engineered with Scikit-Learn &amp; JS Canvas.</p>
@@ -782,7 +442,21 @@
         </div>
     </footer>
 
-    <!-- Dedicated NIDS Javascript -->
+    <!-- Report Modal -->
+    <div id="report-modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal-btn"><i class="fa-solid fa-times"></i></button>
+            <h3 style="margin-top:0; font-family: var(--font-heading); font-size: 1.5rem;">Live Session Report</h3>
+            <p class="text-secondary">Distribution of traffic processed during this active simulator session.</p>
+            <div class="modal-chart-container">
+                <canvas id="sessionReportChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script references -->
+    <script src="security.js"></script>
+    <script src="menu.js"></script>
     <script src="nids.js"></script>
 </body>
 </html>
