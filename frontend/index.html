@@ -8,7 +8,7 @@
     <!-- Modern Typography & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Styling Sheet -->
@@ -19,6 +19,7 @@
     <script src="menu.js"></script>
 </head>
 <body>
+    <canvas id="particle-canvas"></canvas>
     <!-- Premium Ambient Glow Vectors -->
     <div class="glow-sphere sphere-1"></div>
     <div class="glow-sphere sphere-2"></div>
@@ -52,7 +53,7 @@
 
     <main class="content-wrapper">
         <!-- Hero Presentation Section -->
-        <section id="about" class="section hero-section">
+        <section id="about" class="section hero-section reveal">
             <div class="hero-content">
                 <div class="cert-badge-row">
                     <span class="badge badge-databricks"><i class="fa-solid fa-cube"></i> Databricks Certified Associate</span>
@@ -94,7 +95,7 @@
         </section>
 
         <!-- Live Showcase Navigation Section -->
-        <section class="section showcase-navigator-section">
+        <section class="section showcase-navigator-section reveal">
             <h2 class="section-heading text-center">Interactive <span class="text-gradient">Data Ingestion Showcase</span></h2>
             <p class="section-lead text-center">Run the functional local data pipeline and explore the real-time analytics dashboard.</p>
             
@@ -118,7 +119,7 @@
         </section>
 
         <!-- Technical Skills Showcase -->
-        <section id="skills" class="section skills-section">
+        <section id="skills" class="section skills-section reveal">
             <h2 class="section-heading text-center">Engineered <span class="text-gradient">Skill Matrix</span></h2>
             <p class="section-lead text-center">Comprehensive tools and technologies verified by years of production-grade implementations.</p>
             
@@ -174,7 +175,7 @@
         </section>
 
         <!-- Professional Work Timeline -->
-        <section id="experience" class="section experience-section">
+        <section id="experience" class="section experience-section reveal">
             <h2 class="section-heading text-center">Professional <span class="text-gradient">Timeline</span></h2>
             <p class="section-lead text-center">Production milestones and structural architectures designed at corporate enterprises.</p>
             
@@ -242,7 +243,7 @@
         </section>
 
         <!-- Professional Projects -->
-        <section id="projects" class="section projects-section">
+        <section id="projects" class="section projects-section reveal">
             <h2 class="section-heading text-center">Featured <span class="text-gradient">Projects &amp; Research</span></h2>
             <p class="section-lead text-center">Industrial data engineering solutions, space weather research, and interactive simulator engines.</p>
             
