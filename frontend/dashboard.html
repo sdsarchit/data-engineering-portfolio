@@ -20,6 +20,479 @@
     <!-- Security & Obfuscated JS modules -->
     <script src="security.js"></script>
     <script src="menu.js"></script>
+
+    <style>
+        /* Premium Dark Aesthetic Inline Styles */
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(20, 20, 25, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b7280;
+            --accent-cyan: #06b6d4;
+            --accent-cyan-glow: rgba(6, 182, 212, 0.5);
+            --accent-purple: #8b5cf6;
+            --accent-purple-glow: rgba(139, 92, 246, 0.5);
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-red: #ef4444;
+            
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Particle Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Glow Spheres */
+        .glow-sphere {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .sphere-1 { width: 400px; height: 400px; background: var(--accent-cyan-glow); top: -100px; left: -100px; }
+        .sphere-2 { width: 300px; height: 300px; background: var(--accent-purple-glow); bottom: 10%; right: -50px; }
+        .sphere-3 { width: 250px; height: 250px; background: rgba(16, 185, 129, 0.2); top: 40%; left: 30%; }
+
+        /* Typography & Utilities */
+        .text-cyan { color: var(--accent-cyan); }
+        .text-purple { color: var(--accent-purple); }
+        .text-green { color: var(--accent-green); }
+        .text-yellow { color: var(--accent-yellow); }
+        .text-red { color: var(--accent-red); }
+        .text-center { text-align: center; }
+        .text-muted { color: var(--text-muted); }
+        .font-bold { font-weight: 700; }
+        
+        .text-gradient {
+            background: linear-gradient(to right, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Header */
+        .main-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .logo-bracket { color: var(--accent-cyan); }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+        }
+        .nav-actions .nav-btn {
+            background: transparent;
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .nav-actions .nav-btn:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+        }
+        .menu-toggle-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .menu-toggle-btn { display: block; }
+            .contact-text { display: none; }
+        }
+
+        /* Main Content */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            padding: 0.25rem 0.75rem;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            background: rgba(6, 182, 212, 0.05);
+        }
+        .section-heading {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            margin: 0 0 1rem 0;
+            line-height: 1.2;
+        }
+        .section-lead {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.6;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        }
+        .btn-primary:hover {
+            background: #0891b2;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .btn.active {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            border-color: transparent;
+        }
+
+        /* Dashboard Grid Layouts */
+        .metrics-dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .dashboard-visualization-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        @media (min-width: 992px) {
+            .dashboard-visualization-grid {
+                grid-template-columns: 2fr 1fr;
+            }
+            .quarantine-explorer-card {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: transform 0.3s;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+        .metric-label {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .metric-value {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 700;
+        }
+        .metric-trend {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 500;
+        }
+
+        /* Chart Containers */
+        .chart-container-card {
+            position: relative;
+            background: linear-gradient(145deg, rgba(20,20,25,0.8), rgba(15,15,20,0.9));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-container-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(45deg, transparent 40%, rgba(6,182,212,0.3) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .chart-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            margin: 0 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* City Tabs */
+        .city-selector-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .city-tab {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .city-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+        .city-tab.active {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+        .quarantine-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .quarantine-table th {
+            text-align: left;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .quarantine-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        .quarantine-table tbody tr {
+            transition: background 0.2s;
+        }
+        .quarantine-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .label-failure {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-yellow);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .payload-text {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            word-break: break-all;
+        }
+
+        /* Agent Input & Misc */
+        .select-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-family: var(--font-sans);
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+        .select-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+        }
+        .quarantine-badge {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: var(--accent-yellow);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .explorer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* Footer */
+        .main-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 3rem;
+            background: rgba(10, 10, 15, 0.8);
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+        .footer-socials a {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        .footer-socials a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Utilities */
+        .reveal {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
     <canvas id="particle-canvas"></canvas>
@@ -29,7 +502,7 @@
     <div class="glow-sphere sphere-3"></div>
 
     <!-- Sticky Navigation Header -->
-        <header class="main-header">
+    <header class="main-header">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
                 <span class="logo-bracket">&lt;</span>
@@ -57,22 +530,22 @@
     <main class="content-wrapper">
         <section class="section dashboard-section reveal">
             <div class="section-title-wrap text-center">
-                <span class="section-subtitle">SQLITE REAL-TIME INSIGHTS</span>
+                <span class="section-label">SQLITE REAL-TIME INSIGHTS</span>
                 <h2 class="section-heading">Data Engineering <span class="text-gradient">Analytics Dashboard</span></h2>
                 <p class="section-lead">Explore cleansed analytical databases and audit isolated anomaly rows captured in the quarantine table.</p>
             </div>
 
             <!-- Dashboard Empty State (shown if DB not seeded) -->
-            <div id="dashboard-empty-state" class="dashboard-empty-card glass-card" style="display: none;">
-                <div class="empty-icon-wrapper"><i class="fa-solid fa-database text-cyan"></i></div>
-                <h3>Analytics Database is Empty</h3>
-                <p>The local SQLite database has not been seeded yet. Please run the ingestion job from the ETL console to pull weather and air indices.</p>
+            <div id="dashboard-empty-state" class="glass-card text-center" style="display: none; margin-bottom: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-database text-cyan"></i></div>
+                <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem;">Analytics Database is Empty</h3>
+                <p class="text-secondary" style="margin-bottom: 1.5rem;">The local SQLite database has not been seeded yet. Please run the ingestion job from the ETL console to pull weather and air indices.</p>
                 <a href="pipeline.html" class="btn btn-primary"><i class="fa-solid fa-terminal"></i> Go to Ingestion Console</a>
             </div>
 
             <!-- Dashboard Mode Navigation Tabs -->
             <div class="dashboard-tabs-wrap" style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2.5rem;">
-                <button class="btn btn-primary" id="tab-weather">
+                <button class="btn btn-primary active" id="tab-weather">
                     <i class="fa-solid fa-cloud-sun"></i> Weather Analytics
                 </button>
                 <button class="btn btn-secondary" id="tab-custom">
@@ -86,7 +559,7 @@
                 <!-- Wrapper for Weather Ingestion Dashboard -->
                 <div id="weather-dashboard-wrapper">
                     <!-- Live Metrics KPI Cards -->
-                    <div class="metrics-dashboard-grid dashboard-page-metrics">
+                    <div class="metrics-dashboard-grid">
                         <div class="metric-card glass-card">
                             <span class="metric-label"><i class="fa-solid fa-chart-simple text-cyan"></i> Cleansed Records</span>
                             <h3 class="metric-value text-cyan" id="metric-processed">0</h3>
@@ -125,7 +598,7 @@
                         <!-- Chart 2: AQI Index Distribution -->
                         <div class="chart-container-card glass-card">
                             <h3 class="chart-title"><i class="fa-solid fa-chart-pie text-purple"></i> EPA Air Quality Categories Distribution</h3>
-                            <div class="chart-wrapper pie-chart-wrapper">
+                            <div class="chart-wrapper">
                                 <canvas id="aqiBreakdownChart"></canvas>
                             </div>
                         </div>
@@ -136,7 +609,7 @@
                                 <h3><i class="fa-solid fa-biohazard text-yellow"></i> DQ Quarantine Records Viewer (Discover Financial Framework)</h3>
                                 <span class="quarantine-badge" id="quarantine-badge-count">0 Anomalies Blocked</span>
                             </div>
-                            <p class="explorer-desc">The Data Quality Rule Engine actively inspects schema types, non-negativity parameters, and outlier constraints. Flagged rows are partitioned into isolation storage for audit review.</p>
+                            <p class="text-secondary" style="margin-bottom: 1rem; line-height: 1.5; font-size: 0.95rem;">The Data Quality Rule Engine actively inspects schema types, non-negativity parameters, and outlier constraints. Flagged rows are partitioned into isolation storage for audit review.</p>
                             <div class="table-wrapper">
                                 <table class="quarantine-table">
                                     <thead>
@@ -159,7 +632,7 @@
                 <!-- Wrapper for Custom File Profiler Dashboard -->
                 <div id="custom-dashboard-wrapper" style="display: none;">
                     <!-- Custom Metrics KPI Cards -->
-                    <div class="metrics-dashboard-grid dashboard-page-metrics">
+                    <div class="metrics-dashboard-grid">
                         <div class="metric-card glass-card">
                             <span class="metric-label"><i class="fa-solid fa-database text-cyan"></i> Row Count</span>
                             <h3 class="metric-value text-cyan" id="custom-metric-rows">0</h3>
@@ -188,12 +661,12 @@
                         <div class="chart-container-card glass-card">
                             <h3 class="chart-title"><i class="fa-solid fa-chart-line text-cyan"></i> Dynamic Chart Builder</h3>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                                <div class="dropdown-control-group" style="flex: 1;">
-                                    <label for="chart-x-col" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 0.4rem; display: block;">X-Axis (Label Column)</label>
+                                <div style="flex: 1;">
+                                    <label for="chart-x-col" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 0.4rem; display: block;">X-Axis (Label Column)</label>
                                     <select id="chart-x-col" class="select-input"></select>
                                 </div>
-                                <div class="dropdown-control-group" style="flex: 1;">
-                                    <label for="chart-y-col" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 0.4rem; display: block;">Y-Axis (Value Column)</label>
+                                <div style="flex: 1;">
+                                    <label for="chart-y-col" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 0.4rem; display: block;">Y-Axis (Value Column)</label>
                                     <select id="chart-y-col" class="select-input"></select>
                                 </div>
                             </div>
@@ -205,14 +678,14 @@
                         <!-- Natural Language Query Assistant / Agentic AI UI -->
                         <div class="chart-container-card glass-card" style="display: flex; flex-direction: column;">
                             <h3 class="chart-title"><i class="fa-solid fa-robot text-purple"></i> AI Data Assistant Agent</h3>
-                            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.4;">Ask questions about your uploaded dataset in plain English. The agent translates your prompt into SQLite queries instantly.</p>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5;">Ask questions about your uploaded dataset in plain English. The agent translates your prompt into SQLite queries instantly.</p>
                             
                             <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                                <input type="text" id="agent-query-input" class="select-input" placeholder="e.g. show average value..." style="flex: 1; padding: 0.6rem 0.8rem; font-size: 0.85rem;">
-                                <button class="btn btn-primary" id="btn-submit-query" style="padding: 0.6rem 1.2rem;"><i class="fa-solid fa-paper-plane"></i></button>
+                                <input type="text" id="agent-query-input" class="select-input" placeholder="e.g. show average value..." style="flex: 1; padding: 0.75rem 1rem;">
+                                <button class="btn btn-primary" id="btn-submit-query" style="padding: 0.75rem 1.25rem;"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
 
-                            <div id="agent-response-box" style="flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.8rem; min-height: 160px; max-height: 180px;">
+                            <div id="agent-response-box" style="flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.85rem; min-height: 160px; max-height: 180px;">
                                 <div style="color: var(--text-muted); font-style: italic;">Agent idle. Ask a question above to trigger analytical query.</div>
                             </div>
                         </div>
@@ -223,7 +696,7 @@
                                 <h3><i class="fa-solid fa-table-list text-cyan"></i> Cleansed Analytical Data Explorer</h3>
                                 <span class="quarantine-badge" id="custom-rows-count-badge" style="background-color: rgba(14, 165, 233, 0.1); border-color: rgba(14, 165, 233, 0.2); color: var(--accent-cyan);">0 Rows</span>
                             </div>
-                            <p class="explorer-desc">Explore the clean database table directly. Shows the first 50 rows from the analytical storage layer.</p>
+                            <p class="text-secondary" style="margin-bottom: 1rem; font-size: 0.95rem;">Explore the clean database table directly. Shows the first 50 rows from the analytical storage layer.</p>
                             <div class="table-wrapper">
                                 <table class="quarantine-table">
                                     <thead id="custom-table-head">
@@ -239,8 +712,8 @@
                 </div>
 
                 <!-- Refresh Prompt link -->
-                <div class="refresh-prompt-wrap text-center">
-                    <p class="text-secondary">Need to ingest fresh real-time weather metrics? <a href="pipeline.html" class="text-cyan font-bold">Go to Ingestion Console <i class="fa-solid fa-arrow-right"></i></a></p>
+                <div class="text-center" style="margin-top: 3rem;">
+                    <p class="text-secondary">Need to ingest fresh real-time weather metrics? <a href="pipeline.html" class="text-cyan font-bold" style="text-decoration: none;">Go to Ingestion Console <i class="fa-solid fa-arrow-right"></i></a></p>
                 </div>
             </div>
         </section>

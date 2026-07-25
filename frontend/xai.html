@@ -3,30 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XAI Solar Storm Research Lab | Archit Somayajula Portfolio</title>
+    <title>Explainable AI Research | Archit Somayajula</title>
     
-    <!-- Modern Typography & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Styling Sheet -->
     <link rel="stylesheet" href="styles.css">
-
-    <!-- Security & Obfuscated JS modules -->
     <script src="security.js"></script>
     <script src="menu.js"></script>
+
+    <style>
+        :root {
+            --bg-base: #030712;
+            --bg-surface: #111827;
+            --bg-glass: rgba(17, 24, 39, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-display: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Nav styles */
+        .main-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 50;
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .nav-logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .logo-bracket { color: var(--accent-cyan); }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+        }
+        .nav-actions { display: flex; align-items: center; gap: 1rem; }
+        .nav-btn {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            background: var(--accent-cyan);
+            color: #000;
+        }
+
+        /* Layout */
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+
+        /* Hero */
+        .section-label {
+            display: inline-block;
+            color: var(--accent-cyan);
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 99px;
+        }
+        .section-heading {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin: 0 0 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-lead {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .font-bold { font-weight: 700; }
+
+        /* Paper Card */
+        .paper-meta-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+        }
+        .paper-icon {
+            font-size: 2.5rem;
+            color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        .paper-details h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
+            color: #fff;
+        }
+        .paper-tag {
+            color: var(--accent-pink);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .paper-authors { margin: 0 0 0.5rem; color: #e5e7eb; }
+        .paper-affiliations { margin: 0 0 1rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .paper-citation { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent-cyan); font-size: 0.875rem; background: rgba(6, 182, 212, 0.1); padding: 0.25rem 0.75rem; border-radius: 6px;}
+        .paper-download-action { display: flex; flex-direction: column; gap: 1rem; margin-left: auto; min-width: 160px; }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-family: var(--font-sans);
+        }
+        .btn-primary {
+            background: var(--accent-purple);
+            color: #fff;
+        }
+        .btn-primary:hover { background: #7c3aed; }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid var(--border-glass);
+        }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+        .file-size-tag { text-align: center; font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Sandbox Grid */
+        .xai-sandbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        .glass-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s;
+        }
+        .glass-card h3 { margin-top: 0; display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); }
+        
+        .warning-active {
+            border-color: var(--accent-pink) !important;
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.2);
+        }
+
+        /* Sliders */
+        .param-slider-group { margin-bottom: 1.25rem; }
+        .slider-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.875rem; }
+        .param-name { color: #d1d5db; font-weight: 500; }
+        .param-name small { color: var(--text-muted); font-weight: normal; }
+        .param-val { font-family: var(--font-mono); font-weight: 600; color: #fff; }
+        .param-input {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+        }
+        .param-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        /* HUD SVG */
+        .hud-wrapper {
+            background: #000;
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Gauge */
+        .xai-gauge-panel {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .gauge-label { font-size: 0.875rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .gauge-value { font-family: var(--font-display); font-size: 2.5rem; color: #fff; margin: 0; }
+        .gauge-status { font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
+
+        /* Utilities */
+        .text-cyan { color: var(--accent-cyan); }
+        .text-purple { color: var(--accent-purple); }
+        .text-pink { color: var(--accent-pink); }
+        .text-green { color: #10b981; }
+        .text-yellow { color: #eab308; }
+        .text-orange { color: #f97316; }
+        .text-red { color: #ef4444; }
+        
+        .text-pos-pink { color: var(--accent-pink); }
+        .text-neg-cyan { color: var(--accent-cyan); }
+        .bg-pos-pink { background: linear-gradient(90deg, #ec4899, #f43f5e); }
+        .bg-neg-cyan { background: linear-gradient(90deg, #0ea5e9, #06b6d4); }
+        
+        /* SHAP */
+        .shap-bar-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 60px;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .shap-feature-label { font-size: 0.75rem; color: var(--text-secondary); text-align: right; }
+        .shap-bar-track {
+            height: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+        .shap-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+        .shap-feature-value { font-family: var(--font-mono); font-size: 0.75rem; color: #fff; text-align: right; }
+
+        /* Attention Maps */
+        .attention-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .head-selector-tabs { display: flex; gap: 0.5rem; }
+        .head-tab {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        .head-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .head-tab.active { background: rgba(6, 182, 212, 0.2); border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        
+        .heatmap-wrapper-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .attention-path { stroke: var(--accent-cyan); stroke-width: 2; opacity: 0.3; transition: all 0.3s; }
+        .attention-path:hover { stroke: var(--accent-pink); stroke-width: 3; opacity: 1; }
+        .graph-node-group circle { transition: all 0.3s; cursor: pointer; }
+        .graph-node-group:hover circle { fill: var(--accent-pink); r: 6; }
+        
+        /* Summary Grid */
+        .paper-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .summary-doc-card h3 { margin-bottom: 1rem; }
+        .summary-doc-card p, .summary-doc-card ul {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .summary-doc-card ul { padding-left: 1.25rem; }
+        .summary-doc-card li { margin-bottom: 0.5rem; }
+
+        /* Footer */
+        .main-footer {
+            border-top: 1px solid var(--border-glass);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 4rem;
+        }
+        
+        @media (max-width: 900px) {
+            .xai-sandbox-grid, .heatmap-wrapper-grid { grid-template-columns: 1fr; }
+            .paper-meta-card { flex-direction: column; }
+            .paper-download-action { margin-left: 0; width: 100%; }
+            .section-heading { font-size: 2.5rem; }
+        }
+    </style>
 </head>
 <body>
     <canvas id="particle-canvas"></canvas>
-    <!-- Premium Ambient Glow Vectors -->
-    <div class="glow-sphere sphere-1"></div>
-    <div class="glow-sphere sphere-2"></div>
-    <div class="glow-sphere sphere-3"></div>
 
-    <!-- Sticky Navigation Header -->
-        <header class="main-header">
+    <header class="main-header">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
                 <span class="logo-bracket">&lt;</span>
@@ -34,36 +403,29 @@
                 <span class="logo-bracket">/&gt;</span>
             </a>
             <nav class="nav-links">
-                <a href="index.html#about" class="nav-link ">About</a>
-                <a href="index.html#skills" class="nav-link ">Skills</a>
-                <a href="index.html#projects" class="nav-link ">Projects</a>
-                <a href="pipeline.html" class="nav-link "><i class="fa-solid fa-terminal"></i> ETL Console</a>
-                <a href="dashboard.html" class="nav-link "><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
-                <a href="nids.html" class="nav-link "><i class="fa-solid fa-shield-halved"></i> NIDS Lab</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="index.html#skills" class="nav-link">Skills</a>
+                <a href="index.html#projects" class="nav-link">Projects</a>
+                <a href="pipeline.html" class="nav-link"><i class="fa-solid fa-terminal"></i> ETL Console</a>
+                <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
+                <a href="nids.html" class="nav-link"><i class="fa-solid fa-shield-halved"></i> NIDS Lab</a>
                 <a href="xai.html" class="nav-link active"><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
             </nav>
             <div class="nav-actions">
-                <a href="mailto:sdsarchit2000@gmail.com" class="nav-btn" aria-label="Contact"><i class="fa-regular fa-envelope"></i> <span class="contact-text">Contact</span></a>
-                <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Toggle Menu">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
+                <a href="mailto:sdsarchit2000@gmail.com" class="nav-btn"><i class="fa-regular fa-envelope"></i> Contact</a>
             </div>
         </div>
     </header>
 
     <main class="content-wrapper">
-        <!-- Section Header -->
-        <section class="section reveal xai-header-section">
-            <div class="section-title-wrap text-center">
-                <span class="section-subtitle">EXPLAINABLE AI (XAI) RESEARCH LAB</span>
-                <h1 class="section-heading">NASA Solar Wind Storm Forecasting</h1>
-                <p class="section-lead">Feature Analysis of Bayesian Transformer Model for Disturbance Storm Time (DST) Index Prediction using SHAP, LIME, and Multi-Head Attention Maps.</p>
-            </div>
+        <section class="section xai-header-section text-center">
+            <span class="section-label">EXPLAINABLE AI RESEARCH</span>
+            <h1 class="section-heading">NASA Solar Wind Storm Forecasting</h1>
+            <p class="section-lead">Feature Analysis of Bayesian Transformer Model for Disturbance Storm Time (DST) Index Prediction using SHAP, LIME, and Multi-Head Attention Maps.</p>
 
-            <!-- Paper Metadata Card -->
-            <div class="paper-meta-card glass-card">
+            <div class="paper-meta-card text-left">
                 <div class="paper-icon"><i class="fa-regular fa-file-pdf text-purple"></i></div>
-                <div class="paper-details">
+                <div class="paper-details" style="text-align: left;">
                     <span class="paper-tag">Published Research Paper</span>
                     <h3>Feature Analysis of Transformer Model for The Disturbance Storm Time Index</h3>
                     <p class="paper-authors"><strong>Archit D. S. Somayajula</strong>, Jason T. L. Wang</p>
@@ -71,276 +433,201 @@
                     <span class="paper-citation"><i class="fa-solid fa-book-bookmark"></i> FLAIRS / Space Weather Archive | NJIT Graduate Fellowship Research Project</span>
                 </div>
                 <div class="paper-download-action">
-                    <a href="Dst_XAI_2024.pdf" download class="btn btn-primary btn-download">
+                    <a href="Dst_XAI_2024.pdf" download class="btn btn-primary">
                         <i class="fa-solid fa-file-arrow-down"></i> Download PDF
+                    </a>
+                    <a href="https://github.com/archit-ds/dst-transformer" target="_blank" class="btn btn-secondary">
+                        <i class="fa-brands fa-github"></i> View GitHub
                     </a>
                     <span class="file-size-tag">PDF (1.2 MB)</span>
                 </div>
             </div>
         </section>
 
-        <!-- Interactive Research Sandbox -->
-        <section class="section reveal xai-sandbox-section">
-            <h2 class="section-heading text-center">Interactive <span class="text-gradient">XAI Explanation Engine</span></h2>
+        <section class="section xai-sandbox-section">
+            <h2 class="section-heading text-center" style="font-size: 2.5rem;">Interactive <span class="text-cyan">XAI Engine</span></h2>
             <p class="section-lead text-center">Adjust solar wind parameters observed by NASA satellites. Run the explainer to calculate predicted geomagnetic storm indexes and inspect SHAP feature weight contribution graphs in real-time.</p>
 
             <div class="xai-sandbox-grid">
-                <!-- Parameters Controls (Left) -->
                 <div class="xai-controls-card glass-card">
-                    <h3><i class="fa-solid fa-sliders text-cyan"></i> NASA Solar Wind Ingest</h3>
-                    <p class="control-desc">Set real-time solar wind plasma metrics to feed the deep learning model:</p>
+                    <h3><i class="fa-solid fa-sliders text-cyan"></i> Parameter Controls</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Set real-time solar wind plasma metrics to feed the deep learning model:</p>
                     
-                    <div class="xai-controls-layout-wrapper">
-                        <!-- Left Sliders Column -->
-                        <div class="sliders-column">
-                            <div class="param-slider-group">
-                                <div class="slider-header">
-                                    <span class="param-name">Scalar B <small>(Total IMF magnitude)</small></span>
-                                    <span class="param-val" id="val-scalar-b">15 nT</span>
-                                </div>
-                                <input type="range" class="param-input" id="input-scalar-b" min="0" max="50" value="15" step="0.5">
-                            </div>
-
-                            <div class="param-slider-group">
-                                <div class="slider-header">
-                                    <span class="param-name">BZ GSE <small>(Z-component Magnetic Field)</small></span>
-                                    <span class="param-val text-cyan" id="val-bz-gse">-5 nT</span>
-                                </div>
-                                <input type="range" class="param-input" id="input-bz-gse" min="-30" max="30" value="-5" step="0.5">
-                            </div>
-
-                            <div class="param-slider-group">
-                                <div class="slider-header">
-                                    <span class="param-name">SW Plasma Temp <small>(Ion Temperature)</small></span>
-                                    <span class="param-val" id="val-plasma-temp">150,000 K</span>
-                                </div>
-                                <input type="range" class="param-input" id="input-plasma-temp" min="10000" max="1000000" value="150000" step="10000">
-                            </div>
-
-                            <div class="param-slider-group">
-                                <div class="slider-header">
-                                    <span class="param-name">SW Plasma Speed <small>(Wind Velocity)</small></span>
-                                    <span class="param-val" id="val-plasma-speed">450 km/s</span>
-                                </div>
-                                <input type="range" class="param-input" id="input-plasma-speed" min="200" max="1000" value="450" step="10">
-                            </div>
-
-                            <div class="param-slider-group">
-                                <div class="slider-header">
-                                    <span class="param-name">SW Proton Density <small>(Concentration)</small></span>
-                                    <span class="param-val" id="val-proton-density">8.0 n/cc</span>
-                                </div>
-                                <input type="range" class="param-input" id="input-proton-density" min="0.5" max="50" value="8.0" step="0.5">
-                            </div>
+                    <div class="param-slider-group">
+                        <div class="slider-header">
+                            <span class="param-name">Scalar B <small>(Total IMF)</small></span>
+                            <span class="param-val" id="val-scalar-b">15 nT</span>
                         </div>
+                        <input type="range" class="param-input" id="input-scalar-b" min="0" max="50" value="15" step="0.5">
+                    </div>
 
-                        <!-- Right HUD Column -->
-                        <div class="hud-column">
-                            <!-- Visual HUD Magnetosphere Diagram -->
-                            <div class="hud-wrapper" style="background: #04060a; border: 1px solid var(--border-color); border-radius: 12px; padding: 0.75rem; text-align: center;">
-                                <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; display: block; margin-bottom: 0.4rem;">Magnetosphere Solar Storm HUD</span>
-                                <svg id="solar-storm-hud" width="100%" height="120" viewBox="0 0 300 120" style="background: transparent;">
-                                    <!-- Sun (Left) -->
-                                    <circle cx="20" cy="60" r="18" fill="url(#sun-gradient)" id="hud-sun" style="filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.4));"></circle>
-                                    <!-- Sun flares -->
-                                    <g id="hud-flares" stroke="orange" stroke-width="1" opacity="0.3"></g>
-                                    
-                                    <!-- Solar particles path -->
-                                    <g id="hud-particles">
-                                        <!-- Populated dynamically -->
-                                    </g>
-
-                                    <!-- Earth magnetosphere lines -->
-                                    <path id="shield-outer" d="M 250 60 C 180 -10, 180 130, 250 60" fill="none" stroke="rgba(14, 165, 233, 0.2)" stroke-width="1.5"></path>
-                                    <path id="shield-inner" d="M 250 60 C 210 15, 210 105, 250 60" fill="none" stroke="rgba(14, 165, 233, 0.4)" stroke-width="2"></path>
-                                    <path id="shield-compression" d="M 250 60 C 235 35, 235 85, 250 60" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"></path>
-                                    
-                                    <!-- Earth (Right) -->
-                                    <circle cx="250" cy="60" r="6" fill="#3b82f6" id="hud-earth"></circle>
-                                    <circle cx="250" cy="60" r="10" fill="none" id="hud-aurora" style="stroke: rgba(16,185,129,0); stroke-width: 2; transition: all 0.3s ease;"></circle>
-
-                                    <defs>
-                                        <radialGradient id="sun-gradient" cx="50%" cy="50%" r="50%">
-                                            <stop offset="0%" stop-color="#fff"></stop>
-                                            <stop offset="70%" stop-color="#f97316"></stop>
-                                            <stop offset="100%" stop-color="#ea580c"></stop>
-                                        </radialGradient>
-                                    </defs>
-                                </svg>
-                            </div>
+                    <div class="param-slider-group">
+                        <div class="slider-header">
+                            <span class="param-name">BZ GSE <small>(Z-component)</small></span>
+                            <span class="param-val text-cyan" id="val-bz-gse">-5 nT</span>
                         </div>
+                        <input type="range" class="param-input" id="input-bz-gse" min="-30" max="30" value="-5" step="0.5">
+                    </div>
+
+                    <div class="param-slider-group">
+                        <div class="slider-header">
+                            <span class="param-name">Plasma Temp</span>
+                            <span class="param-val" id="val-plasma-temp">150000 K</span>
+                        </div>
+                        <input type="range" class="param-input" id="input-plasma-temp" min="10000" max="1000000" value="150000" step="10000">
+                    </div>
+
+                    <div class="param-slider-group">
+                        <div class="slider-header">
+                            <span class="param-name">Plasma Speed</span>
+                            <span class="param-val" id="val-plasma-speed">450 km/s</span>
+                        </div>
+                        <input type="range" class="param-input" id="input-plasma-speed" min="200" max="1000" value="450" step="10">
+                    </div>
+
+                    <div class="param-slider-group">
+                        <div class="slider-header">
+                            <span class="param-name">Proton Density</span>
+                            <span class="param-val" id="val-proton-density">8.0 n/cc</span>
+                        </div>
+                        <input type="range" class="param-input" id="input-proton-density" min="0.5" max="50" value="8.0" step="0.5">
                     </div>
                 </div>
 
-                <!-- Explanation Visualizer (Right) -->
                 <div class="xai-results-card glass-card">
-                    <div class="xai-results-layout-wrapper">
-                        <!-- Left Gauge Column -->
-                        <div class="gauge-column">
-                            <!-- Gauge Output -->
-                            <div class="xai-gauge-panel">
-                                <div style="text-align: center;">
-                                    <svg width="100%" height="100%" viewBox="0 0 150 100" style="max-width: 150px;">
-                                        <!-- Background Arc -->
-                                        <path d="M 25 80 A 50 50 0 0 1 125 80" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12" stroke-linecap="round"></path>
-                                        <!-- Color scales -->
-                                        <path d="M 25 80 A 50 50 0 0 1 55 40" fill="none" stroke="#10b981" stroke-width="12"></path> <!-- Green -->
-                                        <path d="M 55 40 A 50 50 0 0 1 95 40" fill="none" stroke="#eab308" stroke-width="12"></path> <!-- Yellow -->
-                                        <path d="M 95 40 A 50 50 0 0 1 125 80" fill="none" stroke="#ef4444" stroke-width="12"></path> <!-- Red -->
-                                        <!-- Needle -->
-                                        <line id="gauge-needle" x1="75" y1="80" x2="75" y2="35" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" style="transform-origin: 75px 80px; transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); transform: rotate(-90deg);"></line>
-                                        <circle cx="75" cy="80" r="6" fill="#f8fafc"></circle>
-                                    </svg>
-                                </div>
-                                <div class="gauge-card" style="text-align: left; align-items: flex-start;">
-                                    <span class="gauge-label">Forecasted DST Index</span>
-                                    <h2 class="gauge-value" id="gauge-dst-val" style="margin: 0.2rem 0;">-24 nT</h2>
-                                    <span class="gauge-status text-green" id="gauge-status"><i class="fa-solid fa-circle-check"></i> Quiet Field</span>
-                                </div>
-                            </div>
-                            <div class="gauge-storm-desc" id="gauge-storm-desc" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.5rem;">
-                                The DST (Disturbance Storm Time) index is negative during geomagnetic storms due to the expansion of Earth's ring current. Adjust BZ GSE to negative ranges to trigger storm alerts.
-                            </div>
-                        </div>
-
-                        <!-- Right SHAP Column -->
-                        <div class="shap-column">
-                            <!-- Horizontal SHAP Force plots -->
-                            <div class="xai-chart-panel">
-                                <h3><i class="fa-solid fa-chart-bar text-purple"></i> SHAP Force Plot Explanation</h3>
-                                <p class="chart-desc" style="margin-bottom: 1rem;">Balances positive forces (pink) against negative forces (cyan), meeting at the final forecast:</p>
-                                
-                                <!-- Horizontal Force Plot Canvas -->
-                                <div class="shap-force-plot-wrapper" style="margin-bottom: 1.5rem;">
-                                    <div class="force-plot-scale" style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); margin-bottom: 0.4rem;">
-                                        <span>+50 nT (Quiet)</span>
-                                        <span>Baseline: +10 nT</span>
-                                        <span>-400 nT (Storm)</span>
-                                    </div>
-                                    <div class="force-plot-bar-container" style="height: 28px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; display: flex; position: relative;">
-                                        <!-- Colored segments populated dynamically -->
-                                        <div id="force-bar-neg" style="height: 100%; background: linear-gradient(90deg, #0ea5e9, #06b6d4); width: 20%; transition: width 0.5s ease; margin-left: auto;"></div>
-                                        <div id="force-bar-pos" style="height: 100%; background: linear-gradient(90deg, #ec4899, #f43f5e); width: 10%; transition: width 0.5s ease;"></div>
-                                        <div id="force-marker-divider" style="position: absolute; top: 0; bottom: 0; width: 3px; background: #fff; box-shadow: 0 0 10px #fff; transition: left 0.5s ease;"></div>
-                                    </div>
-                                    <div class="force-plot-labels" style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 0.5rem; color: var(--text-secondary);">
-                                        <span class="text-cyan font-bold" id="force-label-neg">Negative pull: -38.2</span>
-                                        <span class="text-pink font-bold" id="force-label-pos">Positive pull: +14.2</span>
-                                    </div>
-                                </div>
-
-                                <!-- Feature detail breakdowns -->
-                                <div class="shap-bars-container" id="shap-bars">
-                                    <!-- Populated dynamically via JS -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Attention Maps Playground -->
-            <div class="attention-map-container glass-card">
-                <div class="attention-header">
-                    <h3><i class="fa-solid fa-network-wired text-cyan"></i> Neural Attention Connection Graph</h3>
-                    <div class="head-selector-tabs">
-                        <button class="head-tab active" data-head="1">Attention Head 1</button>
-                        <button class="head-tab" data-head="2">Attention Head 2</button>
-                        <button class="head-tab" data-head="3">Attention Head 3</button>
-                        <button class="head-tab" data-head="4">Attention Head 4</button>
-                    </div>
-                </div>
-                <p class="explorer-desc">The Multi-Head Attention layer captures non-linear hourly correlation. The connection graph below visualizes the Query-Key attention matrices. Hover over nodes to inspect focus pathways:</p>
-                
-                <div class="heatmap-wrapper-grid">
-                    <!-- Interactive Node Graph SVG -->
-                    <div class="graph-svg-container" style="background: #04060a; border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; display: flex; align-items: center; justify-content: center; height: 320px; position: relative;">
-                        <svg id="attention-node-graph" width="100%" height="280" viewBox="0 0 450 280" style="background: transparent;">
-                            <g id="graph-connections">
-                                <!-- Dynamically rendered connection path links -->
-                            </g>
-                            <g id="graph-query-nodes">
-                                <!-- Query nodes (left) -->
-                            </g>
-                            <g id="graph-key-nodes">
-                                <!-- Key nodes (right) -->
-                            </g>
+                    <div class="hud-wrapper text-center">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 0.5rem;">Magnetosphere HUD</span>
+                        <svg id="solar-storm-hud" width="400" height="300" viewBox="0 0 300 120" style="max-width: 100%; height: auto; background: transparent;">
+                            <circle cx="20" cy="60" r="18" fill="url(#sun-gradient)" id="hud-sun" style="filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.4));"></circle>
+                            <g id="hud-flares" stroke="orange" stroke-width="1" opacity="0.3"></g>
+                            <g id="hud-particles"></g>
+                            <path id="shield-outer" d="M 250 60 C 180 -10, 180 130, 250 60" fill="none" stroke="rgba(14, 165, 233, 0.2)" stroke-width="1.5"></path>
+                            <path id="shield-inner" d="M 250 60 C 210 15, 210 105, 250 60" fill="none" stroke="rgba(14, 165, 233, 0.4)" stroke-width="2"></path>
+                            <path id="shield-compression" d="M 250 60 C 235 35, 235 85, 250 60" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5"></path>
+                            <circle cx="250" cy="60" r="6" fill="#3b82f6" id="hud-earth"></circle>
+                            <circle cx="250" cy="60" r="10" fill="none" id="hud-aurora" style="stroke: rgba(16,185,129,0); stroke-width: 2; transition: all 0.3s ease;"></circle>
+                            <line id="sweep-line" x1="20" y1="60" x2="250" y2="60" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4" />
+                            <defs>
+                                <radialGradient id="sun-gradient" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#fff"></stop>
+                                    <stop offset="70%" stop-color="#f97316"></stop>
+                                    <stop offset="100%" stop-color="#ea580c"></stop>
+                                </radialGradient>
+                            </defs>
                         </svg>
                     </div>
 
-                    <div class="heatmap-legend-info" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
-                        <h4>Attention Weights Blueprint</h4>
-                        <div class="legend-scale">
-                            <span>Weak Link</span>
-                            <div class="scale-bar"></div>
-                            <span>Strong Focus</span>
+                    <div class="xai-gauge-panel">
+                        <div style="flex-shrink: 0; width: 120px;">
+                            <svg width="100%" viewBox="0 0 150 100">
+                                <path d="M 25 80 A 50 50 0 0 1 125 80" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12" stroke-linecap="round"></path>
+                                <path d="M 25 80 A 50 50 0 0 1 55 40" fill="none" stroke="#10b981" stroke-width="12"></path>
+                                <path d="M 55 40 A 50 50 0 0 1 95 40" fill="none" stroke="#eab308" stroke-width="12"></path>
+                                <path d="M 95 40 A 50 50 0 0 1 125 80" fill="none" stroke="#ef4444" stroke-width="12"></path>
+                                <line id="gauge-needle" x1="75" y1="80" x2="75" y2="35" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" style="transform-origin: 75px 80px; transform: rotate(-90deg); transition: transform 0.5s;"></line>
+                                <circle cx="75" cy="80" r="6" fill="#f8fafc"></circle>
+                            </svg>
                         </div>
-                        <p id="head-desc-text" class="text-secondary" style="font-size: 0.88rem; line-height: 1.6;">Head 1 focus: Scalar B displays high attention weights universally when queried with all parameters. BZ GSE displays contextual attention, indicating high correlation during peak vector variations.</p>
+                        <div>
+                            <span class="gauge-label">Forecasted DST</span>
+                            <h2 class="gauge-value" id="gauge-dst-val">-24 nT</h2>
+                            <span class="gauge-status text-green" id="gauge-status"><i class="fa-solid fa-circle-check"></i> Quiet Field</span>
+                        </div>
+                    </div>
+                    <p id="gauge-storm-desc" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        The DST index is negative during geomagnetic storms due to the expansion of Earth's ring current. Adjust BZ GSE to negative ranges to trigger storm alerts.
+                    </p>
+
+                    <div style="border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
+                        <h4 style="margin: 0 0 1rem; color: #fff;"><i class="fa-solid fa-chart-bar text-purple"></i> SHAP Force Plot</h4>
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; font-family: var(--font-mono);">
+                                <span>+50 nT (Quiet)</span>
+                                <span>Baseline: +10 nT</span>
+                                <span>-400 nT (Storm)</span>
+                            </div>
+                            <div style="height: 24px; background: rgba(255,255,255,0.05); border-radius: 6px; display: flex; position: relative; overflow: hidden; border: 1px solid var(--border-glass);">
+                                <div id="force-bar-neg" style="height: 100%; background: linear-gradient(90deg, #0ea5e9, #06b6d4); width: 20%; margin-left: auto;"></div>
+                                <div id="force-bar-pos" style="height: 100%; background: linear-gradient(90deg, #ec4899, #f43f5e); width: 10%;"></div>
+                                <div id="force-marker-divider" style="position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; box-shadow: 0 0 8px #fff; left: 50%;"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 0.5rem;">
+                                <span class="text-neg-cyan font-bold" id="force-label-neg">Negative pull: -38.2</span>
+                                <span class="text-pos-pink font-bold" id="force-label-pos">Positive pull: +14.2</span>
+                            </div>
+                        </div>
+                        <div id="shap-bars"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="attention-header">
+                    <h3 style="margin:0;"><i class="fa-solid fa-network-wired text-cyan"></i> Neural Attention Graph</h3>
+                    <div class="head-selector-tabs">
+                        <button class="head-tab active" data-head="1">Head 1</button>
+                        <button class="head-tab" data-head="2">Head 2</button>
+                        <button class="head-tab" data-head="3">Head 3</button>
+                        <button class="head-tab" data-head="4">Head 4</button>
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;">Visualize Multi-Head Attention pathways. The connection graph below visualizes Query-Key matrices.</p>
+                
+                <div class="heatmap-wrapper-grid">
+                    <div style="background: #000; border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.5rem; text-align: center;">
+                        <svg id="attention-node-graph" width="100%" height="280" viewBox="0 0 450 280">
+                            <g id="graph-connections"></g>
+                            <g id="graph-query-nodes"></g>
+                            <g id="graph-key-nodes"></g>
+                        </svg>
+                    </div>
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <h4 style="margin-top: 0;">Attention Weights Blueprint</h4>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin: 1rem 0; font-size: 0.8rem; color: var(--text-muted);">
+                            <span>Weak</span>
+                            <div style="flex: 1; height: 6px; border-radius: 3px; background: linear-gradient(90deg, rgba(255,255,255,0.1), var(--accent-cyan));"></div>
+                            <span>Strong</span>
+                        </div>
+                        <p id="head-desc-text" style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+                            Head 1 focus: Scalar B displays high attention weights universally when queried with all parameters. BZ GSE displays contextual attention.
+                        </p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Paper Analysis Document Summary -->
-        <section class="section reveal xai-document-section">
-            <h2 class="section-heading text-center">Research Paper <span class="text-gradient">Key Summary</span></h2>
-            <p class="section-lead text-center">Key findings, mathematical methodologies, and model structures from the published NJIT paper.</p>
-
-            <div class="paper-summary-grid">
-                <!-- Summary Card 1 -->
+        <section class="section text-center">
+            <h2 class="section-heading">Research Paper <span class="text-cyan">Key Summary</span></h2>
+            <p class="section-lead">Key findings, mathematical methodologies, and model structures from the published NJIT paper.</p>
+            
+            <div class="paper-summary-grid text-left">
                 <div class="summary-doc-card glass-card">
-                    <h3><i class="fa-solid fa-magnifying-glass-chart text-cyan"></i> Abstract &amp; Problem Goal</h3>
-                    <p>
-                        Geomagnetic storms are primary space weather events that can cause severe damage to Earth's power grids, networking setups, and satellites. Measuring the **Disturbance Storm Time (DST)** index is crucial for quantifying geomagnetic storm size and intensity.
-                    </p>
-                    <p>
-                        This research performs a rigorous **Feature Importance Analysis** of the *DST Transformer model*—a state-of-the-art neural architecture combining Multi-Head Attention and Bayesian Deep learning (Monte Carlo Dropout layers) to estimate prediction uncertainty.
-                    </p>
+                    <h3><i class="fa-solid fa-magnifying-glass-chart text-cyan"></i> Abstract &amp; Goal</h3>
+                    <p>Geomagnetic storms are primary space weather events that can cause severe damage. Measuring the <strong>Disturbance Storm Time (DST)</strong> index is crucial for quantifying intensity.</p>
+                    <p>This research performs a rigorous Feature Importance Analysis of the DST Transformer model—a state-of-the-art neural architecture combining Multi-Head Attention and Bayesian Deep learning.</p>
                 </div>
-
-                <!-- Summary Card 2 -->
                 <div class="summary-doc-card glass-card">
                     <h3><i class="fa-solid fa-compass-drafting text-purple"></i> XAI Methodology</h3>
                     <ul>
-                        <li><strong>Kernel SHAP</strong>: Generates Shapley values based on cooperative game theory to measure the average margin contribution of each solar feature across 1,098 NASA wind samples.</li>
-                        <li><strong>LIME Tabular Explainer</strong>: Approximates the black-box DST Transformer model locally around specific instances to explain why the model made a positive or negative forecast.</li>
-                        <li><strong>Attention Score Maps</strong>: Extracts raw weight vectors from the Multi-Head Attention layer to visualize step-by-step correlation grids.</li>
+                        <li><strong>Kernel SHAP:</strong> Generates Shapley values based on cooperative game theory to measure average margin contribution of solar features.</li>
+                        <li><strong>LIME Tabular Explainer:</strong> Approximates the black-box DST Transformer model locally around specific instances to explain forecasts.</li>
+                        <li><strong>Attention Score Maps:</strong> Extracts raw weight vectors from the Multi-Head Attention layer to visualize correlation grids.</li>
                     </ul>
                 </div>
-
-                <!-- Summary Card 3 -->
                 <div class="summary-doc-card glass-card">
-                    <h3><i class="fa-solid fa-square-poll-vertical text-green"></i> Key Analytical Insights</h3>
-                    <p>
-                        - <strong>Scalar B (IMF Magnitude)</strong> is mathematically proven as the single most critical feature driving DST index forecasting.
-                    </p>
-                    <p>
-                        - <strong>BZ GSE (Z-component Magnetic Field)</strong> exhibits a massive negative correlation coefficient of <strong>-0.9556</strong> with Scalar B. When BZ GSE tilts negative (southward), it allows solar wind energy to transfer into Earth's magnetosphere, triggering geomagnetic storms.
-                    </p>
-                    <p>
-                        - **SW Plasma Temperature** and **Plasma Speed** act as strong supporting indicators.
-                    </p>
-                    <p>
-                        - **SW Proton Density**, **Flow pressure**, and **E electric field** contain near-zero SHAP impact scores, confirming they can be safely pruned to reduce model training complexity.
-                    </p>
+                    <h3><i class="fa-solid fa-square-poll-vertical text-green"></i> Key Insights</h3>
+                    <p>- <strong>Scalar B (IMF)</strong> is mathematically proven as the single most critical feature driving DST forecasting.</p>
+                    <p>- <strong>BZ GSE</strong> exhibits a massive negative correlation (-0.9556) with Scalar B. Southward tilting triggers storms.</p>
+                    <p>- Plasma Temp and Speed are strong supporting indicators. Density and pressure can be safely pruned to reduce complexity.</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Visual Footer -->
     <footer class="main-footer">
-        <div class="footer-container">
-            <p>&copy; 2026 Archit Somayajula. Engineered with Explainable AI &amp; JS Canvas.</p>
-            <div class="footer-socials">
-                <a href="https://linkedin.com/in/archit-somayajula" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="mailto:sdsarchit2000@gmail.com"><i class="fa-solid fa-envelope"></i></a>
-            </div>
-        </div>
+        <p>&copy; 2026 Archit Somayajula. Engineered with Explainable AI &amp; JS Canvas.</p>
     </footer>
 
-    <!-- Dedicated XAI Javascript -->
     <script src="xai.js"></script>
 </body>
 </html>

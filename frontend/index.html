@@ -4,29 +4,324 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archit Somayajula | Senior Data Engineer Portfolio</title>
-    
-    <!-- Modern Typography & Icons -->
+    <meta name="description" content="Senior Data Engineer with 4+ years building scalable data pipelines, ETL systems, and real-time analytics at Discover Financial & Cisco Systems.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Styling Sheet -->
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Security & Obfuscated JS modules -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="security.js"></script>
     <script src="menu.js"></script>
+
+    <style>
+        /* ===== INDEX PAGE PREMIUM STYLES ===== */
+        .idx-hero {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            align-items: center;
+            padding: 2rem 0;
+        }
+        .idx-hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 4rem;
+            align-items: center;
+            width: 100%;
+        }
+        .hero-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            background: rgba(14, 165, 233, 0.08);
+            color: #38bdf8;
+            margin-bottom: 1.5rem;
+            animation: hero-pulse 2s ease-in-out infinite;
+        }
+        @keyframes hero-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(14,165,233,0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(14,165,233,0); }
+        }
+        .hero-live-badge .dot-green {
+            width: 8px; height: 8px; background: #22c55e; border-radius: 50%;
+            animation: blink-dot 1.5s infinite;
+        }
+        @keyframes blink-dot { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+        .idx-hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .idx-hero-title .gradient-word {
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: grad-cycle 4s ease infinite;
+        }
+        @keyframes grad-cycle {
+            0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;}
+        }
+        .idx-hero-desc {
+            font-size: 1.15rem; color: #94a3b8; line-height: 1.7;
+            margin-bottom: 2rem; max-width: 540px;
+        }
+        .idx-hero-desc strong { color: #e2e8f0; }
+        .idx-hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn-glow {
+            display: inline-flex; align-items: center; gap: 0.6rem;
+            padding: 0.85rem 1.8rem; border-radius: 10px; font-weight: 700;
+            font-size: 0.95rem; text-decoration: none; cursor: pointer;
+            border: none; font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .btn-glow-primary {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #fff; box-shadow: 0 0 20px rgba(14,165,233,0.3);
+        }
+        .btn-glow-primary:hover { box-shadow: 0 0 35px rgba(14,165,233,0.5); transform: translateY(-2px); }
+        .btn-glow-ghost {
+            background: transparent; color: #e2e8f0;
+            border: 1px solid rgba(148,163,184,0.3);
+        }
+        .btn-glow-ghost:hover { border-color:#0ea5e9; color:#38bdf8; background:rgba(14,165,233,0.05); box-shadow:0 0 20px rgba(14,165,233,0.1); }
+
+        /* Hero Right - Stats Panel */
+        .hero-stats-stack { display: flex; flex-direction: column; gap: 1.5rem; }
+        .hero-big-stat {
+            text-align: center; padding: 2.5rem 2rem;
+            position: relative; overflow: hidden;
+        }
+        .hero-big-stat .stat-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+            text-transform: uppercase; letter-spacing: 3px; color: #64748b; margin-bottom: 0.5rem;
+        }
+        .hero-big-stat .stat-number {
+            font-family: 'Space Grotesk', sans-serif; font-size: 4rem;
+            font-weight: 800; line-height: 1;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 25px rgba(14,165,233,0.3));
+        }
+        .hero-big-stat .stat-sub {
+            font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;
+        }
+        .hero-mini-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .hero-mini-box { text-align: center; padding: 1.2rem 0.5rem; }
+        .hero-mini-box .hmb-val {
+            font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem;
+            font-weight: 700; color: #f8fafc;
+        }
+        .hero-mini-box .hmb-label {
+            font-size: 0.7rem; color: #64748b; margin-top: 0.2rem;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* Terminal Widget */
+        .hero-terminal { overflow: hidden; }
+        .term-bar {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 1rem; background: rgba(2,6,23,0.6);
+            border-bottom: 1px solid rgba(51,65,85,0.5);
+        }
+        .term-bar .d { width:10px; height:10px; border-radius:50%; }
+        .term-bar .d-r { background:#ef4444; } .term-bar .d-y { background:#eab308; } .term-bar .d-g { background:#22c55e; }
+        .term-bar span { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:#64748b; margin-left:0.5rem; }
+        .term-body {
+            padding: 1.2rem; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem; color: #94a3b8; line-height: 1.7;
+            background: rgba(2,6,23,0.4);
+        }
+        .term-body .tk { color: #f43f5e; } .term-body .ts { color: #10b981; }
+        .term-body .tv { color: #38bdf8; font-weight: 600; }
+        .term-body .tp { color: #f97316; font-weight: bold; }
+        .term-body .tc { color: #475569; font-style: italic; }
+        .term-body .tl { margin-bottom: 0.3rem; }
+        .term-body .tout {
+            color: #e2e8f0; padding-left: 1rem; display: flex;
+            align-items: center; gap: 0.5rem; margin-top: 0.15rem;
+        }
+        .term-body .tout i { color: #38bdf8; font-size: 0.75rem; }
+
+        /* Showcase Grid */
+        .showcase-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .sc-card {
+            padding: 2.5rem; text-decoration: none; display: flex;
+            flex-direction: column; height: 100%; position: relative;
+            overflow: hidden;
+        }
+        .sc-card::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+            height: 3px; background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .sc-card:hover::after { opacity: 1; }
+        .sc-card:nth-child(2)::after { background: linear-gradient(90deg, transparent, #f97316, transparent); }
+        .sc-card:nth-child(3)::after { background: linear-gradient(90deg, transparent, #10b981, transparent); }
+        .sc-card:nth-child(4)::after { background: linear-gradient(90deg, transparent, #eab308, transparent); }
+        .sc-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; margin-bottom: 1.25rem;
+            background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.2);
+            color: #38bdf8; transition: all 0.3s;
+        }
+        .sc-card:nth-child(2) .sc-icon { background:rgba(249,115,22,0.1); border-color:rgba(249,115,22,0.2); color:#fb923c; }
+        .sc-card:nth-child(3) .sc-icon { background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.2); color:#34d399; }
+        .sc-card:nth-child(4) .sc-icon { background:rgba(234,179,8,0.1); border-color:rgba(234,179,8,0.2); color:#fbbf24; }
+        .sc-card:hover .sc-icon { transform: scale(1.1); box-shadow: 0 0 20px rgba(14,165,233,0.2); }
+        .sc-card h3 { font-family:'Space Grotesk',sans-serif; font-size:1.2rem; font-weight:600; color:#e2e8f0; margin:0 0 0.6rem 0; }
+        .sc-card p { font-size:0.9rem; color:#94a3b8; line-height:1.6; margin:0 0 1.5rem 0; flex:1; }
+        .sc-link {
+            font-family:'JetBrains Mono',monospace; font-size:0.82rem; font-weight:600;
+            display:flex; align-items:center; gap:0.5rem; transition:gap 0.2s;
+        }
+        .sc-card:hover .sc-link { gap: 0.8rem; }
+        .sc-link.cyan { color:#38bdf8; } .sc-link.orange { color:#fb923c; }
+        .sc-link.green { color:#34d399; } .sc-link.yellow { color:#fbbf24; }
+
+        /* Experience Section */
+        .exp-grid { display: flex; flex-direction: column; gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+        .exp-card { padding: 2rem; display: grid; grid-template-columns: 200px 1fr; gap: 2rem; align-items: start; }
+        .exp-meta { text-align: right; }
+        .exp-meta .exp-date {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+            color: #38bdf8; font-weight: 600; margin-bottom: 0.5rem;
+        }
+        .exp-meta .exp-company {
+            font-size: 0.85rem; color: #94a3b8; line-height: 1.4;
+        }
+        .exp-meta .exp-loc {
+            font-size: 0.75rem; color: #64748b; margin-top: 0.25rem;
+            display: flex; align-items: center; gap: 0.3rem; justify-content: flex-end;
+        }
+        .exp-content h3 {
+            font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;
+            font-weight: 600; color: #e2e8f0; margin: 0 0 0.75rem 0;
+        }
+        .exp-content ul {
+            padding-left: 1.2rem; margin: 0; display: flex;
+            flex-direction: column; gap: 0.5rem;
+        }
+        .exp-content li {
+            font-size: 0.88rem; color: #94a3b8; line-height: 1.5;
+        }
+        .exp-content li strong { color: #e2e8f0; }
+
+        /* Projects Grid */
+        .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .proj-card { padding: 0; overflow: hidden; }
+        .proj-header {
+            padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1rem;
+            border-bottom: 1px solid rgba(51,65,85,0.4);
+            background: rgba(2,6,23,0.3);
+        }
+        .proj-header .proj-icon {
+            width: 42px; height: 42px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+        .proj-header h3 { font-family:'Space Grotesk',sans-serif; font-size:1.1rem; font-weight:600; color:#e2e8f0; margin:0; }
+        .proj-header .proj-date { font-size:0.72rem; color:#64748b; font-family:'JetBrains Mono',monospace; }
+        .proj-body { padding: 1.5rem 2rem; }
+        .proj-body p { font-size:0.88rem; color:#94a3b8; line-height:1.6; margin:0 0 1rem 0; }
+        .proj-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .proj-tag {
+            padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.72rem;
+            font-weight: 600; background: rgba(14,165,233,0.08);
+            border: 1px solid rgba(14,165,233,0.15); color: #64748b;
+        }
+        .proj-action {
+            margin-top: 1rem; font-family:'JetBrains Mono',monospace;
+            font-size: 0.8rem; font-weight: 600; display: flex;
+            align-items: center; gap: 0.5rem; text-decoration: none;
+            transition: gap 0.2s;
+        }
+        .proj-action:hover { gap: 0.8rem; }
+        .proj-card-wide { grid-column: span 2; }
+        .proj-card-wide .proj-body { display: flex; align-items: center; gap: 2rem; }
+        .proj-card-wide .proj-body > div { flex: 1; }
+
+        /* Skills Radar */
+        .skills-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .skill-col { padding: 2rem; }
+        .skill-col-header {
+            display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;
+        }
+        .skill-col-header i { font-size: 1.5rem; }
+        .skill-col-header h3 { font-family:'Space Grotesk',sans-serif; font-size:1.15rem; font-weight:600; color:#e2e8f0; margin:0; }
+        .skill-row { margin-bottom: 1rem; }
+        .skill-row-header { display: flex; justify-content: space-between; margin-bottom: 0.3rem; }
+        .skill-row-header span:first-child { font-size: 0.85rem; color: #cbd5e1; font-weight: 500; }
+        .skill-row-header span:last-child { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:#64748b; }
+        .skill-track { height: 5px; background: rgba(51,65,85,0.5); border-radius: 3px; overflow: hidden; }
+        .skill-fill {
+            height: 100%; border-radius: 3px; transition: width 1s cubic-bezier(0.16,1,0.3,1);
+            position: relative;
+        }
+        .skill-fill::after {
+            content: ''; position: absolute; top:0; left:-100%; width:100%; height:100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer { 0%{left:-100%;} 100%{left:200%;} }
+        .skill-col:nth-child(1) .skill-fill { background: linear-gradient(90deg, #0ea5e9, #06b6d4); box-shadow: 0 0 8px rgba(14,165,233,0.3); }
+        .skill-col:nth-child(2) .skill-fill { background: linear-gradient(90deg, #f97316, #fb923c); box-shadow: 0 0 8px rgba(249,115,22,0.3); }
+        .skill-col:nth-child(3) .skill-fill { background: linear-gradient(90deg, #10b981, #34d399); box-shadow: 0 0 8px rgba(16,185,129,0.3); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .idx-hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .idx-hero-title { font-size: 2.8rem; }
+            .showcase-cards { grid-template-columns: 1fr; }
+            .exp-card { grid-template-columns: 1fr; }
+            .exp-meta { text-align: left; }
+            .exp-meta .exp-loc { justify-content: flex-start; }
+            .proj-grid { grid-template-columns: 1fr; }
+            .proj-card-wide { grid-column: span 1; }
+            .proj-card-wide .proj-body { flex-direction: column; }
+            .skills-cols { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .idx-hero-title { font-size: 2.2rem; letter-spacing: -1px; }
+            .hero-mini-row { grid-template-columns: 1fr; }
+        }
+
+        /* Intro Modal upgrade */
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:2000; display:none; align-items:center; justify-content:center; opacity:0; transition:opacity 0.4s; }
+        .modal-overlay.active { display:flex; opacity:1; }
+        .modal-card { background:#0f172a; border:1px solid rgba(14,165,233,0.2); border-radius:20px; padding:3rem; max-width:520px; width:90%; text-align:center; position:relative; }
+        .modal-close-btn { position:absolute; top:1.2rem; right:1.5rem; background:none; border:none; color:#64748b; font-size:1.8rem; cursor:pointer; transition:color 0.2s; }
+        .modal-close-btn:hover { color:#f8fafc; }
+        .modal-avatar-wrapper { width:64px; height:64px; border-radius:16px; background:rgba(14,165,233,0.1); border:1px solid rgba(14,165,233,0.25); display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:1.5rem; color:#38bdf8; }
+        .modal-title { font-family:'Space Grotesk',sans-serif; font-size:1.8rem; font-weight:700; margin:0 0 0.25rem 0; background:linear-gradient(135deg,#f8fafc,#cbd5e1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .modal-subtitle { font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:#64748b; letter-spacing:1px; margin-bottom:1rem; }
+        .modal-desc { font-size:0.95rem; color:#94a3b8; line-height:1.7; margin-bottom:1.5rem; }
+        .modal-desc strong { color:#e2e8f0; }
+        .modal-highlight-box { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem; }
+        .modal-highlight-item { padding:1rem; background:rgba(2,6,23,0.6); border:1px solid rgba(51,65,85,0.4); border-radius:12px; }
+        .modal-h-val { display:block; font-family:'Space Grotesk',sans-serif; font-size:1.3rem; font-weight:700; color:#38bdf8; }
+        .modal-h-label { display:block; font-size:0.7rem; color:#64748b; text-transform:uppercase; letter-spacing:1px; margin-top:0.2rem; }
+        .modal-action { margin-top: 0.5rem; }
+    </style>
 </head>
 <body>
     <canvas id="particle-canvas"></canvas>
-    <!-- Premium Ambient Glow Vectors -->
-    <div class="glow-sphere sphere-1"></div>
-    <div class="glow-sphere sphere-2"></div>
-    <div class="glow-sphere sphere-3"></div>
 
-    <!-- Sticky Modern Navigation Header -->
-        <header class="main-header">
+    <header class="main-header">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">
                 <span class="logo-bracket">&lt;</span>
@@ -34,356 +329,299 @@
                 <span class="logo-bracket">/&gt;</span>
             </a>
             <nav class="nav-links">
-                <a href="index.html#about" class="nav-link active">About</a>
-                <a href="index.html#skills" class="nav-link ">Skills</a>
-                <a href="index.html#projects" class="nav-link ">Projects</a>
-                <a href="pipeline.html" class="nav-link "><i class="fa-solid fa-terminal"></i> ETL Console</a>
-                <a href="dashboard.html" class="nav-link "><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
-                <a href="nids.html" class="nav-link "><i class="fa-solid fa-shield-halved"></i> NIDS Lab</a>
-                <a href="xai.html" class="nav-link "><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
+                <a href="#about" class="nav-link active">About</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="pipeline.html" class="nav-link"><i class="fa-solid fa-terminal"></i> ETL Console</a>
+                <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
+                <a href="nids.html" class="nav-link"><i class="fa-solid fa-shield-halved"></i> NIDS Lab</a>
+                <a href="xai.html" class="nav-link"><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
             </nav>
             <div class="nav-actions">
                 <a href="mailto:sdsarchit2000@gmail.com" class="nav-btn" aria-label="Contact"><i class="fa-regular fa-envelope"></i> <span class="contact-text">Contact</span></a>
-                <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Toggle Menu">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
+                <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Toggle Menu"><i class="fa-solid fa-bars"></i></button>
             </div>
         </div>
     </header>
 
     <main class="content-wrapper">
-        <!-- Hero Presentation Section -->
-        <section id="about" class="section hero-section reveal">
-            <div class="hero-content">
-                <div class="cert-badge-row">
-                    <span class="badge badge-databricks"><i class="fa-solid fa-cube"></i> Databricks Certified Associate</span>
-                    <span class="badge badge-aws"><i class="fa-brands fa-aws"></i> AWS Academy Certified</span>
+
+        <!-- HERO -->
+        <section id="about" class="idx-hero reveal">
+            <div class="idx-hero-grid">
+                <div>
+                    <div class="hero-live-badge"><span class="dot-green"></span> Open to Opportunities</div>
+                    <h1 class="idx-hero-title">
+                        Building Scalable<br><span class="gradient-word">Data Pipelines</span><br>& Analytics Systems
+                    </h1>
+                    <p class="idx-hero-desc">
+                        Senior Data Engineer with 4+ years building high-throughput ETL engines, custom Data Quality frameworks, and real-time API microservices at <strong>Discover Financial Services</strong> and <strong>Cisco Systems</strong>.
+                    </p>
+                    <div class="idx-hero-btns">
+                        <a href="pipeline.html" class="btn-glow btn-glow-primary"><i class="fa-solid fa-terminal"></i> Launch ETL Console</a>
+                        <a href="dashboard.html" class="btn-glow btn-glow-ghost"><i class="fa-solid fa-chart-line"></i> View Live Dashboard</a>
+                    </div>
                 </div>
-                <h1 class="hero-title">
-                    Building Scalable <span class="text-gradient">Data Pipelines</span> &amp; Real-time Pipelines
-                </h1>
-                <p class="hero-subtitle">
-                    Senior Data Engineer with 4+ years of experience developing high-throughput ETL engines, custom Data Quality frameworks, and API microservices at organizations like <strong>Discover Financial</strong> and <strong>Cisco Systems</strong>.
-                </p>
-                <div class="hero-action-buttons">
-                    <a href="pipeline.html" class="btn btn-primary"><i class="fa-solid fa-terminal"></i> Go to ETL Console</a>
-                    <a href="dashboard.html" class="btn btn-secondary"><i class="fa-solid fa-chart-line"></i> View Live Dashboard</a>
-                </div>
-            </div>
-            
-            <!-- Quick Stats Terminal Widget -->
-            <div class="hero-widget glass-card">
-                <div class="widget-header">
-                    <div class="dot red"></div>
-                    <div class="dot yellow"></div>
-                    <div class="dot green"></div>
-                    <span class="widget-title">spark_session.py</span>
-                </div>
-                <div class="widget-body">
-                    <div class="terminal-line"><span class="t-keyword">from</span> pyspark.sql <span class="t-keyword">import</span> SparkSession</div>
-                    <div class="terminal-line">spark = SparkSession.builder.appName(<span class="t-string">"Archit.DE"</span>).getOrCreate()</div>
-                    <div class="terminal-line"><span class="t-keyword">print</span>(spark.version)  <span class="t-comment"># 3.5.0 (Data Lakehouse Engine)</span></div>
-                    <br>
-                    <div class="terminal-line prompt"><span class="t-prompt">&gt;&gt;&gt;</span> df = spark.read.json(<span class="t-string">"s3a://dw-prod/profile.json"</span>)</div>
-                    <div class="terminal-line prompt"><span class="t-prompt">&gt;&gt;&gt;</span> df.select(<span class="t-string">"role"</span>, <span class="t-string">"specialty"</span>, <span class="t-string">"impact"</span>).show(vertical=<span class="t-keyword">True</span>)</div>
-                    <div class="terminal-line output"><i class="fa-solid fa-database text-cyan"></i> -RECORD 0------------------------------------</div>
-                    <div class="terminal-line output"><i class="fa-solid fa-database text-cyan"></i>  role      | Senior Data Engineer &amp; Architect</div>
-                    <div class="terminal-line output"><i class="fa-solid fa-database text-cyan"></i>  specialty | PySpark, Snowflake, Docker, REST</div>
-                    <div class="terminal-line output"><i class="fa-solid fa-database text-cyan"></i>  impact    | Ingestion latency cut to ~200ms</div>
+                <div class="hero-stats-stack">
+                    <div class="glass-card hero-big-stat">
+                        <div class="stat-label">Years of Production Experience</div>
+                        <div class="stat-number">4+</div>
+                        <div class="stat-sub">Discover Financial · Cisco · NJIT</div>
+                    </div>
+                    <div class="hero-mini-row">
+                        <div class="glass-card hero-mini-box"><div class="hmb-val">5</div><div class="hmb-label">Pipelines</div></div>
+                        <div class="glass-card hero-mini-box"><div class="hmb-val">45%</div><div class="hmb-label">Latency Cut</div></div>
+                        <div class="glass-card hero-mini-box"><div class="hmb-val">~200ms</div><div class="hmb-label">P95 Query</div></div>
+                    </div>
+                    <div class="glass-card hero-terminal">
+                        <div class="term-bar">
+                            <div class="d d-r"></div><div class="d d-y"></div><div class="d d-g"></div>
+                            <span>spark_session.py</span>
+                        </div>
+                        <div class="term-body">
+                            <div class="tl"><span class="tk">from</span> pyspark.sql <span class="tk">import</span> SparkSession</div>
+                            <div class="tl">spark = SparkSession.builder.appName(<span class="ts">"Archit.DE"</span>).getOrCreate()</div>
+                            <div class="tl"><span class="tk">print</span>(spark.version) <span class="tc"># 3.5.0 (Data Lakehouse)</span></div>
+                            <div class="tl" style="margin-top:0.5rem;"><span class="tp">&gt;&gt;&gt;</span> df.select(<span class="ts">"role"</span>, <span class="ts">"impact"</span>).show()</div>
+                            <div class="tout"><i class="fa-solid fa-database"></i> role | Senior Data Engineer</div>
+                            <div class="tout"><i class="fa-solid fa-database"></i> impact | Ingestion latency ~200ms</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Live Showcase Navigation Section -->
-        <section class="section showcase-navigator-section reveal">
-            <h2 class="section-heading text-center">Interactive <span class="text-gradient">Data Ingestion Showcase</span></h2>
-            <p class="section-lead text-center">Run the functional local data pipeline and explore the real-time analytics dashboard.</p>
-            
-            <div class="showcase-nav-grid">
-                <!-- Card 1: ETL Ingestion Console -->
-                <a href="pipeline.html" class="showcase-nav-card glass-card">
-                    <div class="showcase-icon"><i class="fa-solid fa-terminal text-cyan"></i></div>
-                    <h3>1. ETL Ingestion Console</h3>
-                    <p>Trigger the live python ETL pipeline. Watch data extraction, data validation via the custom Data Quality engine, and SQLite storage logs stream line-by-line.</p>
-                    <span class="showcase-btn text-cyan">Launch Ingestion Console <i class="fa-solid fa-arrow-right"></i></span>
+        <!-- INTERACTIVE SHOWCASE -->
+        <section class="section reveal">
+            <div class="section-label">Interactive Showcase</div>
+            <h2 class="section-heading">Explore My <span class="text-gradient">Live Systems</span></h2>
+            <p class="section-lead">Fully functional demos — run real ETL pipelines, explore analytics dashboards, and interact with ML research labs.</p>
+            <div class="showcase-cards">
+                <a href="pipeline.html" class="glass-card sc-card">
+                    <div class="sc-icon"><i class="fa-solid fa-terminal"></i></div>
+                    <h3>ETL Ingestion Console</h3>
+                    <p>Trigger a live Python ETL pipeline. Watch data extraction, DQ validation, and SQLite storage logs stream line-by-line in real time.</p>
+                    <span class="sc-link cyan">Launch Console <i class="fa-solid fa-arrow-right"></i></span>
                 </a>
-
-                <!-- Card 2: Analytics Dashboard -->
-                <a href="dashboard.html" class="showcase-nav-card glass-card">
-                    <div class="showcase-icon"><i class="fa-solid fa-chart-pie text-purple"></i></div>
-                    <h3>2. Live Analytics Dashboard</h3>
-                    <p>Explore the ingested hourly air quality levels, rolling averages, success ratios, and audit isolated anomaly rows captured in the quarantine table.</p>
-                    <span class="showcase-btn text-purple">Open Analytics Dashboard <i class="fa-solid fa-arrow-right"></i></span>
+                <a href="dashboard.html" class="glass-card sc-card">
+                    <div class="sc-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                    <h3>Analytics Dashboard</h3>
+                    <p>Explore ingested air quality data, rolling averages, EPA AQI breakdowns, and audit quarantined anomaly records.</p>
+                    <span class="sc-link orange">Open Dashboard <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+                <a href="nids.html" class="glass-card sc-card">
+                    <div class="sc-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3>NIDS Security Lab</h3>
+                    <p>Watch an ensemble ML classifier detect network intrusions in real-time across XGBoost, Random Forest, and Extra Trees models.</p>
+                    <span class="sc-link green">Enter Lab <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+                <a href="xai.html" class="glass-card sc-card">
+                    <div class="sc-icon"><i class="fa-solid fa-sun"></i></div>
+                    <h3>XAI Research Lab</h3>
+                    <p>Interactive Explainable AI sandbox — tune solar wind parameters and watch SHAP force plots and attention maps update in real time.</p>
+                    <span class="sc-link yellow">Explore Research <i class="fa-solid fa-arrow-right"></i></span>
                 </a>
             </div>
         </section>
 
-        <!-- Technical Skills Showcase -->
-        <section id="skills" class="section skills-section reveal">
-            <h2 class="section-heading text-center">Engineered <span class="text-gradient">Skill Matrix</span></h2>
-            <p class="section-lead text-center">Comprehensive tools and technologies verified by years of production-grade implementations.</p>
-            
-            <div class="skills-grid">
-                <!-- Data Engineering -->
-                <div class="skill-card glass-card">
-                    <div class="skill-icon-header">
-                        <i class="fa-solid fa-gears text-cyan"></i>
-                        <h3>Data Engineering</h3>
-                    </div>
-                    <ul class="skill-list">
-                        <li><span>PySpark / Apache Spark</span> <div class="progress-bar"><div class="fill" style="width: 95%;"></div></div></li>
-                        <li><span>Snowflake Data Pipelines</span> <div class="progress-bar"><div class="fill" style="width: 92%;"></div></div></li>
-                        <li><span>Azure Databricks &amp; ADF</span> <div class="progress-bar"><div class="fill" style="width: 90%;"></div></div></li>
-                        <li><span>AWS Glue &amp; S3 Storage</span> <div class="progress-bar"><div class="fill" style="width: 85%;"></div></div></li>
-                        <li><span>Apache Airflow (DAGs)</span> <div class="progress-bar"><div class="fill" style="width: 80%;"></div></div></li>
-                        <li><span>ETL/ELT Data Modeling</span> <div class="progress-bar"><div class="fill" style="width: 92%;"></div></div></li>
-                    </ul>
+        <!-- SKILLS -->
+        <section id="skills" class="section reveal">
+            <div class="section-label">Technical Expertise</div>
+            <h2 class="section-heading">Engineered <span class="text-gradient">Skill Matrix</span></h2>
+            <p class="section-lead">Tools and technologies verified by years of production implementations.</p>
+            <div class="skills-cols">
+                <div class="glass-card skill-col">
+                    <div class="skill-col-header"><i class="fa-solid fa-gears" style="color:#38bdf8"></i><h3>Data Engineering</h3></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>PySpark / Apache Spark</span><span>95%</span></div><div class="skill-track"><div class="skill-fill" style="width:95%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Snowflake Pipelines</span><span>92%</span></div><div class="skill-track"><div class="skill-fill" style="width:92%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Azure Databricks & ADF</span><span>90%</span></div><div class="skill-track"><div class="skill-fill" style="width:90%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>AWS Glue & S3</span><span>85%</span></div><div class="skill-track"><div class="skill-fill" style="width:85%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Apache Airflow (DAGs)</span><span>80%</span></div><div class="skill-track"><div class="skill-fill" style="width:80%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>ETL/ELT Data Modeling</span><span>92%</span></div><div class="skill-track"><div class="skill-fill" style="width:92%"></div></div></div>
                 </div>
-
-                <!-- Languages & Databases -->
-                <div class="skill-card glass-card">
-                    <div class="skill-icon-header">
-                        <i class="fa-solid fa-database text-purple"></i>
-                        <h3>Languages &amp; Databases</h3>
-                    </div>
-                    <ul class="skill-list">
-                        <li><span>Python (Pandas, Numpy)</span> <div class="progress-bar"><div class="fill" style="width: 96%;"></div></div></li>
-                        <li><span>SQL (Complex Window Funcs)</span> <div class="progress-bar"><div class="fill" style="width: 95%;"></div></div></li>
-                        <li><span>Scala / R / Java</span> <div class="progress-bar"><div class="fill" style="width: 75%;"></div></div></li>
-                        <li><span>MySQL / PostgreSQL</span> <div class="progress-bar"><div class="fill" style="width: 88%;"></div></div></li>
-                        <li><span>Oracle / Teradata / OCI</span> <div class="progress-bar"><div class="fill" style="width: 85%;"></div></div></li>
-                        <li><span>SQLite (Local Engine)</span> <div class="progress-bar"><div class="fill" style="width: 90%;"></div></div></li>
-                    </ul>
+                <div class="glass-card skill-col">
+                    <div class="skill-col-header"><i class="fa-solid fa-database" style="color:#fb923c"></i><h3>Languages & Databases</h3></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Python (Pandas, NumPy)</span><span>96%</span></div><div class="skill-track"><div class="skill-fill" style="width:96%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>SQL (Complex Window Fns)</span><span>95%</span></div><div class="skill-track"><div class="skill-fill" style="width:95%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Scala / R / Java</span><span>75%</span></div><div class="skill-track"><div class="skill-fill" style="width:75%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>MySQL / PostgreSQL</span><span>88%</span></div><div class="skill-track"><div class="skill-fill" style="width:88%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Oracle / Teradata</span><span>85%</span></div><div class="skill-track"><div class="skill-fill" style="width:85%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>SQLite (Local Engine)</span><span>90%</span></div><div class="skill-track"><div class="skill-fill" style="width:90%"></div></div></div>
                 </div>
-
-                <!-- DevOps & Web Backends -->
-                <div class="skill-card glass-card">
-                    <div class="skill-icon-header">
-                        <i class="fa-solid fa-server text-green"></i>
-                        <h3>Backend &amp; DevOps</h3>
-                    </div>
-                    <ul class="skill-list">
-                        <li><span>Docker Containerization</span> <div class="progress-bar"><div class="fill" style="width: 90%;"></div></div></li>
-                        <li><span>CI/CD Pipelines (GitHub Actions)</span> <div class="progress-bar"><div class="fill" style="width: 85%;"></div></div></li>
-                        <li><span>Django REST Framework</span> <div class="progress-bar"><div class="fill" style="width: 92%;"></div></div></li>
-                        <li><span>Celery &amp; Redis (Async Queues)</span> <div class="progress-bar"><div class="fill" style="width: 88%;"></div></div></li>
-                        <li><span>Spring Boot (Java REST)</span> <div class="progress-bar"><div class="fill" style="width: 70%;"></div></div></li>
-                        <li><span>Git / Jira / Agile Workflows</span> <div class="progress-bar"><div class="fill" style="width: 92%;"></div></div></li>
-                    </ul>
+                <div class="glass-card skill-col">
+                    <div class="skill-col-header"><i class="fa-solid fa-server" style="color:#34d399"></i><h3>Backend & DevOps</h3></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Docker Containerization</span><span>90%</span></div><div class="skill-track"><div class="skill-fill" style="width:90%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>CI/CD (GitHub Actions)</span><span>85%</span></div><div class="skill-track"><div class="skill-fill" style="width:85%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Django REST Framework</span><span>92%</span></div><div class="skill-track"><div class="skill-fill" style="width:92%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Celery & Redis (Async)</span><span>88%</span></div><div class="skill-track"><div class="skill-fill" style="width:88%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Spring Boot (Java)</span><span>70%</span></div><div class="skill-track"><div class="skill-fill" style="width:70%"></div></div></div>
+                    <div class="skill-row"><div class="skill-row-header"><span>Git / Jira / Agile</span><span>92%</span></div><div class="skill-track"><div class="skill-fill" style="width:92%"></div></div></div>
                 </div>
             </div>
         </section>
 
-        <!-- Professional Work Timeline -->
-        <section id="experience" class="section experience-section reveal">
-            <h2 class="section-heading text-center">Professional <span class="text-gradient">Timeline</span></h2>
-            <p class="section-lead text-center">Production milestones and structural architectures designed at corporate enterprises.</p>
-            
-            <div class="timeline">
-                <!-- Discover Financial Services -->
-                <div class="timeline-item left">
-                    <div class="timeline-content glass-card">
-                        <span class="timeline-date">July 2025 – June 2026</span>
+        <!-- EXPERIENCE -->
+        <section id="experience" class="section reveal">
+            <div class="section-label">Professional Journey</div>
+            <h2 class="section-heading">Career <span class="text-gradient">Timeline</span></h2>
+            <p class="section-lead">Production milestones at corporate enterprises.</p>
+            <div class="exp-grid">
+                <div class="glass-card exp-card">
+                    <div class="exp-meta">
+                        <div class="exp-date">Jul 2025 – Jun 2026</div>
+                        <div class="exp-company">Dizer Corp<br>Client: Discover Financial</div>
+                        <div class="exp-loc"><i class="fa-solid fa-location-dot"></i> Painesville, OH</div>
+                    </div>
+                    <div class="exp-content">
                         <h3>Data Engineer (Intern Analyst)</h3>
-                        <h4 class="timeline-company"><i class="fa-solid fa-briefcase"></i> Dizer Corp | Client: Discover Financial Services</h4>
-                        <span class="timeline-location"><i class="fa-solid fa-location-dot"></i> Painesville, OH</span>
-                        <ul class="timeline-bullets">
-                            <li>Designed and deployed <strong>PySpark ETL pipelines</strong> on Azure Databricks, cutting financial records parsing latency by 45%.</li>
-                            <li>Engineered structural Azure Data Factory (ADF) workflows, consolidating ingestion pipelines from Teradata and Oracle into unified Azure Data Lakes.</li>
-                            <li>Architected the **SQL &amp; JSON Data Quality (DQ) Rule Engine** with dedicated SQLite quarantine tables to filter schema discrepancies and null outliers.</li>
-                            <li>Containerized ETL execution workflows with Docker and set up complete Git CI/CD deployment release steps.</li>
+                        <ul>
+                            <li>Designed <strong>PySpark ETL pipelines</strong> on Azure Databricks, cutting financial records parsing latency by 45%.</li>
+                            <li>Engineered Azure Data Factory workflows consolidating ingestion from Teradata and Oracle into unified Data Lakes.</li>
+                            <li>Architected the <strong>SQL & JSON DQ Rule Engine</strong> with SQLite quarantine tables for schema discrepancy filtering.</li>
+                            <li>Containerized ETL workflows with Docker and set up Git CI/CD deployment pipelines.</li>
                         </ul>
                     </div>
                 </div>
-
-                <!-- Project Elevate -->
-                <div class="timeline-item right">
-                    <div class="timeline-content glass-card">
-                        <span class="timeline-date">January 2025 – May 2025</span>
+                <div class="glass-card exp-card">
+                    <div class="exp-meta">
+                        <div class="exp-date">Jan 2025 – May 2025</div>
+                        <div class="exp-company">Project Elevate</div>
+                        <div class="exp-loc"><i class="fa-solid fa-location-dot"></i> Newark, NJ</div>
+                    </div>
+                    <div class="exp-content">
                         <h3>Data Engineer (Capstone Intern)</h3>
-                        <h4 class="timeline-company"><i class="fa-solid fa-briefcase"></i> Project Elevate</h4>
-                        <span class="timeline-location"><i class="fa-solid fa-location-dot"></i> Newark, NJ</span>
-                        <ul class="timeline-bullets">
-                            <li>Re-architected legacy nightly batch processors into high-speed real-time ingestion endpoints using <strong>Django REST Framework, Celery, and Redis</strong>.</li>
-                            <li>Optimized MySQL storage schemas and APIs, reducing dashboard analytical retrieval queries down to <strong>~200ms at p95</strong>.</li>
-                            <li>Configured scalable and secure production docker packages running on Oracle Cloud Infrastructure (OCI).</li>
+                        <ul>
+                            <li>Re-architected legacy batch processors into real-time ingestion using <strong>Django REST, Celery & Redis</strong>.</li>
+                            <li>Optimized MySQL schemas reducing dashboard queries to <strong>~200ms at p95</strong>.</li>
+                            <li>Configured secure production Docker packages on Oracle Cloud Infrastructure (OCI).</li>
                         </ul>
                     </div>
                 </div>
-
-                <!-- Cisco Systems -->
-                <div class="timeline-item left">
-                    <div class="timeline-content glass-card">
-                        <span class="timeline-date">September 2021 – August 2023</span>
-                        <h3>Digital Specialist Engineer — Data Engineer</h3>
-                        <h4 class="timeline-company"><i class="fa-solid fa-briefcase"></i> Infosys Limited | Client: Cisco Systems</h4>
-                        <span class="timeline-location"><i class="fa-solid fa-location-dot"></i> Hyderabad, India</span>
-                        <ul class="timeline-bullets">
-                            <li>Engineered and managed 5 enterprise-scale data pipelines in <strong>Snowflake</strong> using custom Python and SQL transformations.</li>
-                            <li>Increased raw case ingestion accuracy by 20% by implementing comprehensive SQL schema validators and mathematical outlier checkers.</li>
-                            <li>Collaborated inside Agile/Scrum structures, resolving structural Snowflake warehouses sizing and optimization hurdles.</li>
+                <div class="glass-card exp-card">
+                    <div class="exp-meta">
+                        <div class="exp-date">Sep 2021 – Aug 2023</div>
+                        <div class="exp-company">Infosys Limited<br>Client: Cisco Systems</div>
+                        <div class="exp-loc"><i class="fa-solid fa-location-dot"></i> Hyderabad, India</div>
+                    </div>
+                    <div class="exp-content">
+                        <h3>Digital Specialist Engineer — Data</h3>
+                        <ul>
+                            <li>Engineered 5 enterprise-scale data pipelines in <strong>Snowflake</strong> using Python and SQL transformations.</li>
+                            <li>Increased case ingestion accuracy by 20% via SQL schema validators and outlier detection.</li>
+                            <li>Collaborated in Agile/Scrum on Snowflake warehouse sizing and optimization.</li>
                         </ul>
                     </div>
                 </div>
-
-                <!-- Accolite India -->
-                <div class="timeline-item right">
-                    <div class="timeline-content glass-card">
-                        <span class="timeline-date">January 2021 – May 2021</span>
-                        <h3>Software Engineer Intern — Data Engineering</h3>
-                        <h4 class="timeline-company"><i class="fa-solid fa-briefcase"></i> Accolite India</h4>
-                        <span class="timeline-location"><i class="fa-solid fa-location-dot"></i> Hyderabad, India</span>
-                        <ul class="timeline-bullets">
-                            <li>Automated regional operational ETL pipelines using Python and raw SQL commands, achieving 20% manual preparation time-savings.</li>
-                            <li>Built fast Java <strong>Spring Boot REST APIs</strong> to deliver automated pipelines data extracts straight into internal BI notebooks.</li>
+                <div class="glass-card exp-card">
+                    <div class="exp-meta">
+                        <div class="exp-date">Jan 2021 – May 2021</div>
+                        <div class="exp-company">Accolite India</div>
+                        <div class="exp-loc"><i class="fa-solid fa-location-dot"></i> Hyderabad, India</div>
+                    </div>
+                    <div class="exp-content">
+                        <h3>Software Engineer Intern — Data</h3>
+                        <ul>
+                            <li>Automated regional ETL pipelines using Python and SQL, achieving 20% time savings.</li>
+                            <li>Built <strong>Spring Boot REST APIs</strong> delivering pipeline data extracts to internal BI notebooks.</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Professional Projects -->
-        <section id="projects" class="section projects-section reveal">
-            <h2 class="section-heading text-center">Featured <span class="text-gradient">Projects &amp; Research</span></h2>
-            <p class="section-lead text-center">Industrial data engineering solutions, space weather research, and interactive simulator engines.</p>
-            
-            <div class="projects-grid">
-                <!-- Project 1: Case Management System -->
-                <div class="project-card glass-card">
-                    <div class="project-img-wrapper">
-                        <div class="project-placeholder-icon"><i class="fa-solid fa-database text-cyan"></i></div>
+        <!-- PROJECTS -->
+        <section id="projects" class="section reveal">
+            <div class="section-label">Portfolio</div>
+            <h2 class="section-heading">Featured <span class="text-gradient">Projects & Research</span></h2>
+            <p class="section-lead">Production data solutions, ML research, and interactive simulator engines.</p>
+            <div class="proj-grid">
+                <div class="glass-card proj-card">
+                    <div class="proj-header">
+                        <div class="proj-icon" style="background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.2);color:#38bdf8"><i class="fa-solid fa-database"></i></div>
+                        <div><h3>Case Management System</h3><div class="proj-date">Nov 2021 – Aug 2023 · Infosys</div></div>
                     </div>
-                    <div class="project-body">
-                        <span class="timeline-date">Nov 2021 – Aug 2023 | Associated with Infosys</span>
-                        <h3>Case Management System</h3>
-                        <p>Ensured precise assignment of business units to address customer-specific issues. Engineered internal database schemas, built Snowflake data ingestion pipelines, and implemented robust SQL data validation rules for analytical reporting.</p>
-                        <div class="project-tags">
-                            <span class="tag">Snowflake Cloud</span>
-                            <span class="tag">REST APIs</span>
-                            <span class="tag">SQL ETL</span>
-                            <span class="tag">Data Validation</span>
-                        </div>
+                    <div class="proj-body">
+                        <p>Engineered Snowflake data ingestion pipelines and SQL validation rules for customer issue routing. Built REST APIs for analytical reporting across business units.</p>
+                        <div class="proj-tags"><span class="proj-tag">Snowflake</span><span class="proj-tag">REST APIs</span><span class="proj-tag">SQL ETL</span><span class="proj-tag">Data Validation</span></div>
                     </div>
                 </div>
-
-                <!-- Project 2: Network Intrusion Detection -->
-                <div class="project-card glass-card">
-                    <div class="project-img-wrapper">
-                        <div class="project-placeholder-icon"><i class="fa-solid fa-shield-halved text-purple"></i></div>
+                <div class="glass-card proj-card">
+                    <div class="proj-header">
+                        <div class="proj-icon" style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);color:#a78bfa"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div><h3>Network Intrusion Detection</h3><div class="proj-date">Feb – May 2021 · BVRIT</div></div>
                     </div>
-                    <div class="project-body">
-                        <span class="timeline-date">Feb 2021 – May 2021 | BVRIT</span>
-                        <h3>Network Intrusion Detection Ensemble</h3>
-                        <p>Developed an efficient, real-time cybersecurity defense model using machine learning ensembles (Random Forest and XGBoost) to classify network packet abnormalities, improving detection stability over traditional SVMs.</p>
-                        <div class="project-tags">
-                            <span class="tag">Python</span>
-                            <span class="tag">Machine Learning</span>
-                            <span class="tag">Random Forest</span>
-                            <span class="tag">XGBoost</span>
-                            <span class="tag">Statistics</span>
-                        </div>
-                        <a href="nids.html" class="showcase-btn text-purple" style="margin-top: 1rem;">Open NIDS Simulation Lab <i class="fa-solid fa-arrow-right"></i></a>
+                    <div class="proj-body">
+                        <p>Ensemble ML classifier combining XGBoost, Random Forest & Extra Trees to detect cyber threats on 2.8M+ CICIDS2017 records with 99.89% accuracy.</p>
+                        <div class="proj-tags"><span class="proj-tag">XGBoost</span><span class="proj-tag">Random Forest</span><span class="proj-tag">CICIDS2017</span><span class="proj-tag">Scikit-Learn</span></div>
+                        <a href="nids.html" class="proj-action" style="color:#a78bfa">Open NIDS Lab <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
-
-                <!-- Project 3: Digits Recognition using SVHN -->
-                <div class="project-card glass-card">
-                    <div class="project-img-wrapper">
-                        <div class="project-placeholder-icon"><i class="fa-solid fa-brain text-green"></i></div>
+                <div class="glass-card proj-card">
+                    <div class="proj-header">
+                        <div class="proj-icon" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399"><i class="fa-solid fa-brain"></i></div>
+                        <div><h3>Digits Recognition (SVHN)</h3><div class="proj-date">Jan 2020 – Jan 2021 · BVRIT</div></div>
                     </div>
-                    <div class="project-body">
-                        <span class="timeline-date">Jan 2020 – Jan 2021 | BVRIT</span>
-                        <h3>Digits Recognition (SVHN)</h3>
-                        <p>Harnessed deep learning models to identify handwritten digits on the Street View House Numbers (SVHN) dataset. Built prediction frameworks automating check processing, postal mail sorting, and document reading.</p>
-                        <div class="project-tags">
-                            <span class="tag">Deep Learning</span>
-                            <span class="tag">Computer Vision</span>
-                            <span class="tag">Python</span>
-                            <span class="tag">SVHN Dataset</span>
-                        </div>
+                    <div class="proj-body">
+                        <p>Deep learning models for handwritten digit identification on SVHN dataset. Built prediction frameworks for check processing and postal mail sorting automation.</p>
+                        <div class="proj-tags"><span class="proj-tag">Deep Learning</span><span class="proj-tag">Computer Vision</span><span class="proj-tag">Python</span><span class="proj-tag">SVHN</span></div>
                     </div>
                 </div>
-
-                <!-- Project 4: NASA Solar Wind forecasting (XAI) -->
-                <div class="project-card glass-card">
-                    <div class="project-img-wrapper">
-                        <div class="project-placeholder-icon"><i class="fa-solid fa-sun text-yellow"></i></div>
+                <div class="glass-card proj-card">
+                    <div class="proj-header">
+                        <div class="proj-icon" style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.2);color:#fbbf24"><i class="fa-solid fa-sun"></i></div>
+                        <div><h3>NASA Solar Wind Forecasting</h3><div class="proj-date">Published Research · NJIT</div></div>
                     </div>
-                    <div class="project-body">
-                        <span class="timeline-date">Published Research | NJIT</span>
-                        <h3>NASA Solar Wind Storm Forecasting</h3>
-                        <p>Applied SHAP (SHapley Additive exPlanations), LIME, and attention weight score matrices over 1,098 solar wind samples to explain the DST index neural transformer model, proving Scalar B as the dominant predictive trigger.</p>
-                        <div class="project-tags">
-                            <span class="tag">Explainable AI (XAI)</span>
-                            <span class="tag">SHAP &amp; LIME</span>
-                            <span class="tag">Transformers</span>
-                            <span class="tag">Space Weather</span>
-                        </div>
-                        <a href="xai.html" class="showcase-btn text-yellow" style="margin-top: 1rem;">Open XAI Research Lab <i class="fa-solid fa-arrow-right"></i></a>
+                    <div class="proj-body">
+                        <p>Applied SHAP, LIME, and attention score maps over 1,098 solar wind samples to explain DST index transformer predictions, proving Scalar B as the dominant trigger.</p>
+                        <div class="proj-tags"><span class="proj-tag">XAI (SHAP & LIME)</span><span class="proj-tag">Transformers</span><span class="proj-tag">Space Weather</span></div>
+                        <a href="xai.html" class="proj-action" style="color:#fbbf24">Open XAI Lab <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
-
-                <!-- Project 5: Enterprise Data Platform Architecture & Skills Showcase -->
-                <div class="project-card glass-card project-card-featured">
-                    <div class="project-img-wrapper project-img-wrapper-featured">
-                        <div class="project-placeholder-icon"><i class="fa-solid fa-network-wired text-cyan"></i></div>
+                <div class="glass-card proj-card proj-card-wide">
+                    <div class="proj-header">
+                        <div class="proj-icon" style="background:rgba(14,165,233,0.1);border:1px solid rgba(14,165,233,0.2);color:#38bdf8"><i class="fa-solid fa-network-wired"></i></div>
+                        <div><h3>Enterprise Data Platform Architecture</h3><div class="proj-date">Full-Stack Data Engineering</div></div>
                     </div>
-                    <div class="project-body project-body-featured">
-                        <div style="flex: 1;">
-                            <h3>Enterprise Data Platform Architecture &amp; Skills Showcase</h3>
-                            <p>A unified cloud-native pipeline system mapping out source streaming, Airflow/ADF orchestrations, optimized PySpark broadcast configurations, Discover DQ rules validation engines, auto-scaling Snowflake warehouses, and Django/Celery cache frameworks.</p>
-                            <div class="project-tags" style="margin-top: 0.5rem;">
-                                <span class="tag">Apache Airflow &amp; ADF</span>
-                                <span class="tag">PySpark Databricks</span>
-                                <span class="tag">Snowflake ELT</span>
-                                <span class="tag">Django / Redis Caching</span>
-                            </div>
+                    <div class="proj-body">
+                        <div>
+                            <p>Unified cloud-native pipeline system: source streaming, Airflow/ADF orchestration, PySpark broadcast joins, Discover DQ validation, auto-scaling Snowflake warehouses, and Django/Celery cache frameworks.</p>
+                            <div class="proj-tags"><span class="proj-tag">Airflow & ADF</span><span class="proj-tag">PySpark Databricks</span><span class="proj-tag">Snowflake ELT</span><span class="proj-tag">Django / Redis</span></div>
                         </div>
-                        <a href="pipeline.html" class="btn btn-primary" style="white-space: nowrap;"><i class="fa-solid fa-terminal"></i> Open ETL Console</a>
+                        <a href="pipeline.html" class="btn-glow btn-glow-primary" style="white-space:nowrap"><i class="fa-solid fa-terminal"></i> Open ETL Console</a>
                     </div>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- Visual Footer -->
     <footer class="main-footer">
         <div class="footer-container">
-            <p>&copy; 2026 Archit Somayajula. Portfolio engineered with Vanilla HTML5, CSS3, &amp; SQLite REST API.</p>
+            <p>&copy; 2026 Archit Somayajula. Engineered with PySpark, Vanilla JS & SQLite.</p>
             <div class="footer-socials">
                 <a href="https://linkedin.com/in/archit-somayajula" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
                 <a href="mailto:sdsarchit2000@gmail.com"><i class="fa-solid fa-envelope"></i></a>
             </div>
         </div>
     </footer>
-    <!-- Entry Introduction Modal -->
+
+    <!-- Intro Modal -->
     <div id="intro-modal" class="modal-overlay">
         <div class="modal-card">
             <button class="modal-close-btn" id="close-modal-btn">&times;</button>
-            <div class="modal-avatar-wrapper">
-                <i class="fa-solid fa-network-wired"></i>
-            </div>
+            <div class="modal-avatar-wrapper"><i class="fa-solid fa-network-wired"></i></div>
             <h2 class="modal-title">Welcome to my Portfolio</h2>
             <div class="modal-subtitle">Archit Somayajula</div>
             <p class="modal-desc">
-                I am a <strong>Data Engineer</strong> with 4+ years of experience building scalable data platforms, real-time pipelines, and custom data quality frameworks. Most recently, I built financial pipelines and DQ systems at <strong>Discover Financial Services</strong>, and engineered case-management flows at <strong>Cisco Systems</strong>.
+                I am a <strong>Data Engineer</strong> with 4+ years of experience building scalable data platforms, real-time pipelines, and custom data quality frameworks. Most recently at <strong>Discover Financial Services</strong> and <strong>Cisco Systems</strong>.
             </p>
             <div class="modal-highlight-box">
-                <div class="modal-highlight-item">
-                    <span class="modal-h-val">4+ Years</span>
-                    <span class="modal-h-label">Experience</span>
-                </div>
-                <div class="modal-highlight-item">
-                    <span class="modal-h-val">NJIT MS</span>
-                    <span class="modal-h-label">Data Science</span>
-                </div>
-                <div class="modal-highlight-item">
-                    <span class="modal-h-val">Databricks</span>
-                    <span class="modal-h-label">Certified</span>
-                </div>
+                <div class="modal-highlight-item"><span class="modal-h-val">4+ Years</span><span class="modal-h-label">Experience</span></div>
+                <div class="modal-highlight-item"><span class="modal-h-val">NJIT MS</span><span class="modal-h-label">Data Science</span></div>
+                <div class="modal-highlight-item"><span class="modal-h-val">Databricks</span><span class="modal-h-label">Certified</span></div>
             </div>
             <div class="modal-action">
-                <button class="btn btn-primary" id="explore-btn"><i class="fa-solid fa-rocket"></i> Explore Portfolio</button>
+                <button class="btn-glow btn-glow-primary" id="explore-btn" style="width:100%;justify-content:center"><i class="fa-solid fa-rocket"></i> Explore Portfolio</button>
             </div>
         </div>
     </div>
