@@ -50,68 +50,7 @@
             pointer-events: none;
         }
 
-        /* Nav styles */
-        .main-header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 50;
-            background: rgba(3, 7, 18, 0.8);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-glass);
-        }
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .nav-logo {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: #fff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-        .logo-bracket { color: var(--accent-cyan); }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: var(--accent-cyan);
-        }
-        .nav-actions { display: flex; align-items: center; gap: 1rem; }
-        .nav-btn {
-            background: rgba(6, 182, 212, 0.1);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 99px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-        .nav-btn:hover {
-            background: var(--accent-cyan);
-            color: #000;
-        }
+        /* Nav styles are inherited from styles.css */
 
         /* Layout */
         .content-wrapper {
