@@ -7,33 +7,47 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleBtn = document.getElementById("menu-toggle-btn");
     const navLinks = document.querySelector(".nav-links");
     if (toggleBtn && navLinks) {
+        // Create a body-level mobile drawer overlay (outside .main-header stacking context)
+        let mobileDrawer = document.getElementById("mobile-nav-drawer");
+        if (!mobileDrawer) {
+            mobileDrawer = document.createElement("div");
+            mobileDrawer.id = "mobile-nav-drawer";
+            // Clone all nav links into the drawer
+            navLinks.querySelectorAll("a").forEach(link => {
+                const clone = link.cloneNode(true);
+                clone.addEventListener("click", closeDrawer);
+                mobileDrawer.appendChild(clone);
+            });
+            document.body.appendChild(mobileDrawer);
+        }
+
+        function openDrawer() {
+            mobileDrawer.classList.add("active");
+            document.body.classList.add("nav-open");
+            const icon = toggleBtn.querySelector("i");
+            if (icon) icon.className = "fa-solid fa-xmark";
+        }
+
+        function closeDrawer() {
+            mobileDrawer.classList.remove("active");
+            document.body.classList.remove("nav-open");
+            const icon = toggleBtn.querySelector("i");
+            if (icon) icon.className = "fa-solid fa-bars";
+        }
+
         toggleBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            const isActive = navLinks.classList.toggle("active");
-            document.body.classList.toggle("nav-open", isActive);
-            const icon = toggleBtn.querySelector("i");
-            if (icon) {
-                icon.className = isActive ? "fa-solid fa-xmark" : "fa-solid fa-bars";
+            if (mobileDrawer.classList.contains("active")) {
+                closeDrawer();
+            } else {
+                openDrawer();
             }
         });
 
-        // Close menu when clicking any link inside navLinks
-        navLinks.querySelectorAll("a").forEach(link => {
-            link.addEventListener("click", () => {
-                navLinks.classList.remove("active");
-                document.body.classList.remove("nav-open");
-                const icon = toggleBtn.querySelector("i");
-                if (icon) icon.className = "fa-solid fa-bars";
-            });
-        });
-
-        // Close menu when clicking outside navLinks
+        // Close menu when clicking outside
         document.addEventListener("click", (e) => {
-            if (navLinks.classList.contains("active") && !navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
-                navLinks.classList.remove("active");
-                document.body.classList.remove("nav-open");
-                const icon = toggleBtn.querySelector("i");
-                if (icon) icon.className = "fa-solid fa-bars";
+            if (mobileDrawer.classList.contains("active") && !mobileDrawer.contains(e.target) && !toggleBtn.contains(e.target)) {
+                closeDrawer();
             }
         });
     }
