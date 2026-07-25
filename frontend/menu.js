@@ -6,46 +6,27 @@
 document.addEventListener("DOMContentLoaded", () => {
     const toggleBtn = document.getElementById("menu-toggle-btn");
     const navLinks = document.querySelector(".nav-links");
-
-    function closeMenu() {
-        if (navLinks && navLinks.classList.contains("active")) {
-            navLinks.classList.remove("active");
-            if (toggleBtn) {
-                const icon = toggleBtn.querySelector("i");
-                if (icon) icon.className = "fa-solid fa-bars";
-            }
-        }
-    }
-
     if (toggleBtn && navLinks) {
-        toggleBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            const isActive = navLinks.classList.toggle("active");
+        toggleBtn.addEventListener("click", () => {
+            navLinks.classList.toggle("active");
             const icon = toggleBtn.querySelector("i");
             if (icon) {
-                icon.className = isActive ? "fa-solid fa-xmark" : "fa-solid fa-bars";
+                if (navLinks.classList.contains("active")) {
+                    icon.className = "fa-solid fa-xmark";
+                } else {
+                    icon.className = "fa-solid fa-bars";
+                }
             }
         });
 
-        // Close menu when clicking any nav link inside
-        const links = navLinks.querySelectorAll(".nav-link");
-        links.forEach(link => {
+        // Auto-close menu when clicking a navigation link on mobile
+        navLinks.querySelectorAll("a").forEach(link => {
             link.addEventListener("click", () => {
-                closeMenu();
+                navLinks.classList.remove("active");
+                const icon = toggleBtn.querySelector("i");
+                if (icon) icon.className = "fa-solid fa-bars";
             });
         });
-
-        // Close menu when clicking outside header
-        document.addEventListener("click", (e) => {
-            if (!navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
-                closeMenu();
-            }
-        });
-
-        // Close menu on scroll
-        window.addEventListener("scroll", () => {
-            closeMenu();
-        }, { passive: true });
     }
 
     // ========================================================
