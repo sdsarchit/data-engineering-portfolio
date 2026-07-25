@@ -2847,4 +2847,30 @@ body > #report-modal.active,
     }
 }
 
+/* Global Mobile Safeguards */
+@media (max-width: 480px) {
+    .content-wrapper {
+        padding: 1.25rem 0.75rem;
+    }
+    .glass-card {
+        padding: 1.25rem 1rem;
+    }
+    .paper-meta-card {
+        padding: 1.25rem 1rem;
+    }
+    .nav-container {
+        padding: 0 1rem;
+    }
+    .timeline::after {
+        left: 20px;
+    }
+    .timeline-item {
+        padding-left: 50px;
+        padding-right: 10px;
+    }
+    .timeline-item::after {
+        left: 12px;
+    }
+}
+
 

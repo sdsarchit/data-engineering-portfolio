@@ -349,6 +349,38 @@
                 width: 100%;
             }
         }
+        @media (max-width: 640px) {
+            .console-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+                padding: 12px 16px;
+            }
+            .terminal-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .mode-selector {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .mode-selector .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .console-logs {
+                height: 320px;
+                padding: 12px;
+                font-size: 0.78rem;
+                overflow-x: auto;
+                word-break: break-word;
+                white-space: pre-wrap;
+                -webkit-overflow-scrolling: touch;
+            }
+            #upload-pipeline-container {
+                padding: 1.5rem 1rem;
+            }
+        }
     </style>
 </head>
 <body class="dark-theme">
