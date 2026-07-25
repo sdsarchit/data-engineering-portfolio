@@ -59,7 +59,7 @@ body {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     z-index: 0; pointer-events: none;
 }
-body > *:not(#particle-canvas):not(.modal-overlay) { position: relative; z-index: 1; }
+body > *:not(#particle-canvas):not(.modal-overlay):not(#report-modal):not(#intro-modal):not([class*="modal"]):not([class*="overlay"]) { position: relative; z-index: 1; }
 
 /* Global Scroll Reveal Animation */
 .reveal {
@@ -1489,7 +1489,9 @@ body > *:not(#particle-canvas):not(.modal-overlay) { position: relative; z-index
    PORTFOLIO ENTRY MODAL POPUP
    ========================================================================== */
 body > .modal-overlay,
-.modal-overlay {
+body > #report-modal,
+.modal-overlay,
+#report-modal {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -1509,7 +1511,9 @@ body > .modal-overlay,
     transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 body > .modal-overlay.active,
-.modal-overlay.active {
+body > #report-modal.active,
+.modal-overlay.active,
+#report-modal.active {
     opacity: 1 !important;
     pointer-events: auto !important;
 }
