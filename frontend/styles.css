@@ -242,6 +242,11 @@ body > *:not(#particle-canvas):not(.modal-overlay):not(#report-modal):not(#intro
     color: var(--accent-cyan);
 }
 
+/* Body-level mobile drawer (hidden by default on all screen sizes) */
+#mobile-nav-drawer {
+    display: none;
+}
+
 /* Layout Core */
 .content-wrapper {
     max-width: 1200px;
