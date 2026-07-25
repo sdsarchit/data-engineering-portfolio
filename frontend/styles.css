@@ -59,7 +59,7 @@ body {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     z-index: 0; pointer-events: none;
 }
-body > *:not(#particle-canvas) { position: relative; z-index: 1; }
+body > *:not(#particle-canvas):not(.modal-overlay) { position: relative; z-index: 1; }
 
 /* Global Scroll Reveal Animation */
 .reveal {
@@ -1488,26 +1488,30 @@ body > *:not(#particle-canvas) { position: relative; z-index: 1; }
 /* ==========================================================================
    PORTFOLIO ENTRY MODAL POPUP
    ========================================================================== */
+body > .modal-overlay,
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
     background-color: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    z-index: 9999;
-    display: flex;
+    z-index: 99999 !important;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
+body > .modal-overlay.active,
 .modal-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
+    opacity: 1 !important;
+    pointer-events: auto !important;
 }
 .modal-card {
     width: 90%;
