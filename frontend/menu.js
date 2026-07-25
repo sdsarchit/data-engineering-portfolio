@@ -7,25 +7,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleBtn = document.getElementById("menu-toggle-btn");
     const navLinks = document.querySelector(".nav-links");
     if (toggleBtn && navLinks) {
-        toggleBtn.addEventListener("click", () => {
-            navLinks.classList.toggle("active");
+        toggleBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isActive = navLinks.classList.toggle("active");
+            document.body.classList.toggle("nav-open", isActive);
             const icon = toggleBtn.querySelector("i");
             if (icon) {
-                if (navLinks.classList.contains("active")) {
-                    icon.className = "fa-solid fa-xmark";
-                } else {
-                    icon.className = "fa-solid fa-bars";
-                }
+                icon.className = isActive ? "fa-solid fa-xmark" : "fa-solid fa-bars";
             }
         });
 
-        // Auto-close menu when clicking a navigation link on mobile
+        // Close menu when clicking any link inside navLinks
         navLinks.querySelectorAll("a").forEach(link => {
             link.addEventListener("click", () => {
                 navLinks.classList.remove("active");
+                document.body.classList.remove("nav-open");
                 const icon = toggleBtn.querySelector("i");
                 if (icon) icon.className = "fa-solid fa-bars";
             });
+        });
+
+        // Close menu when clicking outside navLinks
+        document.addEventListener("click", (e) => {
+            if (navLinks.classList.contains("active") && !navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
+                navLinks.classList.remove("active");
+                document.body.classList.remove("nav-open");
+                const icon = toggleBtn.querySelector("i");
+                if (icon) icon.className = "fa-solid fa-bars";
+            }
         });
     }
 
