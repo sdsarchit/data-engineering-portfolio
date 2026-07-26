@@ -137,9 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <a href="dashboard.html" class="nav-link sub-nav-link ${currentPath.includes('dashboard') ? 'active' : ''}"><i class="fa-solid fa-chart-line text-purple"></i> Live Dashboard</a>
                 <a href="nids.html" class="nav-link sub-nav-link ${currentPath.includes('nids') ? 'active' : ''}"><i class="fa-solid fa-shield-halved text-green"></i> NIDS Security Lab</a>
                 <a href="xai.html" class="nav-link sub-nav-link ${currentPath.includes('xai') ? 'active' : ''}"><i class="fa-solid fa-sun-plant-wilt text-yellow"></i> XAI Research Lab</a>
-                <a href="index.html#projects" class="nav-link sub-nav-link"><i class="fa-solid fa-folder-open"></i> All Projects & Labs</a>
-                <div class="drawer-category-label">CONTACT</div>
-                <button class="nav-link contact-drawer-btn" id="drawer-contact-btn"><i class="fa-solid fa-address-card text-cyan"></i> Get Contact Details</button>
             `;
 
             document.body.appendChild(mobileDrawer);
@@ -147,14 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
             mobileDrawer.querySelectorAll("a").forEach(link => {
                 link.addEventListener("click", closeDrawer);
             });
-
-            const drawerContactBtn = mobileDrawer.querySelector("#drawer-contact-btn");
-            if (drawerContactBtn) {
-                drawerContactBtn.addEventListener("click", () => {
-                    closeDrawer();
-                    openContactModal();
-                });
-            }
         }
 
         function openDrawer() {
