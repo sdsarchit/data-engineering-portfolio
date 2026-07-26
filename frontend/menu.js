@@ -4,38 +4,174 @@
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
-    const toggleBtn = document.getElementById("menu-toggle-btn");
+    // --------------------------------------------------------
+    // 1. DROPDOWN TOGGLE (Desktop & Touch)
+    // --------------------------------------------------------
+    const dropdowns = document.querySelectorAll(".nav-dropdown");
+    dropdowns.forEach(dropdown => {
+        const toggleBtn = dropdown.querySelector(".dropdown-toggle");
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", (e) => {
+                // If clicking Projects on desktop or touch, toggle dropdown menu
+                e.preventDefault();
+                e.stopPropagation();
+                dropdown.classList.toggle("open");
+            });
+        }
+    });
+
+    document.addEventListener("click", (e) => {
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove("open");
+            }
+        });
+    });
+
+    // --------------------------------------------------------
+    // 2. CONTACT MODAL (Dynamic Injection & Event Handling)
+    // --------------------------------------------------------
+    let contactModal = document.getElementById("contact-modal");
+    if (!contactModal) {
+        contactModal = document.createElement("div");
+        contactModal.id = "contact-modal";
+        contactModal.className = "modal-overlay";
+        contactModal.innerHTML = `
+            <div class="modal-card contact-modal-card">
+                <button class="modal-close-btn" id="close-contact-modal-btn">&times;</button>
+                <div class="modal-avatar-wrapper" style="background: rgba(14, 165, 233, 0.1); border-color: rgba(14, 165, 233, 0.3); color: #38bdf8;">
+                    <i class="fa-solid fa-address-card"></i>
+                </div>
+                <h2 class="modal-title">Get in Touch</h2>
+                <div class="modal-subtitle">Archit Somayajula · Senior Data Engineer</div>
+                <p class="modal-desc">Feel free to reach out for career opportunities, technical consultations, or project collaborations.</p>
+                
+                <div class="contact-details-list">
+                    <a href="mailto:sdsarchit2000@gmail.com" class="contact-detail-item">
+                        <div class="contact-icon-box cyan"><i class="fa-regular fa-envelope"></i></div>
+                        <div class="contact-info-text">
+                            <span class="contact-label">Email Address</span>
+                            <span class="contact-value">sdsarchit2000@gmail.com</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-up-right-from-square contact-ext-icon"></i>
+                    </a>
+
+                    <a href="tel:+919550346409" class="contact-detail-item">
+                        <div class="contact-icon-box green"><i class="fa-solid fa-phone"></i></div>
+                        <div class="contact-info-text">
+                            <span class="contact-label">Phone / Mobile</span>
+                            <span class="contact-value">+91 9550346409</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-up-right-from-square contact-ext-icon"></i>
+                    </a>
+
+                    <a href="https://www.linkedin.com/in/archit-somayajula" target="_blank" rel="noopener noreferrer" class="contact-detail-item">
+                        <div class="contact-icon-box blue"><i class="fa-brands fa-linkedin"></i></div>
+                        <div class="contact-info-text">
+                            <span class="contact-label">LinkedIn Profile</span>
+                            <span class="contact-value">linkedin.com/in/archit-somayajula</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-up-right-from-square contact-ext-icon"></i>
+                    </a>
+                </div>
+                
+                <div class="contact-modal-footer">
+                    <button class="btn-glow btn-glow-ghost" id="contact-modal-done-btn" style="width:100%; justify-content:center;">Close</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(contactModal);
+    }
+
+    function openContactModal() {
+        if (contactModal) {
+            contactModal.classList.add("active");
+        }
+    }
+
+    function closeContactModal() {
+        if (contactModal) {
+            contactModal.classList.remove("active");
+        }
+    }
+
+    // Bind all contact trigger buttons (e.g. Header button, nav-btn, etc.)
+    document.querySelectorAll(".nav-btn, .contact-trigger-btn, #open-contact-modal-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openContactModal();
+        });
+    });
+
+    const closeBtn = document.getElementById("close-contact-modal-btn");
+    if (closeBtn) closeBtn.addEventListener("click", closeContactModal);
+
+    const doneBtn = document.getElementById("contact-modal-done-btn");
+    if (doneBtn) doneBtn.addEventListener("click", closeContactModal);
+
+    contactModal.addEventListener("click", (e) => {
+        if (e.target === contactModal) {
+            closeContactModal();
+        }
+    });
+
+    // --------------------------------------------------------
+    // 3. MOBILE DRAWER OVERLAY
+    // --------------------------------------------------------
+    const menuToggleBtn = document.getElementById("menu-toggle-btn");
     const navLinks = document.querySelector(".nav-links");
-    if (toggleBtn && navLinks) {
-        // Create a body-level mobile drawer overlay (outside .main-header stacking context)
+    if (menuToggleBtn && navLinks) {
         let mobileDrawer = document.getElementById("mobile-nav-drawer");
         if (!mobileDrawer) {
             mobileDrawer = document.createElement("div");
             mobileDrawer.id = "mobile-nav-drawer";
-            // Clone all nav links into the drawer
-            navLinks.querySelectorAll("a").forEach(link => {
-                const clone = link.cloneNode(true);
-                clone.addEventListener("click", closeDrawer);
-                mobileDrawer.appendChild(clone);
-            });
+
+            const currentPath = window.location.pathname;
+
+            mobileDrawer.innerHTML = `
+                <a href="index.html#about" class="nav-link"><i class="fa-solid fa-user"></i> About</a>
+                <a href="index.html#skills" class="nav-link"><i class="fa-solid fa-code"></i> Skills</a>
+                <div class="drawer-category-label">PROJECTS & LABS</div>
+                <a href="pipeline.html" class="nav-link sub-nav-link ${currentPath.includes('pipeline') ? 'active' : ''}"><i class="fa-solid fa-terminal text-cyan"></i> ETL Console</a>
+                <a href="dashboard.html" class="nav-link sub-nav-link ${currentPath.includes('dashboard') ? 'active' : ''}"><i class="fa-solid fa-chart-line text-purple"></i> Live Dashboard</a>
+                <a href="nids.html" class="nav-link sub-nav-link ${currentPath.includes('nids') ? 'active' : ''}"><i class="fa-solid fa-shield-halved text-green"></i> NIDS Security Lab</a>
+                <a href="xai.html" class="nav-link sub-nav-link ${currentPath.includes('xai') ? 'active' : ''}"><i class="fa-solid fa-sun-plant-wilt text-yellow"></i> XAI Research Lab</a>
+                <a href="index.html#projects" class="nav-link sub-nav-link"><i class="fa-solid fa-folder-open"></i> All Projects & Labs</a>
+                <div class="drawer-category-label">CONTACT</div>
+                <button class="nav-link contact-drawer-btn" id="drawer-contact-btn"><i class="fa-solid fa-address-card text-cyan"></i> Get Contact Details</button>
+            `;
+
             document.body.appendChild(mobileDrawer);
+
+            mobileDrawer.querySelectorAll("a").forEach(link => {
+                link.addEventListener("click", closeDrawer);
+            });
+
+            const drawerContactBtn = mobileDrawer.querySelector("#drawer-contact-btn");
+            if (drawerContactBtn) {
+                drawerContactBtn.addEventListener("click", () => {
+                    closeDrawer();
+                    openContactModal();
+                });
+            }
         }
 
         function openDrawer() {
             mobileDrawer.classList.add("active");
             document.body.classList.add("nav-open");
-            const icon = toggleBtn.querySelector("i");
+            const icon = menuToggleBtn.querySelector("i");
             if (icon) icon.className = "fa-solid fa-xmark";
         }
 
         function closeDrawer() {
             mobileDrawer.classList.remove("active");
             document.body.classList.remove("nav-open");
-            const icon = toggleBtn.querySelector("i");
+            const icon = menuToggleBtn.querySelector("i");
             if (icon) icon.className = "fa-solid fa-bars";
         }
 
-        toggleBtn.addEventListener("click", (e) => {
+        menuToggleBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             if (mobileDrawer.classList.contains("active")) {
                 closeDrawer();
@@ -44,9 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Close menu when clicking outside
         document.addEventListener("click", (e) => {
-            if (mobileDrawer.classList.contains("active") && !mobileDrawer.contains(e.target) && !toggleBtn.contains(e.target)) {
+            if (mobileDrawer.classList.contains("active") && !mobileDrawer.contains(e.target) && !menuToggleBtn.contains(e.target)) {
                 closeDrawer();
             }
         });

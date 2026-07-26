@@ -392,14 +392,20 @@
             <nav class="nav-links">
                 <a href="index.html#about" class="nav-link">About</a>
                 <a href="index.html#skills" class="nav-link">Skills</a>
-                <a href="index.html#projects" class="nav-link">Projects</a>
-                <a href="pipeline.html" class="nav-link active"><i class="fa-solid fa-terminal"></i> ETL Console</a>
-                <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Live Dashboard</a>
-                <a href="nids.html" class="nav-link"><i class="fa-solid fa-shield-halved"></i> NIDS Lab</a>
-                <a href="xai.html" class="nav-link"><i class="fa-solid fa-sun-plant-wilt"></i> XAI Lab</a>
+                <div class="nav-dropdown">
+                    <a href="index.html#projects" class="nav-link dropdown-toggle active">Projects <i class="fa-solid fa-chevron-down dropdown-arrow"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="pipeline.html" class="dropdown-item active"><i class="fa-solid fa-terminal text-cyan"></i> ETL Console</a>
+                        <a href="dashboard.html" class="dropdown-item"><i class="fa-solid fa-chart-line text-purple"></i> Live Dashboard</a>
+                        <a href="nids.html" class="dropdown-item"><i class="fa-solid fa-shield-halved text-green"></i> NIDS Security Lab</a>
+                        <a href="xai.html" class="dropdown-item"><i class="fa-solid fa-sun-plant-wilt text-yellow"></i> XAI Research Lab</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="index.html#projects" class="dropdown-item dropdown-footer"><i class="fa-solid fa-folder-open"></i> All Projects & Labs</a>
+                    </div>
+                </div>
             </nav>
             <div class="nav-actions">
-                <a href="mailto:sdsarchit2000@gmail.com" class="nav-btn" aria-label="Contact"><i class="fa-regular fa-envelope"></i> <span class="contact-text">Contact</span></a>
+                <button class="nav-btn contact-trigger-btn" id="open-contact-modal-btn" aria-label="Contact"><i class="fa-regular fa-envelope"></i> <span class="contact-text">Contact</span></button>
                 <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Toggle Menu"><i class="fa-solid fa-bars"></i></button>
             </div>
         </div>
@@ -490,18 +496,13 @@
     </main>
 
     <footer class="main-footer">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <span class="logo-bracket">&lt;</span><span class="logo-text">Archit.DE</span><span class="logo-bracket">/&gt;</span>
+        <div class="footer-container">
+            <p>&copy; 2026 Archit Somayajula. Engineered with PySpark & Vanilla JS.</p>
+            <div class="footer-socials">
+                <a href="https://www.linkedin.com/in/archit-somayajula" target="_blank" rel="noopener noreferrer" title="LinkedIn Profile"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="tel:+919550346409" title="Phone: +91 9550346409"><i class="fa-solid fa-phone"></i></a>
+                <a href="mailto:sdsarchit2000@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
             </div>
-            <div class="social-links">
-                <a href="https://github.com/yourusername" target="_blank" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
-                <a href="https://linkedin.com/in/yourusername" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="mailto:sdsarchit2000@gmail.com" aria-label="Email"><i class="fa-regular fa-envelope"></i></a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Archit. Data Engineering Portfolio.</p>
         </div>
     </footer>
 
