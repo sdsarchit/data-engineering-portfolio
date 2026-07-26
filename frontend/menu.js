@@ -47,11 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p class="modal-desc">Feel free to reach out for career opportunities, technical consultations, or project collaborations.</p>
                 
                 <div class="contact-details-list">
-                    <a href="mailto:sdsarchit2000@gmail.com" class="contact-detail-item">
+                    <a href="mailto:sdsarchit1603@gmail.com" class="contact-detail-item">
                         <div class="contact-icon-box cyan"><i class="fa-regular fa-envelope"></i></div>
                         <div class="contact-info-text">
                             <span class="contact-label">Email Address</span>
-                            <span class="contact-value">sdsarchit2000@gmail.com</span>
+                            <span class="contact-value">sdsarchit1603@gmail.com</span>
                         </div>
                         <i class="fa-solid fa-arrow-up-right-from-square contact-ext-icon"></i>
                     </a>
