@@ -252,6 +252,9 @@ body > *:not(#particle-canvas):not(.modal-overlay):not(#report-modal):not(#intro
     max-width: 1200px;
     margin: 0 auto;
     padding: 100px 2rem 60px 2rem;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    width: 100%;
 }
 .section {
     padding: 80px 0;

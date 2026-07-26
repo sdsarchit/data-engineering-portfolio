@@ -296,26 +296,29 @@
             .skills-cols { grid-template-columns: 1fr; }
         }
         @media (max-width: 640px) {
-            .idx-hero { padding: 1rem 0; }
+            .idx-hero { padding: 1rem 0; min-height: auto; }
             .idx-hero-grid { gap: 1.5rem; }
             .idx-hero-title { font-size: 2.0rem; letter-spacing: -1px; word-break: break-word; }
-            .idx-hero-desc { font-size: 1rem; max-width: 100%; word-break: break-word; overflow-wrap: break-word; }
+            .idx-hero-desc { font-size: 1rem; max-width: 100% !important; word-break: break-word; overflow-wrap: break-word; }
             .idx-hero-btns { flex-direction: column; width: 100%; }
             .btn-glow { width: 100%; justify-content: center; box-sizing: border-box; }
-            .hero-stats-stack { width: 100%; max-width: 100%; box-sizing: border-box; }
-            .hero-big-stat { padding: 1.5rem 1rem; overflow: visible; }
+            .hero-stats-stack { width: 100% !important; max-width: 100% !important; box-sizing: border-box; overflow: hidden; }
+            .hero-big-stat { padding: 1.5rem 1rem; overflow: visible !important; }
             .hero-big-stat .stat-number { font-size: 3rem; }
-            .hero-mini-row { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
-            .hero-mini-box { padding: 1rem 0.25rem; }
-            .hero-mini-box .hmb-val { font-size: 1.2rem; }
-            .hero-mini-box .hmb-label { font-size: 0.65rem; letter-spacing: 0.5px; }
-            .hero-terminal { overflow-x: auto; }
+            .hero-mini-row { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; overflow: hidden; }
+            .hero-mini-box { padding: 0.8rem 0.15rem; overflow: hidden; }
+            .hero-mini-box .hmb-val { font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .hero-mini-box .hmb-label { font-size: 0.6rem; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .hero-terminal { overflow-x: auto; max-width: 100%; }
             .sc-card { padding: 1.5rem 1.25rem; }
             .proj-header { padding: 1rem 1.25rem; flex-wrap: wrap; }
             .proj-body { padding: 1.25rem; }
             .term-body { overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; font-size: 0.76rem; }
             .modal-highlight-box { grid-template-columns: 1fr; gap: 0.5rem; }
-            .glass-card { max-width: 100%; box-sizing: border-box; overflow: visible; }
+            .glass-card { max-width: 100% !important; box-sizing: border-box !important; }
+        }
+        @media (max-width: 400px) {
+            .hero-mini-row { grid-template-columns: 1fr 1fr; }
         }
 
     
